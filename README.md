@@ -34,6 +34,13 @@ invoke it directly:
 /grounded-expert <question>
 ```
 
+**Cost note:** each invocation spawns a real subagent that does live
+WebSearch/WebFetch calls and (on `standard`/`thorough`) a disconfirming-search
+pass — this is real API usage, not a cached/local lookup. `thorough` spawns
+additional parallel subagents on top of that. Running the eval suite
+(`claude plugin eval`) also costs real money per run (judge model + agent
+model both bill).
+
 ### Levels
 
 Pick (or let it infer) one level per question, not per session:
