@@ -84,9 +84,7 @@ README.md                    this file
 
 ## License
 
-Not yet decided — this is an explicit open decision for the repo owner, not
-something contributors or this plugin's code should assume. Until a LICENSE
-file is added, default copyright applies (no reuse rights granted).
+MIT — see [LICENSE](LICENSE).
 
 ## Versioning
 
