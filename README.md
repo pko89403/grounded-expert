@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.svg" width="180" alt="grounded-expert logo: honey badger head in profile">
+</p>
+
 # grounded-expert
 
 [![Release](https://img.shields.io/github/v/release/pko89403/grounded-expert)](https://github.com/pko89403/grounded-expert/releases)
@@ -81,6 +85,7 @@ evals/                           eval cases (prompt.md + graders/*.md per case) 
 README.md                        this file
 CONTRIBUTING.md                  eval-gate process for PRs
 CHANGELOG.md                     release history
+assets/                          logo (SVG + PNG 512/128/32) and social preview
 ```
 
 ## Contributing
