@@ -19,10 +19,14 @@ when you're wrong.
 /plugin install grounded-expert --marketplace pko89403/grounded-expert
 ```
 
-(Claude Code 2.1.275 or later installs directly from the GitHub marketplace
-in one step. For local development, add this repo as a marketplace source
-with `claude plugin marketplace add <path>` and install from it the same
-way.)
+(Claude Code 2.1.275 or later adds this repo as a marketplace source and
+walks you through confirming it and picking an install scope — not a silent
+one-step install. For the shell form instead of the slash command,
+`claude plugin install grounded-expert --marketplace pko89403/grounded-expert`
+needs Claude Code 2.1.292 or later.)
+
+For local development: `claude plugin marketplace add <path-to-this-repo>`,
+then `claude plugin install grounded-expert@grounded-expert`.
 
 ## Usage
 
@@ -67,12 +71,13 @@ claim EXTRACTED or INFERRED, and reports what remains uncertain.
 ## Plugin structure
 
 ```
-.claude-plugin/plugin.json   plugin manifest (name, version, description, author, homepage, repository)
-SKILL.md                     the grounded-expert skill definition (procedure, levels, gotchas)
-evals/                       eval cases (prompt.md + graders/*.md per case) for `claude plugin eval`
-README.md                    this file
-CONTRIBUTING.md              eval-gate process for PRs
-CHANGELOG.md                 release history
+.claude-plugin/plugin.json       plugin manifest (name, version, description, author, homepage, repository)
+.claude-plugin/marketplace.json  marketplace manifest so `/plugin install ... --marketplace` can find this plugin
+SKILL.md                         the grounded-expert skill definition (procedure, levels, gotchas)
+evals/                           eval cases (prompt.md + graders/*.md per case) for `claude plugin eval`
+README.md                        this file
+CONTRIBUTING.md                  eval-gate process for PRs
+CHANGELOG.md                     release history
 ```
 
 ## Contributing
