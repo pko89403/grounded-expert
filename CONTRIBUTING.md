@@ -6,7 +6,7 @@ The plugin lives in `plugin/`; the repository root holds the marketplace
 manifest and the docs.
 
 1. `claude plugin validate --strict plugin` (the plugin) and
-   `claude plugin validate .` (the marketplace) — manifest/schema check. Required, but
+   `claude plugin validate --strict .` (the marketplace) — manifest/schema check. Required, but
    not sufficient on its own: it validates structure only. It does not run
    any eval case and cannot catch a trigger-matching or behavior regression.
 2. If you changed `plugin/SKILL.md`'s frontmatter `description`, any eval case, or
@@ -18,6 +18,26 @@ manifest and the docs.
 3. Compare with/without scores per case against the last known-good run. A
    case regressing blocks the PR even if `validate` succeeded — a clean
    `validate` and correct behavior are not the same claim.
+
+## Branching and releases
+
+- Trunk-based: `main` is the trunk. Work on a short-lived branch named
+  `feat/…`, `fix/…`, `docs/…` or `chore/…` and open a PR to `main`.
+- PRs are squash-merged, and the squash commit uses the PR title, so the
+  title must follow [Conventional Commits](https://www.conventionalcommits.org/)
+  (`feat: …`, `fix: …`, `docs: …`, `chore: …`; `feat!:` for breaking changes).
+  release-please reads these titles to pick the next version and write
+  `CHANGELOG.md`.
+- The `validate` CI check (both `claude plugin validate --strict` commands
+  above) must succeed before merge. The link check runs too but does not block
+  yet.
+- A change to `plugin/SKILL.md`, an eval case or a grader still needs the
+  eval evidence from "Before opening a PR" in the PR description. CI does not
+  run the eval suite.
+- Releases come only from release-please PRs. The owner merges the release PR;
+  release-please then tags `vX.Y.Z` and creates the GitHub release. The owner
+  then publishes that tag in the plugin directory portal by hand (auto-publish
+  stays off).
 
 ## Adding an eval case
 
