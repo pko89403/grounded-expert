@@ -71,16 +71,15 @@ claim EXTRACTED or INFERRED, and reports what remains uncertain.
 SKILL.md                     the grounded-expert skill definition (procedure, levels, gotchas)
 evals/                       eval cases (prompt.md + graders/*.md per case) for `claude plugin eval`
 README.md                    this file
+CONTRIBUTING.md              eval-gate process for PRs
+CHANGELOG.md                 release history
 ```
 
 ## Contributing
 
-- Follow the existing eval case schema when adding a case: `evals/<case>/prompt.md`
-  (frontmatter: `max_turns`, `timeout_seconds`, `allowed_tools`, `runs`) plus
-  `evals/<case>/graders/*.md`.
-- Run `claude plugin validate --strict .` before opening a PR.
-- Run `claude plugin eval` with `--judge-model opus` (never sonnet/haiku) if you
-  change SKILL.md or any grader.
+See [CONTRIBUTING.md](CONTRIBUTING.md) — `claude plugin validate --strict`
+passing is not the same claim as a change being behaviorally safe; the
+eval-gate process there explains why and what to run instead.
 
 ## License
 
