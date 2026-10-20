@@ -14,5 +14,8 @@ jobs:
     steps:
       - uses: googleapis/release-please-action@v5.0.0
         with:
+          # PAT so the release PR triggers the required `validate` check;
+          # PRs opened with the default GITHUB_TOKEN don't trigger other workflows.
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
