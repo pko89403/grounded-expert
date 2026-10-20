@@ -2,97 +2,104 @@
 set -euo pipefail
 
 # install-antigravity.sh
-# Installs or uninstalls grounded-expert for Google Antigravity / Gemini CLI.
+# Installs or uninstalls the grounded-expert skill for Google Antigravity
+# by symlinking hosts/antigravity/ (never plugin/) into an Antigravity skills folder.
+# Skill folder locations: https://antigravity.google/docs/skills
 
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PLUGIN_SRC="${REPO_DIR}/plugin"
-GLOBAL_SKILLS_DIR="${HOME}/.gemini/config/skills"
-GLOBAL_TARGET="${GLOBAL_SKILLS_DIR}/grounded-expert"
-WORKSPACE_TARGET="$(pwd)/.agents/skills/grounded-expert"
+# Physical paths so symlink comparisons survive /tmp -> /private/tmp style aliases.
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+SKILL_SRC="${REPO_DIR}/hosts/antigravity"
+CWD="$(pwd -P)"
 
 MODE="global"
+CLI=0
 ACTION="install"
 
 usage() {
   local exit_code="${1:-0}"
   cat <<EOF
-Usage: $(basename "$0") [options]
+Usage: $(basename "$0") [--global [--cli] | --workspace] [--uninstall]
+
+Links ${SKILL_SRC} into an Antigravity skills folder.
 
 Options:
-  --global        Target ~/.gemini/config/skills/grounded-expert (default)
-  --workspace     Target current project's .agents/skills/grounded-expert
-  --uninstall     Remove the grounded-expert symlink for the selected target
+  --global        Antigravity App/IDE: ~/.gemini/config/skills/grounded-expert (default)
+  --cli           With --global: Antigravity CLI: ~/.gemini/antigravity-cli/skills/grounded-expert
+  --workspace     Current project: ./.agents/skills/grounded-expert
+                  (run from the target project's root, not from inside this repo)
+  --uninstall     Remove the link for the selected target only
   -h, --help      Show this help message
 EOF
   exit "$exit_code"
 }
 
+die() {
+  echo "Error: $*" >&2
+  exit 1
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --global)
-      MODE="global"
-      shift
-      ;;
-    --workspace)
-      MODE="workspace"
-      shift
-      ;;
-    --uninstall)
-      ACTION="uninstall"
-      shift
-      ;;
-    -h|--help)
-      usage 0
-      ;;
+    --global) MODE="global" ;;
+    --workspace) MODE="workspace" ;;
+    --cli) CLI=1 ;;
+    --uninstall) ACTION="uninstall" ;;
+    -h|--help) usage 0 ;;
     *)
       echo "Unknown option: $1" >&2
       usage 1
       ;;
   esac
+  shift
 done
 
-if [[ "$MODE" == "global" ]]; then
-  TARGET="$GLOBAL_TARGET"
+if [[ "$MODE" == "workspace" ]]; then
+  # The workspace folder is the same for App, IDE and CLI.
+  [[ "$CLI" -eq 0 ]] || die "--cli applies to --global only; --workspace already covers the CLI."
+  # A workspace link inside this repo would be a self-referencing loop that git could pick up.
+  if [[ "$CWD" == "$REPO_DIR" || "$CWD" == "$REPO_DIR"/* ]]; then
+    die "--workspace must be run from your project's root, not from inside ${REPO_DIR}."
+  fi
+  TARGET="${CWD}/.agents/skills/grounded-expert"
+elif [[ "$CLI" -eq 1 ]]; then
+  TARGET="${HOME}/.gemini/antigravity-cli/skills/grounded-expert"
 else
-  TARGET="$WORKSPACE_TARGET"
+  TARGET="${HOME}/.gemini/config/skills/grounded-expert"
 fi
+LABEL="${MODE}$([[ "$CLI" -eq 1 ]] && echo " (CLI)" || true)"
+
+# True only if TARGET is a symlink that resolves to this checkout's hosts/antigravity.
+is_our_link() {
+  [[ -L "$TARGET" ]] && [[ "$(cd "$TARGET" 2>/dev/null && pwd -P)" == "$SKILL_SRC" ]]
+}
+
+refuse_foreign() {
+  if [[ -L "$TARGET" ]]; then
+    die "${TARGET} is a symlink to '$(readlink "$TARGET")', not to ${SKILL_SRC}. Refusing to touch it; remove it manually if it is yours."
+  fi
+  die "${TARGET} exists and is not a symlink. Refusing to touch real files; back it up or remove it manually."
+}
 
 if [[ "$ACTION" == "uninstall" ]]; then
-  echo "Uninstalling grounded-expert (${MODE})..."
-  if [[ -L "$TARGET" ]]; then
+  if is_our_link; then
     rm "$TARGET"
-    echo "Removed symlink: $TARGET"
-  elif [[ -e "$TARGET" ]]; then
-    echo "Error: $TARGET is an actual directory/file (not a symlink). Refusing to delete." >&2
-    exit 1
+    echo "Removed ${TARGET} (${LABEL})."
+  elif [[ -e "$TARGET" || -L "$TARGET" ]]; then
+    refuse_foreign
   else
-    echo "Notice: $TARGET does not exist. Nothing to uninstall."
+    echo "Nothing to uninstall: ${TARGET} does not exist."
   fi
-  echo "Uninstall complete."
   exit 0
 fi
 
-# Install action
-echo "Installing grounded-expert for Antigravity (${MODE})..."
+[[ -f "${SKILL_SRC}/SKILL.md" ]] || die "${SKILL_SRC}/SKILL.md not found. Is this checkout complete?"
 
-if [[ ! -f "${PLUGIN_SRC}/SKILL.md" ]]; then
-  echo "Error: ${PLUGIN_SRC}/SKILL.md not found. Ensure repository is intact." >&2
-  exit 1
+if is_our_link; then
+  echo "Already installed: ${TARGET} -> ${SKILL_SRC} (${LABEL})."
+  exit 0
 fi
+[[ -e "$TARGET" || -L "$TARGET" ]] && refuse_foreign
 
 mkdir -p "$(dirname "$TARGET")"
-
-# Safe check: only replace if it's already a symlink; never delete real directory
-if [[ -L "$TARGET" ]]; then
-  rm "$TARGET"
-elif [[ -e "$TARGET" ]]; then
-  echo "Error: $TARGET already exists and is not a symlink." >&2
-  echo "Refusing to overwrite actual files. Please backup or remove it manually." >&2
-  exit 1
-fi
-
-ln -s "$PLUGIN_SRC" "$TARGET"
-echo "Successfully linked ${PLUGIN_SRC} -> ${TARGET}"
-echo ""
-echo "grounded-expert skill is now installed for Antigravity (${MODE})!"
-echo "Target: ${TARGET}/SKILL.md"
+ln -s "$SKILL_SRC" "$TARGET"
+echo "Installed ${TARGET} -> ${SKILL_SRC} (${LABEL})."
