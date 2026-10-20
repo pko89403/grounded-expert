@@ -1,5 +1,8 @@
 # grounded-expert
 
+[![Release](https://img.shields.io/github/v/release/pko89403/grounded-expert)](https://github.com/pko89403/grounded-expert/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A Claude Code plugin that spawns a subagent to answer domain questions by
 actually retrieving primary sources (official specs, docs, papers, standards)
 in real time and checking its own claims against them — instead of
