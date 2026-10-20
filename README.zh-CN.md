@@ -9,13 +9,13 @@
 
 [English](README.md) | [한국어](README.ko.md) | [日本語](README.ja.md) | **简体中文**
 
-> 本译文已用 grounded-expert 本身审校并修订（standard 级别），详见文末[译文审校](#译文审校)。
+> 本译文已用 grounded-expert 审校并修订（standard 级别），详见文末[译文审校](#译文审校)。
 
-一个 Claude Code 插件：回答领域问题时，它不会凭记忆扮演专家人设，而是启动一个 subagent，由它实时查找一手资料（官方规范、文档、论文、标准），并用这些资料核对自己的结论。
+一个 Claude Code 插件：回答领域问题时，它不会凭记忆扮演专家人设，而是启动一个 subagent，由它真正去实时查找一手资料（官方规范、文档、论文、标准），并用这些资料核对自己的说法。
 
 ## 为什么需要
 
-给 subagent 设定人设（“你是 X 领域的专家”），模型就会一边扮演这个角色，一边凭参数记忆作答，因此陈述错误事实时和陈述正确事实时一样笃定。本插件强制执行真正专家遵循的流程：去查资料、引用查到的内容、发现错误就自我纠正。
+给 subagent 设定人设（“你是 X 领域的专家”），它就会一边扮演这个角色，一边凭参数记忆作答，因此陈述错误事实时和陈述正确事实时一样笃定。本插件强制执行真正专家遵循的流程：去查资料、引用查到的内容、发现错误就自我纠正。
 
 ## 安装
 
@@ -23,7 +23,7 @@
 /plugin install grounded-expert --marketplace pko89403/grounded-expert
 ```
 
-（Claude Code 2.1.275 及以上版本会把本仓库添加为插件市场（marketplace）源，引导你确认后选择安装作用域（scope），并非无需确认的一步安装。如果不用 slash command 而用 shell 命令 `claude plugin install grounded-expert --marketplace pko89403/grounded-expert`，需要 Claude Code 2.1.292 及以上版本。）
+（Claude Code v2.1.275 或更高版本会把本仓库作为插件市场（marketplace）来源添加，引导你确认后选择安装作用域（scope），并非无需确认的一步安装。如果不用会话内的 `/plugin` 命令而在 shell 中运行 `claude plugin install grounded-expert --marketplace pko89403/grounded-expert`，需要 Claude Code v2.1.292 或更高版本。）
 
 本地开发：先运行 `claude plugin marketplace add <本仓库路径>`，再运行 `claude plugin install grounded-expert@grounded-expert`。
 
@@ -45,7 +45,7 @@
 |---|---|
 | **quick** | 1 个来源，不做反证检索，审查 1 次。 |
 | **standard**（默认） | 2 个以上独立来源，EXTRACTED/INFERRED 标注，最多 2 次审查，其中包括 1 次反证检索。 |
-| **thorough** | 在 standard 基础上，按每种候选来源类型并行增加一个 subagent，并交叉核对。适用于涉及安全、法律责任或金钱的问题。 |
+| **thorough** | 在 standard 基础上，按每种候选来源类型并行增加一个 subagent，并交叉核对。适用于安全、法律或金钱利害攸关的问题。 |
 
 触发词（韩语原文，括号内为中文释义）：“대충/빨리”（大概/快点）→ quick；“꼼꼼히/전부 확인해서”（仔细/全部核实）或涉及法律、安全的问题 → thorough；未指定 → standard。
 
@@ -56,7 +56,7 @@
 请依据 RFC 核实。
 ```
 
-subagent 会查阅 RFC 9110/7231，引用相关段落，为每个结论标注 EXTRACTED 或 INFERRED，并报告仍不确定的部分。
+subagent 会查阅 RFC 9110/7231，引用相关段落，为该说法标注 EXTRACTED 或 INFERRED，并报告仍不确定的部分。
 
 ## 插件结构
 
@@ -73,7 +73,7 @@ assets/                          标志（SVG + PNG 512/128/32）和社交预览
 
 ## 贡献
 
-请参阅 [CONTRIBUTING.md](CONTRIBUTING.md)。`claude plugin validate --strict` 通过并不等于改动在行为上是安全的；原因以及应改为运行什么，都写在那里。
+请参阅 [CONTRIBUTING.md](CONTRIBUTING.md)。`claude plugin validate --strict` 通过并不等于改动在行为上是安全的；那里的 eval 把关流程说明了原因以及应改为运行什么。
 
 ## 许可证
 
@@ -81,13 +81,22 @@ MIT，见 [LICENSE](LICENSE)。
 
 ## 版本策略
 
-遵循 SemVer。由于 skill 流程和 eval suite 尚未定型，版本保持在 `0.x` 范围。`0.x` 表示 minor 版本之间 API/行为仍可能变化，以免承诺我们尚无法保证的 `1.0.0` 级别稳定性。待 eval suite 稳定、并在生产环境中运行一段时间后再升到 `1.0.0`。
+遵循 SemVer。由于 skill 流程和 eval suite 尚未定型，版本保持在 `0.x` 范围。`0.x` 表示次版本号升级之间 API/行为仍可能变化，同时无需做出我们目前还无法兑现的 `1.0.0` 稳定性承诺。待 eval suite 稳定、并在生产环境中运行一段时间后再升到 `1.0.0`。
 
 ## 译文审校
 
-本译文由 grounded-expert（standard 级别）审校：subagent 实际查阅下列资料，对照英文原文提出修改，每条依据都标注了 EXTRACTED 或 INFERRED，并做了一次反证检索。据此修订了误译和遗漏（如 “production” 未译出）、标点与加粗写法、术语（scope → 作用域，manifest → 清单）以及中文段落的软换行。
+本译文通过调用 `/grounded-expert` skill 以 standard 级别审校：skill 启动的 subagent 实际查阅下列资料，对照英文原文提出修改，每条依据都标注了 EXTRACTED 或 INFERRED，并做了反证检索。据此修订了：
+
+- 误译和遗漏：“production”未译出、“claim”误作“结论”、主语错位、“without requiring”误作“以免”
+- 标点与加粗写法、中文段落的软换行
+- 术语：scope → 作用域、manifest → 清单、marketplace source → 来源（依据插件概览页；官方文档各页用词并不统一，如安装页多用“范围”）
+
+审校共进行两轮：第一轮由手动照搬 skill 流程的 subagent 完成；第二轮正式调用 skill，并复核了第一轮的修改。
 
 - [中文文案排版指北](https://github.com/sparanoid/chinese-copywriting-guidelines/blob/master/README.zh-Hans.md)
+- [GB/T 15834-2011 标点符号用法（经 W3C clreq 等核对）](https://www.w3.org/TR/clreq/)
+- [Claude Code 安装和管理插件（zh-CN）](https://code.claude.com/docs/zh-CN/discover-plugins)
+- [语义化版本 2.0.0（zh-CN）](https://semver.org/lang/zh-CN/)
 - [中文技术文档写作规范 · 标点符号（ruanyf）](https://github.com/ruanyf/document-style-guide/blob/master/docs/marks.md)
 - [W3C 中文排版需求（clreq）](https://www.w3.org/TR/clreq/)
 - [Claude Code 插件概览（zh-CN）](https://code.claude.com/docs/zh-CN/plugins)

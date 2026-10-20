@@ -9,13 +9,13 @@
 
 [English](README.md) | [한국어](README.ko.md) | **日本語** | [简体中文](README.zh-CN.md)
 
-> この翻訳は grounded-expert 自身でレビューし、改善しています（standard レベル）。詳しくは末尾の[翻訳レビュー](#翻訳レビュー)を参照してください。
+> この翻訳は grounded-expert でレビューし、改善しました（standard レベル）。詳しくは末尾の[翻訳レビュー](#翻訳レビュー)を参照してください。
 
 ドメインの質問に答えるとき、記憶に頼って専門家ペルソナを演じるのではなく、一次情報源（公式仕様、ドキュメント、論文、標準）をリアルタイムで実際に調べ、自分の主張をそれと照合するサブエージェントを起動する Claude Code プラグインです。
 
 ## なぜ必要か
 
-サブエージェントにペルソナ（「あなたは X の専門家です」）を与えると、モデルはその役を演じながらパラメーター記憶から答えます。そのため、誤った事実も正しい事実と同じくらい自信を持って述べてしまいます。このプラグインは、調べる、見つけたものを引用する、間違っていたら自分で訂正する、という本物の専門家が従う手順を強制します。
+サブエージェントにペルソナ（「あなたは X の専門家です」）を与えると、サブエージェントはその役を演じながら、学習済みの知識（パラメトリック知識）から答えます。そのため、誤った事実も正しい事実と同じくらい自信を持って述べてしまいます。このプラグインは、調べる、見つけたものを引用する、間違っていたら自分で訂正する、という本物の専門家が従う手順を強制します。
 
 ## インストール
 
@@ -23,7 +23,7 @@
 /plugin install grounded-expert --marketplace pko89403/grounded-expert
 ```
 
-（Claude Code 2.1.275 以降は、このリポジトリをマーケットプレイスのソースとして追加し、その追加の確認とインストールスコープの選択を案内します。確認なしに一度でインストールされるわけではありません。スラッシュコマンドの代わりにシェルの `claude plugin install grounded-expert --marketplace pko89403/grounded-expert` を使う場合は Claude Code 2.1.292 以降が必要です。）
+（Claude Code 2.1.275 以降は、このリポジトリをマーケットプレイスのソースとして追加し、追加の確認と、インストールスコープの選択を順に案内します。確認なしに一度でインストールされるわけではありません。スラッシュコマンドの代わりにシェルの `claude plugin install grounded-expert --marketplace pko89403/grounded-expert` を使う場合は Claude Code 2.1.292 以降が必要です。）
 
 ローカル開発では、`claude plugin marketplace add <このリポジトリのパス>` を実行してから `claude plugin install grounded-expert@grounded-expert` を実行します。
 
@@ -45,7 +45,7 @@
 |---|---|
 | **quick** | 情報源 1 つ、反証検索なし、自己検証 1 回。 |
 | **standard**（デフォルト） | 独立した情報源 2 つ以上、EXTRACTED/INFERRED タグ付け、反証検索 1 回を含む最大 2 回の自己検証。 |
-| **thorough** | standard に加え、候補となる情報源の種類ごとにサブエージェントを 1 つずつ並列で追加し、相互検証。安全・法的責任・金銭が関わる質問向け。 |
+| **thorough** | standard に加え、候補となる情報源の種類ごとにサブエージェントを 1 つずつ並列で追加し、相互検証。安全・法律・金銭が関わる質問向け。 |
 
 トリガー表現：「대충/빨리」（「ざっくり／急いで」の意）→ quick、「꼼꼼히/전부 확인해서」（「念入りに／全部確認して」の意）や法律・安全に関わる質問 → thorough、指定なし → standard。
 
@@ -81,13 +81,24 @@ MIT。[LICENSE](LICENSE) を参照してください。
 
 ## バージョニング
 
-SemVer に従い、スキルの手順と eval suite がまだ固まっていないため `0.x` の範囲にとどまります。`0.x` は minor バージョン間でも API・動作が変わりうることを示し、まだ保証できない `1.0.0` 相当の安定性を約束しないためのものです。eval suite が安定し、本番環境で一定期間運用されたら `1.0.0` に上げます。
+SemVer に従い、スキルの手順と eval suite がまだ固まっていないため `0.x` の範囲にとどまります。`0.x` は minor バージョン間でも API・動作が変わりうることを示し、まだ保証できない `1.0.0` 相当の安定性を約束しないためのものです。eval suite が安定し、一定期間実運用されたら `1.0.0` に上げます。
 
 ## 翻訳レビュー
 
-この翻訳は grounded-expert（standard レベル）でレビューしました。サブエージェントが以下の情報源を実際に開いて英語原文と照合し、修正案を出しました。根拠にはそれぞれ EXTRACTED または INFERRED のタグを付け、反証検索も 1 回行っています。その結果を反映し、トリガー表現の意味のずれ、公式日本語ドキュメントに合わせた用語（サブエージェント、スキル、マーケットプレイス、マニフェスト、スコープ）、文体（です・ます調の統一）、括弧の全角統一、段落内の改行を修正しました。
+この翻訳は `/grounded-expert` スキルを呼び出し、standard レベルでレビューしました。スキルが起動したサブエージェントが以下の情報源を実際に開いて英語原文と照合し、修正案を出しました。根拠にはそれぞれ EXTRACTED または INFERRED のタグを付け、反証検索も行っています。その結果を反映し、次の点を修正しました。
+
+- 原文との意味のずれ：トリガー表現、「legal」→ 法律、「production use」→ 実運用
+- 公式日本語ドキュメントに合わせた用語：サブエージェント、スキル、マーケットプレイス、マニフェスト、スコープ
+- 「parametric memory」→ パラメトリック知識
+- 文体（です・ます調の統一）、括弧の全角統一、段落内の改行
+
+全角と半角の間のスペースは、公式日本語ドキュメントと Microsoft 日本語スタイルガイドに合わせて入れています（JTF 2.3.1.1 の「スペースを入れない」とは異なります）。コロン（：）は JTF に従い全角です。
+
+レビューは 2 回行いました。1 回目はスキルの手順を手作業で移したサブエージェントで行い、2 回目はスキルを正式に呼び出して、1 回目の修正結果も含めて再検証しました。
 
 - [プラグインの概要（Claude Code Docs）](https://code.claude.com/docs/ja/plugins/overview)
 - [プラグインのインストールと管理（Claude Code Docs）](https://code.claude.com/docs/ja/plugins/install)
-- [textlint-rule-preset-JTF-style（JTF 日本語標準スタイルガイド準拠）](https://github.com/textlint-ja/textlint-rule-preset-JTF-style)
+- [カスタムサブエージェントの作成（Claude Code Docs）](https://code.claude.com/docs/ja/sub-agents)
+- [JTF 日本語標準スタイルガイド（翻訳用）](https://www.jtf.jp/pdf/jtf_style_guide.pdf)
+- [Microsoft 日本語スタイルガイド](https://download.microsoft.com/download/a/8/2/a822a118-18d4-4429-b857-1b65ab388315/jpn-jpn-StyleGuide.pdf)
 - [markdown-it-cjk-breaks](https://github.com/markdown-it/markdown-it-cjk-breaks/blob/master/README.md)
