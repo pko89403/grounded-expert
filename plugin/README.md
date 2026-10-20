@@ -33,6 +33,11 @@ opinion or review, the skill:
 Full documentation, translations (한국어, 日本語, 简体中文), and contribution
 guidelines: https://github.com/pko89403/grounded-expert
 
+## Privacy
+
+See [PRIVACY.md](PRIVACY.md). In short: no personal data is collected or
+stored; web requests go only to the search provider and the sources cited.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

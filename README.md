@@ -98,6 +98,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) — a clean `claude plugin validate --str
 run is not the same claim as a change being behaviorally safe; the
 eval-gate process there explains why and what to run instead.
 
+## Privacy
+
+See [plugin/PRIVACY.md](plugin/PRIVACY.md).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
