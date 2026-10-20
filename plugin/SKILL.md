@@ -48,10 +48,10 @@ The core of this skill is deciding "what's actually on this domain's expert's de
 
 Before calling Agent, say one line to the user: this spawns a subagent that does real web lookups and a self-critique pass, not a quick memory answer — so the cost/scope is visible before it runs, not discovered after. Don't wait for a reply, just say it and proceed; this is disclosure, not a confirmation gate (gating every call would defeat the point of a skill that fires on its own).
 
-Call a new agent with `subagent_type: "general-purpose"` (not a fork — the point is independent verification uncontaminated by prior conversation context). The prompt must include:
+Call a new agent with `subagent_type: "general-purpose"` (in Google Antigravity / Gemini CLI: call `invoke_subagent` with `TypeName: "research"` or `"self"`; not a fork — the point is independent verification uncontaminated by prior conversation context). The prompt must include:
 
 1. No persona framing. Don't write "you are an expert in X." Instead: "Actually look up the following sources, and answer based only on what you find."
-2. State the level (quick/standard/thorough) and its source-count floor: quick = 1 source, standard/thorough = at least 2 independent sources, of the types decided in step 2, via WebSearch/WebFetch. No conclusions before that floor is met. For a long source (a paper, a spec): search within it for the terms/sections the question actually needs, don't read it start-to-finish — that's what burns tokens, not the source count. Fetch a given URL once; don't re-fetch the same URL again just to double-check it answers the same way.
+2. State the level (quick/standard/thorough) and its source-count floor: quick = 1 source, standard/thorough = at least 2 independent sources, of the types decided in step 2, via WebSearch/WebFetch (in Antigravity: `search_web`/`read_url_content`). No conclusions before that floor is met. For a long source (a paper, a spec): search within it for the terms/sections the question actually needs, don't read it start-to-finish — that's what burns tokens, not the source count. Fetch a given URL once; don't re-fetch the same URL again just to double-check it answers the same way.
 3. An inline citation (title + URL) on every substantive claim, tagged EXTRACTED or INFERRED. EXTRACTED means a source states this near-verbatim — quote the exact matching sentence or phrase next to the citation, so the tag is mechanically checkable later. Narrow exception: if the source renders a footnote marker (a number, *, or †) directly attached to the quoted text, strip the trailing footnote marker before the character match — this does not relax the match for anything else. INFERRED means you connected or synthesized this from multiple sources with no single source stating it directly — say which sources and how. An EXTRACTED tag with no quoted matching text is invalid: downgrade it to INFERRED or drop it. Drop any claim that is neither, or mark it "not confirmed."
 4. A self-refinement loop with two parts in the critique step: (a) check every claim against the material just retrieved, and (b) check whether everything found so far points the same direction / comes from the same type of source — if so, and the level is standard or thorough, **run at least one additional search aimed at finding disconfirming evidence or the opposing position** (re-reading the same sources you already have isn't critique, it's self-confirmation). On quick, skip (b) and stop after one pass. On standard/thorough, revise and repeat up to 2 times, or until the critique finds nothing left to fix.
 5. Final output format: conclusion → evidence (per source) → what remains uncertain. Say which level ran, so the user can tell a quick answer from a thorough one.
@@ -62,8 +62,11 @@ Pass the subagent's answer to the user verbatim, including the EXTRACTED/INFERRE
 
 ## Scaling up
 
-- The thorough level (see Levels table) covers high-stakes/high-cost questions — don't also hand-roll a parallel cross-check outside it.
-- If the same domain comes up repeatedly, save the "source types that turned out reliable" from step 2 to `${CLAUDE_PROJECT_DIR}/.claude/grounded-expert/reference/<domain>.md`, not inside this plugin's own directory. Which experts a project needs is project-specific — a Text-to-SQL research repo and a frontend repo don't share a registry, and a project-local file can be committed so teammates reuse it too. Don't create this preemptively — only once it's actually needed.
+- The thorough level (see Levels table) covers high-stakes/high-cost questions — don't also hand-roll a parallel cross-check outside it. In Claude Code, launch parallel `Agent` calls; in Antigravity, pass multiple entries in the `Subagents` array of `invoke_subagent`.
+- If the same domain comes up repeatedly, save the "source types that turned out reliable" from step 2 to:
+  - Claude Code: `${CLAUDE_PROJECT_DIR}/.claude/grounded-expert/reference/<domain>.md`
+  - Antigravity: `.agents/grounded-expert/reference/<domain>.md` (workspace) or `~/.gemini/config/grounded-expert/reference/<domain>.md` (global)
+  Do not save inside this plugin's own directory. Which experts a project needs is project-specific — a Text-to-SQL research repo and a frontend repo don't share a registry, and a project-local file can be committed so teammates reuse it too. Don't create this preemptively — only once it's actually needed.
 
   When you do create one, give it YAML frontmatter plus a short body, so the metadata is skimmable without reading the whole file:
 
@@ -79,7 +82,7 @@ Pass the subagent's answer to the user verbatim, including the EXTRACTED/INFERRE
 
 ## Gotchas
 
-- A subagent can fabricate a URL. Don't trust a source unless WebFetch actually opened it and the claim is really in there.
+- A subagent can fabricate a URL. Don't trust a source unless the fetch tool (`WebFetch` in Claude Code, `read_url_content` in Antigravity) actually opened it and the claim is really in there.
 - If a primary source is paywalled/inaccessible, fall back to the next-best open source and say so explicitly.
 - Even with grounding, if every source found points to the same conclusion, that's a self-confirmation collapse risk (a closed loop confirming itself with self-selected evidence). The final output must state "disconfirming search attempted / found nothing" or "couldn't find an opposing position." If that's missing, treat the diversity check as skipped.
-- This skill only uses Claude Code's Agent tool plus WebSearch/WebFetch. No separate MCP server or plugin component is needed at this scope.
+- This skill only uses native agent-spawning tools (`Agent` in Claude Code, `invoke_subagent` in Antigravity) and web search/fetch tools. No separate MCP server or plugin component is needed at this scope.
