@@ -27,6 +27,21 @@
 
 로컬 개발용: `claude plugin marketplace add <이 저장소 경로>`를 실행한 뒤 `claude plugin install grounded-expert@grounded-expert`를 실행합니다.
 
+## Google Antigravity에서 사용하기 (실험적)
+
+Antigravity 지원은 커뮤니티가 관리하며 Claude Code eval suite로 검증하지 않습니다. `hosts/antigravity/SKILL.md`의 Antigravity tool 이름 중 일부는 아직 Google 공식 문서로 확인되지 않았습니다.
+
+```
+git clone https://github.com/pko89403/grounded-expert.git
+cd grounded-expert
+git checkout <release-tag>   # 릴리스를 고정해 링크가 바뀌는 작업 트리를 따라가지 않게 함
+scripts/install-antigravity.sh --global          # Antigravity App/IDE: ~/.gemini/config/skills/
+scripts/install-antigravity.sh --global --cli    # Antigravity CLI: ~/.gemini/antigravity-cli/skills/
+cd <your-project> && <clone>/scripts/install-antigravity.sh --workspace   # <project>/.agents/skills/
+```
+
+스크립트는 `plugin/`이 아니라 `hosts/antigravity/`를 심볼릭 링크로 연결합니다. 같은 모드에 `--uninstall`을 붙이면 그 링크만 제거합니다. 실제 디렉터리나 다른 곳을 가리키는 링크는 건드리지 않습니다. 스킬 경로는 [Antigravity skills 문서](https://antigravity.google/docs/skills)를 따릅니다.
+
 ## 사용법
 
 도메인 지식의 사실 정확성이 중요한 질문이거나, 전문가 의견·리뷰를 명시적으로 요청하면 스킬이 자동으로 실행됩니다. 직접 호출할 수도 있습니다.

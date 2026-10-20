@@ -27,6 +27,21 @@
 
 本地开发：先运行 `claude plugin marketplace add <本仓库路径>`，再运行 `claude plugin install grounded-expert@grounded-expert`。
 
+## 在 Google Antigravity 中使用（实验性）
+
+Antigravity 支持由社区维护，未经 Claude Code eval suite 验证。`hosts/antigravity/SKILL.md` 中的部分 Antigravity 工具名称尚未在 Google 官方文档中得到确认。
+
+```
+git clone https://github.com/pko89403/grounded-expert.git
+cd grounded-expert
+git checkout <release-tag>   # 固定到某个发布版本，避免链接跟随不断变化的工作区
+scripts/install-antigravity.sh --global          # Antigravity App/IDE: ~/.gemini/config/skills/
+scripts/install-antigravity.sh --global --cli    # Antigravity CLI: ~/.gemini/antigravity-cli/skills/
+cd <your-project> && <clone>/scripts/install-antigravity.sh --workspace   # <project>/.agents/skills/
+```
+
+脚本创建的是指向 `hosts/antigravity/`（而非 `plugin/`）的符号链接。对同一模式加上 `--uninstall` 即可只删除该链接。脚本不会改动真实目录，也不会改动指向其他位置的链接。技能目录位置以 [Antigravity skills 文档](https://antigravity.google/docs/skills)为准。
+
 ## 用法
 
 当问题需要领域内的事实准确性，或明确要求专家意见/评审时，skill 会自动触发。也可以直接调用：
