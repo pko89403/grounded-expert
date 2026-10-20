@@ -12,8 +12,8 @@
    count from its `prompt.md` frontmatter — do not judge a change on a
    single case or a single run.
 3. Compare with/without scores per case against the last known-good run. A
-   case regressing blocks the PR even if `validate` passed — `validate`
-   passing and the behavior being correct are not the same claim.
+   case regressing blocks the PR even if `validate` succeeded — a clean
+   `validate` and correct behavior are not the same claim.
 
 ## Adding an eval case
 

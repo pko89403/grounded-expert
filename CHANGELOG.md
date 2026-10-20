@@ -10,7 +10,7 @@ rather than cutting new `0.x.y` tags for every change.
 ### Added
 - `grounded-expert` skill: no-persona subagent procedure (pin domain + level,
   decide source types before searching, spawn subagent with a source-count
-  floor and a self-critique/disconfirming-search pass, hand off answer with
+  floor and a self-critique/disconfirming-search step, hand off answer with
   EXTRACTED/INFERRED-tagged citations verbatim).
 - Levels: quick / standard (default) / thorough.
 - Eval suite: dgm-taxonomy-tension, http-redirect-method, python-dict-order,

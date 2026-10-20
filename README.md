@@ -49,7 +49,7 @@ invoke it directly:
 
 **Cost note:** each invocation spawns a real subagent that does live
 WebSearch/WebFetch calls and (on `standard`/`thorough`) a disconfirming-search
-pass — this is real API usage, not a cached/local lookup. `thorough` spawns
+step — this is real API usage, not a cached/local lookup. `thorough` spawns
 additional parallel subagents on top of that. Running the eval suite
 (`claude plugin eval`) also costs real money per run (judge model + agent
 model both bill).
@@ -60,8 +60,8 @@ Pick (or let it infer) one level per question, not per session:
 
 | Level | Behavior |
 |---|---|
-| **quick** | 1 source, no disconfirming-evidence search, 1 critique pass. |
-| **standard** (default) | 2+ independent sources, EXTRACTED/INFERRED tagging, up to 2 critique passes incl. 1 disconfirming-evidence search. |
+| **quick** | 1 source, no disconfirming-evidence search, 1 critique round. |
+| **standard** (default) | 2+ independent sources, EXTRACTED/INFERRED tagging, up to 2 critique rounds incl. 1 disconfirming-evidence search. |
 | **thorough** | standard, plus one additional subagent per candidate source type in parallel, cross-checked. For safety/legal/money stakes. |
 
 Trigger words: "대충/빨리" → quick, "꼼꼼히/전부 확인해서" or legal/safety stakes →
@@ -74,7 +74,7 @@ thorough, nothing specified → standard.
 RFC 기준으로 확인해줘.
 ```
 
-The subagent retrieves RFC 9110/7231, quotes the relevant passage, tags the
+The subagent retrieves RFC 9110/7231, quotes the relevant section, tags the
 claim EXTRACTED or INFERRED, and reports what remains uncertain.
 
 ## Plugin structure
@@ -92,8 +92,8 @@ assets/                          logo (SVG + PNG 512/128/32) and social preview
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) — `claude plugin validate --strict`
-passing is not the same claim as a change being behaviorally safe; the
+See [CONTRIBUTING.md](CONTRIBUTING.md) — a clean `claude plugin validate --strict`
+run is not the same claim as a change being behaviorally safe; the
 eval-gate process there explains why and what to run instead.
 
 ## License

@@ -25,7 +25,7 @@
 
 （Claude Code 2.1.275 以降は、このリポジトリをマーケットプレイスのソースとして追加し、追加の確認と、インストールスコープの選択を順に案内します。確認なしに一度でインストールされるわけではありません。スラッシュコマンドの代わりにシェルの `claude plugin install grounded-expert --marketplace pko89403/grounded-expert` を使う場合は Claude Code 2.1.292 以降が必要です。）
 
-ローカル開発では、`claude plugin marketplace add <このリポジトリのパス>` を実行してから `claude plugin install grounded-expert@grounded-expert` を実行します。
+ローカル開発では、`claude plugin marketplace add <path-to-this-repo>` を実行してから `claude plugin install grounded-expert@grounded-expert` を実行します。
 
 ## 使い方
 
