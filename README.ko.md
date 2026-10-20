@@ -61,10 +61,12 @@ RFC 기준으로 확인해줘.
 ## 플러그인 구조
 
 ```
-.claude-plugin/plugin.json       플러그인 매니페스트 (name, version, description, author, homepage, repository)
-.claude-plugin/marketplace.json  `/plugin install ... --marketplace`가 이 플러그인을 찾을 수 있게 하는 마켓플레이스 매니페스트
-SKILL.md                         grounded-expert 스킬 정의 (절차, 레벨, 주의사항)
-evals/                           `claude plugin eval`용 eval case (case마다 prompt.md + graders/*.md)
+.claude-plugin/marketplace.json  마켓플레이스 매니페스트 (플러그인을 ./plugin으로 등록)
+plugin/                          플러그인 본체 (사용자가 설치하는 부분)
+  .claude-plugin/plugin.json     플러그인 매니페스트 (name, version, description, author, homepage, repository)
+  SKILL.md                       grounded-expert 스킬 정의 (절차, 레벨, 주의사항)
+  evals/                         `claude plugin eval`용 eval case (case마다 prompt.md + graders/*.md)
+  README.md, LICENSE             플러그인용 짧은 README와 라이선스
 README.md                        영어 README
 CONTRIBUTING.md                  PR용 eval 게이트 절차
 CHANGELOG.md                     릴리스 이력

@@ -80,10 +80,12 @@ claim EXTRACTED or INFERRED, and reports what remains uncertain.
 ## Plugin structure
 
 ```
-.claude-plugin/plugin.json       plugin manifest (name, version, description, author, homepage, repository)
-.claude-plugin/marketplace.json  marketplace manifest so `/plugin install ... --marketplace` can find this plugin
-SKILL.md                         the grounded-expert skill definition (procedure, levels, gotchas)
-evals/                           eval cases (prompt.md + graders/*.md per case) for `claude plugin eval`
+.claude-plugin/marketplace.json  marketplace manifest; lists the plugin at ./plugin
+plugin/                          the plugin itself (what users install)
+  .claude-plugin/plugin.json     plugin manifest (name, version, description, author, homepage, repository)
+  SKILL.md                       the grounded-expert skill definition (procedure, levels, gotchas)
+  evals/                         eval cases (prompt.md + graders/*.md per case) for `claude plugin eval`
+  README.md, LICENSE             short plugin-level README and license
 README.md                        this file
 CONTRIBUTING.md                  eval-gate process for PRs
 CHANGELOG.md                     release history

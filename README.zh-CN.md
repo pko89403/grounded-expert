@@ -61,10 +61,12 @@ subagent 会查阅 RFC 9110/7231，引用相关段落，为该说法标注 EXTRA
 ## 插件结构
 
 ```
-.claude-plugin/plugin.json       插件清单（name, version, description, author, homepage, repository）
-.claude-plugin/marketplace.json  市场清单（marketplace manifest），使 `/plugin install ... --marketplace` 能找到本插件
-SKILL.md                         grounded-expert skill 定义（流程、级别、注意事项）
-evals/                           `claude plugin eval` 用的 eval case（每个 case 含 prompt.md + graders/*.md）
+.claude-plugin/marketplace.json  市场清单（marketplace manifest），将插件登记为 ./plugin
+plugin/                          插件本体（用户安装的部分）
+  .claude-plugin/plugin.json     插件清单（name, version, description, author, homepage, repository）
+  SKILL.md                       grounded-expert skill 定义（流程、级别、注意事项）
+  evals/                         `claude plugin eval` 用的 eval case（每个 case 含 prompt.md + graders/*.md）
+  README.md, LICENSE             插件用的简短 README 和许可证
 README.md                        英文 README
 CONTRIBUTING.md                  PR 的 eval 把关流程
 CHANGELOG.md                     发布历史

@@ -3,6 +3,6 @@
   "owner": { "name": "pko89403" },
   "description": "Marketplace for the grounded-expert Claude Code plugin: grounds expert-level domain answers in real retrieved primary sources instead of a persona.",
   "plugins": [
-    { "name": "grounded-expert", "source": "./" }
+    { "name": "grounded-expert", "source": "./plugin" }
   ]
 }

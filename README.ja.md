@@ -61,10 +61,12 @@ RFC に基づいて確認して。
 ## プラグイン構成
 
 ```
-.claude-plugin/plugin.json       プラグインマニフェスト（name, version, description, author, homepage, repository）
-.claude-plugin/marketplace.json  `/plugin install ... --marketplace` がこのプラグインを見つけるためのマーケットプレイスマニフェスト
-SKILL.md                         grounded-expert スキルの定義（手順、レベル、注意点）
-evals/                           `claude plugin eval` 用の eval case（case ごとに prompt.md + graders/*.md）
+.claude-plugin/marketplace.json  マーケットプレイスマニフェスト（プラグインを ./plugin として登録）
+plugin/                          プラグイン本体（ユーザーがインストールする部分）
+  .claude-plugin/plugin.json     プラグインマニフェスト（name, version, description, author, homepage, repository）
+  SKILL.md                       grounded-expert スキルの定義（手順、レベル、注意点）
+  evals/                         `claude plugin eval` 用の eval case（case ごとに prompt.md + graders/*.md）
+  README.md, LICENSE             プラグイン用の短い README とライセンス
 README.md                        英語版 README
 CONTRIBUTING.md                  PR 用の eval ゲート手順
 CHANGELOG.md                     リリース履歴

@@ -2,12 +2,16 @@
 
 ## Before opening a PR
 
-1. `claude plugin validate --strict .` — manifest/schema check. Required, but
+The plugin lives in `plugin/`; the repository root holds the marketplace
+manifest and the docs.
+
+1. `claude plugin validate --strict plugin` (the plugin) and
+   `claude plugin validate .` (the marketplace) — manifest/schema check. Required, but
    not sufficient on its own: it validates structure only. It does not run
    any eval case and cannot catch a trigger-matching or behavior regression.
-2. If you changed `SKILL.md`'s frontmatter `description`, any eval case, or
+2. If you changed `plugin/SKILL.md`'s frontmatter `description`, any eval case, or
    any grader: run the real suite —
-   `claude plugin eval . --judge-model opus` (never sonnet/haiku for
+   `claude plugin eval plugin --judge-model opus` (never sonnet/haiku for
    grading). Run the **full case suite**, using each case's own `runs:`
    count from its `prompt.md` frontmatter — do not judge a change on a
    single case or a single run.
@@ -17,9 +21,9 @@
 
 ## Adding an eval case
 
-Follow the existing schema: `evals/<case>/prompt.md` (frontmatter:
+Follow the existing schema: `plugin/evals/<case>/prompt.md` (frontmatter:
 `max_turns`, `timeout_seconds`, `allowed_tools`, `runs`) plus
-`evals/<case>/graders/*.md`.
+`plugin/evals/<case>/graders/*.md`.
 
 ## Why this is strict
 
