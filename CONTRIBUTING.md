@@ -21,6 +21,9 @@ manifest and the docs.
 3. Compare with/without scores per case against the last known-good run. A
    case regressing blocks the PR even if `validate` succeeded — a clean
    `validate` and correct behavior are not the same claim.
+4. If `plugin/SKILL.md` or the OpenAI host copy changes, run
+   `scripts/check-openai-drift.sh`. Host-specific tool names and workspace
+   paths may differ; the research procedure must not drift silently.
 
 ## Branching and releases
 
