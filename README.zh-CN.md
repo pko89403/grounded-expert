@@ -55,12 +55,14 @@ codex plugin marketplace add pko89403/grounded-expert
 codex plugin add grounded-expert@grounded-expert
 ```
 
-同一插件市场也会显示在 ChatGPT 桌面应用的插件目录中，可在其中安装并启用
-**Grounded Expert**。OpenAI 版本要求宿主提供独立 subagent 委派以及网页搜索和
-页面打开工具。它使用不继承当前对话的独立会话。你可以明确要求使用
-`grounded-expert` skill，也可以让它自动触发。
+OpenAI 包仍处于实验阶段。ChatGPT 安装使用宿主的插件目录，但可用性取决于
+宿主与账号，尚未完成端到端验证。在 Codex 中可明确调用
+`$grounded-expert:grounded-expert`，也可自动触发。仅在工具支持时请求不继承
+对话的子会话，否则披露独立性限制。不能委派时应说明是直接研究；不能获取
+来源时应说明未经外部验证。这些是指令，并非运行环境强制保证。
+已观察到的失败、复现步骤及剩余发布条件见 [OpenAI 验证记录](docs/openai-evaluation.md)。
 
-## 用法
+## 用法 (Claude Code)
 
 当问题需要领域内的事实准确性，或明确要求专家意见/评审时，skill 会自动触发。也可以直接调用：
 

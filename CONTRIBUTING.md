@@ -22,8 +22,27 @@ manifest and the docs.
    case regressing blocks the PR even if `validate` succeeded — a clean
    `validate` and correct behavior are not the same claim.
 4. If `plugin/SKILL.md` or the OpenAI host copy changes, run
-   `scripts/check-openai-drift.sh`. Host-specific tool names and workspace
-   paths may differ; the research procedure must not drift silently.
+   `scripts/check-openai-drift.sh` and
+   `python3 -m unittest discover -s scripts/tests -v`. The guard applies the
+   explicitly reviewed `scripts/openai-skill.patch` to a temporary source copy
+   and compares the entire result, including trigger descriptions. It never
+   edits `plugin/`. If a source or host adaptation changes, review and regenerate
+   the patch with `diff -U0 --label plugin/SKILL.md --label
+   hosts/openai/skills/grounded-expert/SKILL.md plugin/SKILL.md
+   hosts/openai/skills/grounded-expert/SKILL.md > scripts/openai-skill.patch`
+   (diff exit 1 means differences, not a generation failure). Updating this
+   allowlist is not evidence that a behavior change is safe.
+
+## OpenAI host changes
+
+Keep `plugin/` and its Claude eval gate unchanged for an OpenAI-only change.
+Run the host skill validator and the checks above, then follow
+[OpenAI evaluation](docs/openai-evaluation.md). An OpenAI description change
+requires repeated explicit/implicit trigger and non-trigger cases; a body
+change requires the affected behavior cases. Do not infer OpenAI behavior from
+Claude scores, metadata validation, or one correct factual answer. Check the
+tool trace for successful child creation, opened URLs, disconfirming searches,
+and honest capability fallbacks. Record failures and missing host coverage.
 
 ## Branching and releases
 

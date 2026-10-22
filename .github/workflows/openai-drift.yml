@@ -6,6 +6,8 @@ on:
       - plugin/SKILL.md
       - hosts/openai/skills/grounded-expert/SKILL.md
       - scripts/check-openai-drift.sh
+      - scripts/openai-skill.patch
+      - scripts/tests/test_openai_drift.py
       - .github/workflows/openai-drift.yml
   push:
     branches: [main]
@@ -13,6 +15,8 @@ on:
       - plugin/SKILL.md
       - hosts/openai/skills/grounded-expert/SKILL.md
       - scripts/check-openai-drift.sh
+      - scripts/openai-skill.patch
+      - scripts/tests/test_openai_drift.py
       - .github/workflows/openai-drift.yml
 
 permissions:
@@ -24,3 +28,4 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: scripts/check-openai-drift.sh
+      - run: python3 -m unittest discover -s scripts/tests -v

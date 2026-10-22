@@ -21,6 +21,14 @@ major one.
 ### Added
 - Portable Agent Plugins package and marketplace metadata for ChatGPT and
   Codex, with an OpenAI-host skill copy kept in sync by a drift check.
+- OpenAI runtime evaluation notes and seven drift-guard regression cases.
+
+### Changed
+- OpenAI instructions account for host tool schemas, unavailable delegation/web
+  tools, evidence visibility, independent-source provenance, and quotation limits.
+- Drift checking uses a reviewed full-file adaptation patch instead of ignoring
+  trigger descriptions. OpenAI runtime support remains experimental; observed
+  trace/answer mismatches are documented rather than counted as successful checks.
 
 ## [0.1.0] - initial public release
 
