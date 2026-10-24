@@ -1,2 +1,4 @@
 plugin/evals/results/
 .DS_Store
+# Project-local reference notes if the skill is used inside this repo
+.agents/grounded-expert/reference/
