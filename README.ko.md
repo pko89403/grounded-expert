@@ -40,6 +40,8 @@ scripts/install-antigravity.sh --global --cli    # Antigravity CLI: ~/.gemini/an
 cd <your-project> && <clone>/scripts/install-antigravity.sh --workspace   # <project>/.agents/skills/
 ```
 
+`hosts/antigravity/`는 v0.1.0 다음 릴리스부터 들어 있습니다. 그 태그가 나오기 전에는 `git checkout` 줄을 건너뛰고 `main`을 그대로 쓰세요.
+
 스크립트는 `plugin/`이 아니라 `hosts/antigravity/`를 심볼릭 링크로 연결합니다. 같은 모드에 `--uninstall`을 붙이면 그 링크만 제거합니다. 실제 디렉터리나 다른 곳을 가리키는 링크는 건드리지 않습니다. 스킬 경로는 [Antigravity skills 문서](https://antigravity.google/docs/skills)를 따릅니다.
 
 ## 사용법
