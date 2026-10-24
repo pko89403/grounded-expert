@@ -18,9 +18,9 @@ jobs:
         with:
           node-version: 22
       # `claude plugin validate` runs offline and needs no API key or login.
-      - run: npm install -g @anthropic-ai/claude-code@2.1.304
-      - run: claude plugin validate --strict plugin
-      - run: claude plugin validate --strict .
+      - run: |
+          npx -y @anthropic-ai/claude-code@2.1.304 plugin validate --strict plugin
+          npx -y @anthropic-ai/claude-code@2.1.304 plugin validate --strict .
 
   # Non-blocking for now: external links can flake. Make blocking once stable.
   links:
