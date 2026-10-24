@@ -29,7 +29,7 @@ read -r -d '' AG_RULES <<'EOF' || true
 s|Antigravity's `invoke_subagent` tool plus the host's web search and URL-fetch tools|@SPAWN_TOOL@ plus @WEB_TOOLS@|
 s|with `invoke_subagent`$|with @SPAWN_TOOL@|
 s|Before calling `invoke_subagent`,|Before calling @SPAWN_TOOL@,|
-s|`invoke_subagent` and the built-in subagent type `self` — per Antigravity's docs `self` shares this agent's system instructions and toolsets, so it gets the same web tools, whereas `research` is scoped to codebase exploration —|@NEW_SUBAGENT@|
+s|`invoke_subagent` and the built-in subagent type `self` — Antigravity's docs say `self` shares this agent's system instructions and toolsets, so it is expected, but not yet verified, to have the same web search and URL-fetch tools, whereas `research` is scoped to codebase exploration. Because `self` also inherits this skill, tell it in the prompt not to invoke this skill and not to call `invoke_subagent` itself, but to do the lookups directly. If it reports that it has no web search or URL-fetch tool, don't answer from memory: tell the user the answer is not externally verified —|@NEW_SUBAGENT@|
 s|via the host's web search and URL-fetch tools|via @WEB_TOOLS@|
 s|`\.agents/grounded-expert/reference/<domain>\.md` in the workspace root (this skill's own convention, not an Antigravity-defined location)|@REF_PATH@|
 s|unless the host's URL-fetch tool actually|unless @FETCH_TOOL@ actually|
