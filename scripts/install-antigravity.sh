@@ -6,8 +6,16 @@ set -euo pipefail
 # by symlinking hosts/antigravity/ (never plugin/) into an Antigravity skills folder.
 # Skill folder locations: https://antigravity.google/docs/skills
 
+# Follow symlinks to this script (e.g. ~/bin/install-antigravity -> clone) so
+# REPO_DIR is the clone, not the link's folder. macOS lacks readlink -f.
+SCRIPT="${BASH_SOURCE[0]}"
+while [[ -L "$SCRIPT" ]]; do
+  LINK_DIR="$(cd -P "$(dirname "$SCRIPT")" && pwd)"
+  SCRIPT="$(readlink "$SCRIPT")"
+  [[ "$SCRIPT" == /* ]] || SCRIPT="${LINK_DIR}/${SCRIPT}"
+done
 # Physical paths so symlink comparisons survive /tmp -> /private/tmp style aliases.
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+REPO_DIR="$(cd -P "$(dirname "$SCRIPT")/.." && pwd)"
 SKILL_SRC="${REPO_DIR}/hosts/antigravity"
 CWD="$(pwd -P)"
 
@@ -60,17 +68,26 @@ if [[ "$MODE" == "workspace" ]]; then
   if [[ "$CWD" == "$REPO_DIR" || "$CWD" == "$REPO_DIR"/* ]]; then
     die "--workspace must be run from your project's root, not from inside ${REPO_DIR}."
   fi
-  TARGET="${CWD}/.agents/skills/grounded-expert"
+fi
+
+GLOBAL_TARGET="${HOME}/.gemini/config/skills/grounded-expert"
+CLI_TARGET="${HOME}/.gemini/antigravity-cli/skills/grounded-expert"
+WORKSPACE_TARGET="${CWD}/.agents/skills/grounded-expert"
+if [[ "$MODE" == "workspace" ]]; then
+  TARGET="$WORKSPACE_TARGET"
 elif [[ "$CLI" -eq 1 ]]; then
-  TARGET="${HOME}/.gemini/antigravity-cli/skills/grounded-expert"
+  TARGET="$CLI_TARGET"
 else
-  TARGET="${HOME}/.gemini/config/skills/grounded-expert"
+  TARGET="$GLOBAL_TARGET"
 fi
 LABEL="${MODE}$([[ "$CLI" -eq 1 ]] && echo " (CLI)" || true)"
 
-# True only if TARGET is a symlink that resolves to this checkout's hosts/antigravity.
+# True only if the path (default TARGET) is a symlink to this checkout's
+# hosts/antigravity. Compares the link text, not the resolved target, so a
+# dangling link we created (e.g. after the clone moved) still counts as ours.
 is_our_link() {
-  [[ -L "$TARGET" ]] && [[ "$(cd "$TARGET" 2>/dev/null && pwd -P)" == "$SKILL_SRC" ]]
+  local path="${1:-$TARGET}"
+  [[ -L "$path" ]] && [[ "$(readlink "$path")" == "$SKILL_SRC" ]]
 }
 
 refuse_foreign() {
@@ -88,6 +105,12 @@ if [[ "$ACTION" == "uninstall" ]]; then
     refuse_foreign
   else
     echo "Nothing to uninstall: ${TARGET} does not exist."
+    for other in "$GLOBAL_TARGET:--global" "$CLI_TARGET:--global --cli" "$WORKSPACE_TARGET:--workspace"; do
+      other_path="${other%%:*}"
+      if [[ "$other_path" != "$TARGET" ]] && is_our_link "$other_path"; then
+        echo "Found this checkout's link at ${other_path}; remove it with: $(basename "$0") ${other#*:} --uninstall"
+      fi
+    done
   fi
   exit 0
 fi
@@ -103,3 +126,7 @@ fi
 mkdir -p "$(dirname "$TARGET")"
 ln -s "$SKILL_SRC" "$TARGET"
 echo "Installed ${TARGET} -> ${SKILL_SRC} (${LABEL})."
+if [[ "$MODE" == "workspace" ]]; then
+  # The link holds an absolute path on this machine; committing it breaks for teammates.
+  echo "Note: this is an absolute symlink. Add '.agents/skills/grounded-expert' to your project's .gitignore so it is not committed."
+fi
