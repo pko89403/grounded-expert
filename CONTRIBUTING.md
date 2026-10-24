@@ -27,11 +27,17 @@ manifest and the docs.
    explicitly reviewed `scripts/openai-skill.patch` to a temporary source copy
    and compares the entire result, including trigger descriptions. It never
    edits `plugin/`. If a source or host adaptation changes, review and regenerate
-   the patch with `diff -U0 --label plugin/SKILL.md --label
+   the patch with `diff -u --label plugin/SKILL.md --label
    hosts/openai/skills/grounded-expert/SKILL.md plugin/SKILL.md
    hosts/openai/skills/grounded-expert/SKILL.md > scripts/openai-skill.patch`
    (diff exit 1 means differences, not a generation failure). Updating this
    allowlist is not evidence that a behavior change is safe.
+   **The patch diff itself must be reviewed** whenever it is regenerated. A
+   missing shared procedure can otherwise be absorbed as an allowed deletion.
+   Inspect every deleted canonical line and retained context; do not use `-U0`.
+   CI prints deleted-line counts and their change against the PR base. A lower
+   count is not proof of semantic equivalence either. `.gitattributes` exempts
+   this patch's required blank context markers from trailing-space checking only.
 
 ## OpenAI host changes
 
@@ -43,6 +49,16 @@ change requires the affected behavior cases. Do not infer OpenAI behavior from
 Claude scores, metadata validation, or one correct factual answer. Check the
 tool trace for successful child creation, opened URLs, disconfirming searches,
 and honest capability fallbacks. Record failures and missing host coverage.
+Run `python3 scripts/validate_openai_package.py` for offline JSON/resource checks
+(not a replacement for the full portable schema). The OpenAI CI path filter
+covers its manifest, marketplace, license and privacy resources too.
+
+OpenAI's package version is independent of `plugin/` and remains experimental.
+The current release-please configuration does not bump it. Maintainers must
+review/update that version explicitly before publishing a changed OpenAI package;
+do not edit generated CHANGELOG sections in this PR. Reference notes share the
+Antigravity `.agents/grounded-expert/reference/` path; existing Claude notes are
+not migrated or merged automatically.
 
 ## Branching and releases
 

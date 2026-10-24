@@ -67,13 +67,15 @@ Codex. It stays outside `plugin/`, so the existing Claude Code package and eval
 surface are unchanged.
 
 ```bash
-codex plugin marketplace add pko89403/grounded-expert
+codex plugin marketplace add /absolute/path/to/this-checkout
 codex plugin add grounded-expert@grounded-expert
 ```
 
-Use the host's Plugins Directory for ChatGPT installation; availability depends
-on the host/account and has not been verified end to end here. In Codex, request
-`$grounded-expert:grounded-expert` explicitly, or let the description trigger it.
+Use a checkout containing `hosts/openai/` (this PR's branch until merged; older
+release tags do not contain it). This package has **not** been submitted to the
+public Plugins Directory. ChatGPT local-source installation and execution have
+not been verified end to end here. In Codex, explicitly request
+`$grounded-expert:grounded-expert`; automatic trigger coverage is not certified.
 The skill requests a fresh/no-history child only when the exposed tool supports
 it, and discloses weaker isolation otherwise. Without delegation it must report
 direct research; without source-retrieval tools it must report that external
@@ -146,7 +148,8 @@ eval-gate process there explains why and what to run instead.
 
 ## Privacy
 
-See [plugin/PRIVACY.md](plugin/PRIVACY.md).
+Claude Code: [plugin/PRIVACY.md](plugin/PRIVACY.md).
+OpenAI host: [hosts/openai/PRIVACY.md](hosts/openai/PRIVACY.md).
 
 ## License
 

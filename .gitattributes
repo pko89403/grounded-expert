@@ -1,0 +1,2 @@
+# A unified diff must retain its single-space marker on blank context lines.
+scripts/openai-skill.patch whitespace=-blank-at-eol

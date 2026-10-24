@@ -16,20 +16,6 @@ major one.
 
 * only report subagent delegation after the Agent call returns ([#8](https://github.com/pko89403/grounded-expert/issues/8)) ([281c1af](https://github.com/pko89403/grounded-expert/commit/281c1af3d438e1f6614b848257d9fc2c16b369f5))
 
-## [Unreleased]
-
-### Added
-- Portable Agent Plugins package and marketplace metadata for ChatGPT and
-  Codex, with an OpenAI-host skill copy kept in sync by a drift check.
-- OpenAI runtime evaluation notes and seven drift-guard regression cases.
-
-### Changed
-- OpenAI instructions account for host tool schemas, unavailable delegation/web
-  tools, evidence visibility, independent-source provenance, and quotation limits.
-- Drift checking uses a reviewed full-file adaptation patch instead of ignoring
-  trigger descriptions. OpenAI runtime support remains experimental; observed
-  trace/answer mismatches are documented rather than counted as successful checks.
-
 ## [0.1.0] - initial public release
 
 ### Added
