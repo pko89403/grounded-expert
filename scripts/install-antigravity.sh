@@ -82,12 +82,15 @@ else
 fi
 LABEL="${MODE}$([[ "$CLI" -eq 1 ]] && echo " (CLI)" || true)"
 
-# True only if the path (default TARGET) is a symlink to this checkout's
-# hosts/antigravity. Compares the link text, not the resolved target, so a
-# dangling link we created (e.g. after the clone moved) still counts as ours.
+# True if the path (default TARGET) is a symlink to this checkout's
+# hosts/antigravity, or a dangling symlink to some .../hosts/antigravity
+# (a link we created before the clone moved or was deleted). Live links to
+# any other folder, including another clone, stay foreign.
 is_our_link() {
-  local path="${1:-$TARGET}"
-  [[ -L "$path" ]] && [[ "$(readlink "$path")" == "$SKILL_SRC" ]]
+  local path="${1:-$TARGET}" dest
+  [[ -L "$path" ]] || return 1
+  dest="$(readlink "$path")"
+  [[ "$dest" == "$SKILL_SRC" ]] || { [[ ! -e "$path" ]] && [[ "$dest" == */hosts/antigravity ]]; }
 }
 
 refuse_foreign() {
@@ -118,8 +121,13 @@ fi
 [[ -f "${SKILL_SRC}/SKILL.md" ]] || die "${SKILL_SRC}/SKILL.md not found. Is this checkout complete?"
 
 if is_our_link; then
-  echo "Already installed: ${TARGET} -> ${SKILL_SRC} (${LABEL})."
-  exit 0
+  if [[ -e "$TARGET" ]]; then
+    echo "Already installed: ${TARGET} -> ${SKILL_SRC} (${LABEL})."
+    exit 0
+  fi
+  # Our dangling link from a moved/deleted clone: replace it with a live one.
+  echo "Replacing stale link ${TARGET} -> $(readlink "$TARGET")."
+  rm "$TARGET"
 fi
 [[ -e "$TARGET" || -L "$TARGET" ]] && refuse_foreign
 
