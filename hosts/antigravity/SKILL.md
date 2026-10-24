@@ -48,7 +48,7 @@ The core of this skill is deciding "what's actually on this domain's expert's de
 
 Before calling `invoke_subagent`, tell the user in one line that you're about to start a subagent that does real web lookups and a self-critique pass, not a quick memory answer — so the cost/scope is visible before it runs, not discovered after. Don't wait for a reply, just say it and proceed; this is disclosure, not a confirmation gate (gating every call would defeat the point of a skill that fires on its own).
 
-Antigravity note: per Antigravity's docs, `self` shares this agent's system instructions and toolsets, so it is expected, but not yet verified, to have the same web search and URL-fetch tools, whereas `research` is scoped to codebase exploration.
+Antigravity note: per Antigravity's docs, `self` shares this agent's system instructions and toolsets, so it is expected, but not yet verified, to have the same web search and URL-fetch tools, whereas `research` is scoped to codebase exploration. If it has none, step 3 item 2 and step 4's second branch apply.
 
 Call a new agent with `invoke_subagent` and the built-in subagent type `self` (not a fork — the point is independent verification uncontaminated by prior conversation context). The prompt must include:
 
@@ -65,7 +65,7 @@ Pass the subagent's answer to the user verbatim, including the EXTRACTED/INFERRE
 
 That applies to an answer the subagent actually returned. Describe work as the subagent's only when its returned answer shows it, and check what came back before handing off:
 
-- **Nothing came back** (the subagent call failed or returned empty): say so. If you answer anyway, hold your own answer to items 2–4 of the subagent prompt (source floor, quoted and tagged citations, disconfirming search on standard/thorough); report the level as quick if you can't meet them. Label the answer `direct answer — no independent subagent, not externally verified`, and tag a claim EXTRACTED only for a source you opened yourself after the subagent call failed.
+- **Nothing came back** (the subagent call failed or returned empty): say so. If you answer anyway, hold your own answer to items 2–4 of the subagent prompt (source floor, quoted and tagged citations, disconfirming search on standard/thorough), tag a claim EXTRACTED only for a source you opened yourself after the subagent call failed, and report the level your evidence actually supports. Label the answer `direct answer — no independent subagent`, and add `not externally verified` if you opened no source at all.
 - **The subagent reports no search/fetch tools, or no source opened**: pass its answer on verbatim with the label `not externally verified`, not as a grounded answer.
 - **thorough, and some parallel subagents failed**: label the answer `partial cross-check — <completed> of <started> source types` and name the source types that completed; don't report it as a full thorough run.
 

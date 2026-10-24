@@ -62,7 +62,7 @@ Pass the subagent's answer to the user verbatim, including the EXTRACTED/INFERRE
 
 That applies to an answer the subagent actually returned. Describe work as the subagent's only when its returned answer shows it, and check what came back before handing off:
 
-- **Nothing came back** (the subagent call failed or returned empty): say so. If you answer anyway, hold your own answer to items 2–4 of the subagent prompt (source floor, quoted and tagged citations, disconfirming search on standard/thorough); report the level as quick if you can't meet them. Label the answer `direct answer — no independent subagent, not externally verified`, and tag a claim EXTRACTED only for a source you opened yourself after the subagent call failed.
+- **Nothing came back** (the subagent call failed or returned empty): say so. If you answer anyway, hold your own answer to items 2–4 of the subagent prompt (source floor, quoted and tagged citations, disconfirming search on standard/thorough), tag a claim EXTRACTED only for a source you opened yourself after the subagent call failed, and report the level your evidence actually supports. Label the answer `direct answer — no independent subagent`, and add `not externally verified` if you opened no source at all.
 - **The subagent reports no search/fetch tools, or no source opened**: pass its answer on verbatim with the label `not externally verified`, not as a grounded answer.
 - **thorough, and some parallel subagents failed**: label the answer `partial cross-check — <completed> of <started> source types` and name the source types that completed; don't report it as a full thorough run.
 
