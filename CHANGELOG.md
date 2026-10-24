@@ -5,16 +5,6 @@ This project stays in `0.x` (see README Versioning) until the eval suite and
 trigger behavior are stable, so entries land under `[Unreleased]` by default
 rather than cutting new `0.x.y` tags for every change.
 
-## [Unreleased]
-
-### Added
-- Experimental, community-maintained Google Antigravity support:
-  `hosts/antigravity/SKILL.md`, `scripts/install-antigravity.sh`
-  (global App/IDE, global CLI, and workspace installs; `--uninstall`), and a CI
-  check that keeps the Antigravity copy in step with `plugin/SKILL.md` and
-  rejects Claude Code-only tool names in it. Not covered by the eval suite;
-  whether the `self` subagent has web tools is not yet verified.
-
 ## [0.1.0] - initial public release
 
 ### Added

@@ -13,7 +13,10 @@ for f in "$CLAUDE_FILE" "$AG_FILE"; do
 done
 
 # Each host's tokens map to the same placeholder. Keep the two lists in step:
-# the Nth rule of one list pairs with the Nth rule of the other.
+# the Nth rule of one list pairs with the Nth rule of the other. The final
+# delete rules drop Antigravity-only lines (the "Antigravity note:" paragraph
+# plus its trailing blank line, and list item 6); on the Claude side they match
+# nothing and only keep the lists paired.
 # read -d '' (not $(cat <<EOF)): bash 3.2 on macOS mis-parses ' inside $( ).
 read -r -d '' CLAUDE_RULES <<'EOF' || true
 s|Claude Code's Agent tool plus WebSearch/WebFetch|@SPAWN_TOOL@ plus @WEB_TOOLS@|
@@ -23,23 +26,28 @@ s|`subagent_type: "general-purpose"`|@NEW_SUBAGENT@|
 s|via WebSearch/WebFetch|via @WEB_TOOLS@|
 s|`\${CLAUDE_PROJECT_DIR}/\.claude/grounded-expert/reference/<domain>\.md`|@REF_PATH@|
 s|unless WebFetch actually|unless @FETCH_TOOL@ actually|
+/^Antigravity note: /{N;d;}
+/^6\. Antigravity only: /d
 EOF
 
 read -r -d '' AG_RULES <<'EOF' || true
 s|Antigravity's `invoke_subagent` tool plus the host's web search and URL-fetch tools|@SPAWN_TOOL@ plus @WEB_TOOLS@|
 s|with `invoke_subagent`$|with @SPAWN_TOOL@|
 s|Before calling `invoke_subagent`,|Before calling @SPAWN_TOOL@,|
-s|`invoke_subagent` and the built-in subagent type `self` — Antigravity's docs say `self` shares this agent's system instructions and toolsets, so it is expected, but not yet verified, to have the same web search and URL-fetch tools, whereas `research` is scoped to codebase exploration. Because `self` also inherits this skill, tell it in the prompt not to invoke this skill and not to call `invoke_subagent` itself, but to do the lookups directly. If it reports that it has no web search or URL-fetch tool, don't answer from memory: tell the user the answer is not externally verified —|@NEW_SUBAGENT@|
+s|`invoke_subagent` and the built-in subagent type `self`|@NEW_SUBAGENT@|
 s|via the host's web search and URL-fetch tools|via @WEB_TOOLS@|
 s|`\.agents/grounded-expert/reference/<domain>\.md` in the workspace root (this skill's own convention, not an Antigravity-defined location)|@REF_PATH@|
 s|unless the host's URL-fetch tool actually|unless @FETCH_TOOL@ actually|
+/^Antigravity note: /{N;d;}
+/^6\. Antigravity only: /d
 EOF
 
 # The diff below passes when a new sentence naming a Claude-only tool is copied
-# verbatim into both files, so reject those names in the Antigravity file. Patterns are
-# case-sensitive tool/identifier spellings, so ordinary words like "agent" pass.
-# shellcheck disable=SC2016  # backticks are literal Markdown, not expansion
-CLAUDE_ONLY='WebSearch|WebFetch|general-purpose|subagent_type|CLAUDE_PROJECT_DIR|Agent tool|calling Agent|`Agent`'
+# verbatim into both files, so reject those names in the Antigravity file.
+# Case-sensitive; Agent/Skill only as whole words, so "agent", "subagent" and
+# "Skills" pass. POSIX classes instead of \b so GNU and BSD grep agree.
+W='[^[:alnum:]_]'
+CLAUDE_ONLY="WebSearch|WebFetch|general-purpose|subagent_type|CLAUDE_PROJECT_DIR|(^|$W)(Agent|Skill)($W|\$)"
 if grep -nE "$CLAUDE_ONLY" "$AG_FILE" >&2; then
   echo "CLAUDE TOKEN: $AG_FILE uses the Claude Code-only names above; use the Antigravity equivalents." >&2
   exit 1
