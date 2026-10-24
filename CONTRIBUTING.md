@@ -28,8 +28,19 @@ manifest and the docs.
   (`feat: …`, `fix: …`, `docs: …`, `chore: …`; `feat!:` for breaking changes).
   release-please reads these titles to pick the next version and write
   `CHANGELOG.md`.
+- The squash commit message is the PR body, and release-please parses it too.
+  A body paragraph that starts with a commit type (`fix:`, `feat:`, `chore:`
+  and so on) is read as an extra commit. A `BREAKING CHANGE:` line is read as
+  a breaking change. Either one can add a changelog entry or bump the version,
+  so don't start body lines that way unless you mean it.
+- Only commits that touch `plugin/` trigger a release. A change to the root
+  `.claude-plugin/marketplace.json` or the docs alone does not. If such a
+  change must ship, include a `plugin/` change in the same PR, or the owner
+  cuts the release by hand.
 - The `validate` CI check (both `claude plugin validate --strict` commands
-  above) must succeed before merge. The link check runs too but does not block
+  above) must succeed before merge. It runs on every PR, but branch rules
+  will only enforce it after the PR that adds the workflow is merged and the
+  check is marked as required. The link check runs too but does not block
   yet.
 - A change to `plugin/SKILL.md`, an eval case or a grader still needs the
   eval evidence from "Before opening a PR" in the PR description. CI does not
