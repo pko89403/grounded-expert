@@ -41,8 +41,8 @@ then `claude plugin install grounded-expert@grounded-expert`.
 
 Antigravity support is community-maintained and not covered by the Claude Code
 eval suite. It is not yet verified that the `self` subagent it spawns gets web
-search and URL-fetch tools. If it does not, the skill tells you the answer is
-not externally verified instead of answering from memory.
+search and URL-fetch tools. If it does not, the skill is instructed to tell you
+the answer is not externally verified instead of answering from memory.
 
 ```
 git clone https://github.com/pko89403/grounded-expert.git

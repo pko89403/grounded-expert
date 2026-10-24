@@ -29,7 +29,7 @@
 
 ## Google Antigravity에서 사용하기 (실험적)
 
-Antigravity 지원은 커뮤니티가 관리하며 Claude Code eval suite로 검증하지 않습니다. 스킬이 실행하는 `self` subagent가 web search와 URL-fetch tool을 갖는지는 아직 검증하지 않았습니다. 갖지 않으면 스킬은 기억으로 답하지 않고, 답이 외부 출처로 검증되지 않았다고 알립니다.
+Antigravity 지원은 커뮤니티가 관리하며 Claude Code eval suite로 검증하지 않습니다. 스킬이 실행하는 `self` subagent가 web search와 URL-fetch tool을 갖는지는 아직 검증하지 않았습니다. 갖지 않으면 기억으로 답하지 말고 답이 외부 출처로 검증되지 않았다고 알리도록 스킬에 지시되어 있습니다.
 
 ```
 git clone https://github.com/pko89403/grounded-expert.git

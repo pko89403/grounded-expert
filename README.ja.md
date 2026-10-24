@@ -29,7 +29,7 @@
 
 ## Google Antigravity で使う（実験的）
 
-Antigravity 対応はコミュニティがメンテナンスしており、Claude Code の eval suite では検証していません。スキルが起動する `self` subagent が web search と URL-fetch のツールを持つかどうかは、まだ検証していません。持たない場合、スキルは記憶で答えず、回答が外部ソースで検証されていないことを伝えます。
+Antigravity 対応はコミュニティがメンテナンスしており、Claude Code の eval suite では検証していません。スキルが起動する `self` subagent が web search と URL-fetch のツールを持つかどうかは、まだ検証していません。持たない場合は記憶で答えず、回答が外部ソースで検証されていないことを伝えるよう、スキルに指示しています。
 
 ```
 git clone https://github.com/pko89403/grounded-expert.git
