@@ -44,7 +44,27 @@ cd <your-project> && <clone>/scripts/install-antigravity.sh --workspace   # <pro
 
 脚本创建的是指向 `hosts/antigravity/`（而非 `plugin/`）的符号链接。对同一模式加上 `--uninstall` 即可只删除该链接。脚本不会改动真实目录，也不会改动指向其他位置的链接。技能目录位置以 [Antigravity skills 文档](https://antigravity.google/docs/skills)为准。
 
-## 用法
+## 在 ChatGPT 和 Codex 中使用
+
+本仓库还提供面向 ChatGPT 和 Codex 的可移植 Agent Plugins 软件包。
+OpenAI 软件包位于 `plugin/` 之外，因此不会改变现有 Claude Code 软件包和
+eval 范围。
+
+```bash
+codex plugin marketplace add /absolute/path/to/this-checkout
+codex plugin add grounded-expert@grounded-expert
+```
+
+请使用包含 `hosts/openai/` 的检出版本（合并前使用本 PR 分支；现有发布标签
+不包含该目录）。OpenAI 包仍处于实验阶段，未提交到公开插件目录。
+ChatGPT 本地来源的安装与执行尚未验证。Codex 请明确调用
+`$grounded-expert:grounded-expert`；自动触发范围尚未验证。仅在工具支持时请求不继承
+对话的子会话，否则披露独立性限制。不能委派时应说明是直接研究；不能获取
+来源时应说明未经外部验证。这些是指令，并非运行环境强制保证。
+已观察到的失败、复现步骤及剩余发布条件见 [OpenAI 验证记录](docs/openai-evaluation.md)。
+OpenAI 的 [隐私说明](hosts/openai/PRIVACY.md) 与 Claude 版本分开。
+
+## 用法 (Claude Code)
 
 当问题需要领域内的事实准确性，或明确要求专家意见/评审时，skill 会自动触发。也可以直接调用：
 
@@ -79,11 +99,13 @@ subagent 会查阅 RFC 9110/7231，引用相关段落，为该说法标注 EXTRA
 
 ```
 .claude-plugin/marketplace.json  市场清单（marketplace manifest），将插件登记为 ./plugin
+.agents/plugins/marketplace.json ChatGPT/Codex 市场清单
 plugin/                          插件本体（用户安装的部分）
   .claude-plugin/plugin.json     插件清单（name, version, description, author, homepage, repository）
   SKILL.md                       grounded-expert skill 定义（流程、级别、注意事项）
   evals/                         `claude plugin eval` 用的 eval case（每个 case 含 prompt.md + graders/*.md）
   README.md, LICENSE             插件用的简短 README 和许可证
+hosts/openai/                    可移植 ChatGPT/Codex 插件及 skill 副本
 README.md                        英文 README
 CONTRIBUTING.md                  PR 的 eval 把关流程
 CHANGELOG.md                     发布历史

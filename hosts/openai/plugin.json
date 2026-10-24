@@ -1,0 +1,32 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "grounded-expert",
+  "version": "0.1.0",
+  "description": "Ground expert-level domain answers in retrieved primary sources and self-critique instead of a persona.",
+  "author": {
+    "name": "skiiwoo",
+    "email": "pko89403@gmail.com",
+    "url": "https://github.com/pko89403"
+  },
+  "homepage": "https://github.com/pko89403/grounded-expert",
+  "repository": "https://github.com/pko89403/grounded-expert",
+  "license": "MIT",
+  "keywords": ["research", "citations", "fact-checking", "primary-sources"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Grounded Expert",
+        "shortDescription": "Ground expert answers in primary sources",
+        "longDescription": "Retrieve primary sources, label extracted and inferred claims, search for disconfirming evidence, and report uncertainty.",
+        "developerName": "skiiwoo",
+        "category": "Productivity",
+        "capabilities": ["Read"],
+        "websiteURL": "https://github.com/pko89403/grounded-expert",
+        "privacyPolicyURL": "https://github.com/pko89403/grounded-expert/blob/main/hosts/openai/PRIVACY.md",
+        "defaultPrompt": [
+          "Use Grounded Expert to verify this question against primary sources."
+        ]
+      }
+    }
+  }
+}

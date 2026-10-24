@@ -60,7 +60,30 @@ remove the link for the same mode. It never touches a real directory or a link
 that points elsewhere. Skill locations follow
 [Antigravity's skills docs](https://antigravity.google/docs/skills).
 
-## Usage
+## Use with ChatGPT and Codex
+
+The repository also ships an experimental portable Agent Plugins package for ChatGPT and
+Codex. It stays outside `plugin/`, so the existing Claude Code package and eval
+surface are unchanged.
+
+```bash
+codex plugin marketplace add /absolute/path/to/this-checkout
+codex plugin add grounded-expert@grounded-expert
+```
+
+Use a checkout containing `hosts/openai/` (this PR's branch until merged; older
+release tags do not contain it). This package has **not** been submitted to the
+public Plugins Directory. ChatGPT local-source installation and execution have
+not been verified end to end here. In Codex, explicitly request
+`$grounded-expert:grounded-expert`; automatic trigger coverage is not certified.
+The skill requests a fresh/no-history child only when the exposed tool supports
+it, and discloses weaker isolation otherwise. Without delegation it must report
+direct research; without source-retrieval tools it must report that external
+verification was not possible. These are instructions, not enforced runtime
+guarantees. See [OpenAI evaluation](docs/openai-evaluation.md) for observed failures,
+reproduction steps, and the remaining release gate.
+
+## Usage (Claude Code)
 
 The skill fires automatically when a question needs domain-specific factual
 accuracy, or when explicitly asked for an expert opinion/review. You can also
@@ -104,11 +127,13 @@ claim EXTRACTED or INFERRED, and reports what remains uncertain.
 
 ```
 .claude-plugin/marketplace.json  marketplace manifest; lists the plugin at ./plugin
+.agents/plugins/marketplace.json ChatGPT/Codex marketplace manifest
 plugin/                          the plugin itself (what users install)
   .claude-plugin/plugin.json     plugin manifest (name, version, description, author, homepage, repository)
   SKILL.md                       the grounded-expert skill definition (procedure, levels, gotchas)
   evals/                         eval cases (prompt.md + graders/*.md per case) for `claude plugin eval`
   README.md, LICENSE             short plugin-level README and license
+hosts/openai/                    portable ChatGPT/Codex plugin and skill copy
 README.md                        this file
 CONTRIBUTING.md                  eval-gate process for PRs
 CHANGELOG.md                     release history
@@ -123,7 +148,8 @@ eval-gate process there explains why and what to run instead.
 
 ## Privacy
 
-See [plugin/PRIVACY.md](plugin/PRIVACY.md).
+Claude Code: [plugin/PRIVACY.md](plugin/PRIVACY.md).
+OpenAI host: [hosts/openai/PRIVACY.md](hosts/openai/PRIVACY.md).
 
 ## License
 
