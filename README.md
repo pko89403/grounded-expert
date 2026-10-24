@@ -53,8 +53,7 @@ scripts/install-antigravity.sh --global --cli    # Antigravity CLI: ~/.gemini/an
 cd <your-project> && <clone>/scripts/install-antigravity.sh --workspace   # <project>/.agents/skills/
 ```
 
-`hosts/antigravity/` first ships in the release after v0.1.0. Until that tag
-exists, skip the `git checkout` line and stay on `main`.
+Use `v0.1.1` or a later release tag: `v0.1.0` predates `hosts/antigravity/`.
 
 The script symlinks `hosts/antigravity/` (not `plugin/`). Add `--uninstall` to
 remove the link for the same mode. It never touches a real directory or a link
