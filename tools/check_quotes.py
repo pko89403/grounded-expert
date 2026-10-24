@@ -24,7 +24,7 @@ LABELS = ("direct answer — no independent subagent", "not externally verified"
 LAST = re.compile(r"Disconfirming search: (found — https?://\S+|ran — nothing opposing found|not run \(quick\))")
 TAG_VIA = re.compile(r"INFERRED \(via ([^()\s]+)\)")
 TAG_FIG = re.compile(r"INFERRED \(figure ([^()\s]+)\)")
-URL_RE = re.compile(r"https?://\S+")
+URL_RE = re.compile(r"https?://[^\s\\]+")  # no backslash: WHATWG parsers end the host there, urlsplit does not
 DELIM = re.compile(r"\|(\s*:?-+:?\s*\|)+")
 GLYPHS = str.maketrans({"‘": "'", "’": "'", "‚": "'", "‛": "'", "“": '"', "”": '"', "„": '"'})
 
@@ -94,7 +94,10 @@ def load_fixtures(directory: Path) -> list[Fixture]:
             head, sep, body = f.read_text(encoding="utf-8").partition("\n---\n")
         except (OSError, UnicodeDecodeError) as e:
             raise InputError(f"cannot read {f}: {e}") from e
-        urls = [norm_url(v) for k, _, v in (ln.partition(": ") for ln in head.splitlines()) if k == "url"]
+        try:
+            urls = [norm_url(v) for k, _, v in (ln.partition(": ") for ln in head.splitlines()) if k == "url"]
+        except ValueError as e:  # urlsplit rejects e.g. an unclosed IPv6 bracket
+            raise InputError(f"{f.name}: bad url: {e}") from e
         scope = next((v.strip() for k, _, v in (ln.partition(": ") for ln in head.splitlines()) if k == "scope"), "")
         if not (sep and urls and scope in ("excerpt", "full") and body.strip()):
             raise InputError(f"{f.name}: needs url:, scope: excerpt|full, a '---' line and a body")
@@ -282,6 +285,13 @@ def self_test() -> int:
             pass
         else:
             raise AssertionError("a missing fixtures directory must be an InputError")
+        (Path(d) / "page.txt").write_text("url: http://[bad\nscope: full\n---\nx\n", encoding="utf-8")
+        try:
+            load_fixtures(Path(d))
+        except InputError:
+            pass
+        else:
+            raise AssertionError("a malformed fixture url must be an InputError")
     r = run(ans([row("EXTRACTED", f'"{q301.replace(", ", ",  ")}"', rfc), row("INFERRED (via www.gdpr-info.eu)", f'"{gq}"', "https://www.gdpr-info.eu/art-4-gdpr/", 2)], domain="http"))
     assert r.invalid == 0 and r.ok == 1 and r.unverified == 1, r.lines  # whitespace folding; via on a non-primary host
     r = run(ans([good[0], row("INFERRED (via gdpr-info.eu)", f'"{gq}"', "https://www.gdpr-info.eu/art-4-gdpr/", 2)]))
@@ -314,6 +324,9 @@ def self_test() -> int:
     assert r.invalid >= 1 and "not a primary host" in "\n".join(r.lines)  # path prefix matches whole segments only
     r = run(ans([row("EXTRACTED", '"x"', "https://github.com/python/cpython/blob/main/x")], level="quick", domain="python", last="Disconfirming search: not run (quick)"))
     assert r.invalid == 0
+    for u in ("https://evil.example\\@docs.python.org/3/x", "https://evil.example\\.docs.python.org/3/x"):
+        r = run(ans([row("EXTRACTED", '"x"', u)], level="quick", domain="python", last="Disconfirming search: not run (quick)"))
+        assert "bare absolute" in "\n".join(r.lines), r.lines  # WHATWG parsers read the host as evil.example, urlsplit as docs.python.org
     r = run("not externally verified\nNo fetch tool was available.\n" + "\n".join([HEADER, "|---|---|---|---|---|---|", row("not confirmed", "-", "-")]))
     assert r.invalid == 0, r.lines
     r = run("not externally verified\nsorry\n" + "\n".join([HEADER, "|---|---|---|---|---|---|", row("EXTRACTED", '"x"', rfc)]))
