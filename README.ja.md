@@ -27,6 +27,23 @@
 
 ローカル開発では、`claude plugin marketplace add <path-to-this-repo>` を実行してから `claude plugin install grounded-expert@grounded-expert` を実行します。
 
+## Google Antigravity で使う（実験的）
+
+Antigravity 対応はコミュニティがメンテナンスしており、Claude Code の eval suite では検証していません。スキルが起動する `self` subagent が web search と URL-fetch のツールを持つかどうかは、まだ検証していません。持たない場合は記憶で答えず、回答が外部ソースで検証されていないことを伝えるよう、スキルに指示しています。
+
+```
+git clone https://github.com/pko89403/grounded-expert.git
+cd grounded-expert
+git checkout <release-tag>   # リリースに固定し、リンクが変化する作業ツリーを追わないようにする
+scripts/install-antigravity.sh --global          # Antigravity App/IDE: ~/.gemini/config/skills/
+scripts/install-antigravity.sh --global --cli    # Antigravity CLI: ~/.gemini/antigravity-cli/skills/
+cd <your-project> && <clone>/scripts/install-antigravity.sh --workspace   # <project>/.agents/skills/
+```
+
+`hosts/antigravity/` は v0.1.0 の次のリリースから含まれます。そのタグができるまでは `git checkout` の行を飛ばし、`main` のまま使ってください。
+
+スクリプトは `plugin/` ではなく `hosts/antigravity/` へのシンボリックリンクを作成します。同じモードに `--uninstall` を付けると、そのリンクだけを削除します。実ディレクトリや別の場所を指すリンクには触れません。スキルの配置場所は [Antigravity の skills ドキュメント](https://antigravity.google/docs/skills)に従います。
+
 ## 使い方
 
 ドメイン固有の事実の正確さが必要な質問や、専門家の意見・レビューを明示的に求めた場合に、スキルが自動で起動します。直接呼び出すこともできます。

@@ -37,6 +37,30 @@ needs Claude Code 2.1.292 or later.)
 For local development: `claude plugin marketplace add <path-to-this-repo>`,
 then `claude plugin install grounded-expert@grounded-expert`.
 
+## Use with Google Antigravity (experimental)
+
+Antigravity support is community-maintained and not covered by the Claude Code
+eval suite. It is not yet verified that the `self` subagent it spawns gets web
+search and URL-fetch tools. If it does not, the skill is instructed to tell you
+the answer is not externally verified instead of answering from memory.
+
+```
+git clone https://github.com/pko89403/grounded-expert.git
+cd grounded-expert
+git checkout <release-tag>   # pin a release so the link does not follow a moving working tree
+scripts/install-antigravity.sh --global          # Antigravity App/IDE: ~/.gemini/config/skills/
+scripts/install-antigravity.sh --global --cli    # Antigravity CLI: ~/.gemini/antigravity-cli/skills/
+cd <your-project> && <clone>/scripts/install-antigravity.sh --workspace   # <project>/.agents/skills/
+```
+
+`hosts/antigravity/` first ships in the release after v0.1.0. Until that tag
+exists, skip the `git checkout` line and stay on `main`.
+
+The script symlinks `hosts/antigravity/` (not `plugin/`). Add `--uninstall` to
+remove the link for the same mode. It never touches a real directory or a link
+that points elsewhere. Skill locations follow
+[Antigravity's skills docs](https://antigravity.google/docs/skills).
+
 ## Usage
 
 The skill fires automatically when a question needs domain-specific factual

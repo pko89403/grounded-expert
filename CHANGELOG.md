@@ -1,9 +1,13 @@
 # Changelog
 
-Format loosely follows [Keep a Changelog](https://keepachangelog.com/).
-This project stays in `0.x` (see README Versioning) until the eval suite and
-trigger behavior are stable, so entries land under `[Unreleased]` by default
-rather than cutting new `0.x.y` tags for every change.
+Version sections are written by [release-please](https://github.com/googleapis/release-please)
+from the Conventional Commit messages that land on `main`. Don't hand-edit
+them on `main`; to change an entry, edit the open release PR before it is
+merged. The `0.1.0` entry below was written by hand.
+
+The project stays in `0.x` (see README Versioning): a breaking change
+(`feat!:` or a `BREAKING CHANGE:` footer) bumps the minor version, not the
+major one.
 
 ## [0.1.0] - initial public release
 
