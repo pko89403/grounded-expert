@@ -40,7 +40,7 @@ scripts/install-antigravity.sh --global --cli    # Antigravity CLI: ~/.gemini/an
 cd <your-project> && <clone>/scripts/install-antigravity.sh --workspace   # <project>/.agents/skills/
 ```
 
-`hosts/antigravity/` は v0.1.0 の次のリリースから含まれます。そのタグができるまでは `git checkout` の行を飛ばし、`main` のまま使ってください。
+`v0.1.1` 以降のリリースタグを使ってください。`v0.1.0` には `hosts/antigravity/` が含まれていません。
 
 スクリプトは `plugin/` ではなく `hosts/antigravity/` へのシンボリックリンクを作成します。同じモードに `--uninstall` を付けると、そのリンクだけを削除します。実ディレクトリや別の場所を指すリンクには触れません。スキルの配置場所は [Antigravity の skills ドキュメント](https://antigravity.google/docs/skills)に従います。
 
