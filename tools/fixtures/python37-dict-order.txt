@@ -1,0 +1,6 @@
+url: https://docs.python.org/3/whatsnew/3.7.html
+scope: excerpt
+source: What's New In Python 3.7, Summary - Release Highlights
+licence: Python Software Foundation License Version 2 (https://docs.python.org/3/license.html); Copyright (c) 2001 Python Software Foundation; All Rights Reserved
+---
+Python data model improvements: PEP 562, customization of access to module attributes. PEP 560, core support for typing module and generic types. the insertion-order preservation nature of dict objects has been declared to be an official part of the Python language spec.
