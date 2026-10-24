@@ -35,6 +35,16 @@ s|`\.agents/grounded-expert/reference/<domain>\.md` in the workspace root (this 
 s|unless the host's URL-fetch tool actually|unless @FETCH_TOOL@ actually|
 EOF
 
+# The diff below passes when a new sentence naming a Claude-only tool is copied
+# verbatim into both files, so reject those names in the Antigravity file. Patterns are
+# case-sensitive tool/identifier spellings, so ordinary words like "agent" pass.
+# shellcheck disable=SC2016  # backticks are literal Markdown, not expansion
+CLAUDE_ONLY='WebSearch|WebFetch|general-purpose|subagent_type|CLAUDE_PROJECT_DIR|Agent tool|calling Agent|`Agent`'
+if grep -nE "$CLAUDE_ONLY" "$AG_FILE" >&2; then
+  echo "CLAUDE TOKEN: $AG_FILE uses the Claude Code-only names above; use the Antigravity equivalents." >&2
+  exit 1
+fi
+
 if diff -u --label "$CLAUDE_FILE (normalized)" --label "$AG_FILE (normalized)" \
     <(sed -e "$CLAUDE_RULES" "$CLAUDE_FILE") \
     <(sed -e "$AG_RULES" "$AG_FILE"); then

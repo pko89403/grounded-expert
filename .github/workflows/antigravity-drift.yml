@@ -6,6 +6,7 @@ on:
       - plugin/SKILL.md
       - hosts/antigravity/**
       - scripts/check-antigravity-drift.sh
+      - scripts/tests/test-antigravity-drift.sh
       - .github/workflows/antigravity-drift.yml
   push:
     branches: [main]
@@ -13,6 +14,7 @@ on:
       - plugin/SKILL.md
       - hosts/antigravity/**
       - scripts/check-antigravity-drift.sh
+      - scripts/tests/test-antigravity-drift.sh
       - .github/workflows/antigravity-drift.yml
 
 permissions:
@@ -24,3 +26,4 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: scripts/check-antigravity-drift.sh
+      - run: scripts/tests/test-antigravity-drift.sh
