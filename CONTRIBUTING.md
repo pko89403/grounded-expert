@@ -11,8 +11,11 @@ manifest and the docs.
    any eval case and cannot catch a trigger-matching or behavior regression.
 2. If you changed `plugin/SKILL.md`'s frontmatter `description`, any eval case, or
    any grader: run the real suite —
-   `claude plugin eval plugin --judge-model opus` (never sonnet/haiku for
-   grading). Run the **full case suite**, using each case's own `runs:`
+   `claude plugin eval plugin --judge-model opus --allow-tools WebFetch WebSearch`
+   (never sonnet/haiku for grading). The `--allow-tools` grant is required:
+   without it the run removes WebFetch and WebSearch, every grounded case
+   answers with no source opened, and the scores are meaningless.
+   Run the **full case suite**, using each case's own `runs:`
    count from its `prompt.md` frontmatter — do not judge a change on a
    single case or a single run.
 3. Compare with/without scores per case against the last known-good run. A
