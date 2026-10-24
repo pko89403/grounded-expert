@@ -40,8 +40,9 @@ then `claude plugin install grounded-expert@grounded-expert`.
 ## Use with Google Antigravity (experimental)
 
 Antigravity support is community-maintained and not covered by the Claude Code
-eval suite. Some Antigravity tool names in `hosts/antigravity/SKILL.md` are not
-yet confirmed by Google's docs.
+eval suite. It is not yet verified that the `self` subagent it spawns gets web
+search and URL-fetch tools. If it does not, the skill tells you the answer is
+not externally verified instead of answering from memory.
 
 ```
 git clone https://github.com/pko89403/grounded-expert.git

@@ -29,7 +29,7 @@
 
 ## 在 Google Antigravity 中使用（实验性）
 
-Antigravity 支持由社区维护，未经 Claude Code eval suite 验证。`hosts/antigravity/SKILL.md` 中的部分 Antigravity 工具名称尚未在 Google 官方文档中得到确认。
+Antigravity 支持由社区维护，未经 Claude Code eval suite 验证。该技能启动的 `self` subagent 是否具备 web search 和 URL-fetch 工具尚未验证。如果不具备，技能不会凭记忆作答，而是告知答案未经外部来源验证。
 
 ```
 git clone https://github.com/pko89403/grounded-expert.git
