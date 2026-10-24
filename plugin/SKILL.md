@@ -46,7 +46,9 @@ The core of this skill is deciding "what's actually on this domain's expert's de
 
 ### 3. Spawn a grounded subagent with the Agent tool
 
-Before calling Agent, say one line to the user: this spawns a subagent that does real web lookups and a self-critique pass, not a quick memory answer — so the cost/scope is visible before it runs, not discovered after. Don't wait for a reply, just say it and proceed; this is disclosure, not a confirmation gate (gating every call would defeat the point of a skill that fires on its own).
+Before calling Agent, say one line to the user: you're about to start a subagent that does real web lookups and a self-critique pass, not a quick memory answer — so the cost/scope is visible before it runs, not discovered after. Don't wait for a reply, just say it and proceed; this is disclosure, not a confirmation gate (gating every call would defeat the point of a skill that fires on its own).
+
+Only describe the result as the subagent's work once the Agent call has actually returned it. If the call fails or returns nothing, say so plainly and don't present your own answer as independent subagent verification — that would claim an independence the run never had.
 
 Call a new agent with `subagent_type: "general-purpose"` (not a fork — the point is independent verification uncontaminated by prior conversation context). The prompt must include:
 
