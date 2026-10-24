@@ -54,20 +54,57 @@ Call a new agent with `invoke_subagent` and the built-in subagent type `self` (n
 
 1. No persona framing. Don't write "you are an expert in X." Instead: "Actually look up the following sources, and answer based only on what you find."
 2. State the level (quick/standard/thorough) and its source-count floor: quick = 1 source, standard/thorough = at least 2 independent sources, of the types decided in step 2, via the host's web search and URL-fetch tools. No conclusions before that floor is met. For a long source (a paper, a spec): search within it for the terms/sections the question actually needs, don't read it start-to-finish — that's what burns tokens, not the source count. Fetch a given URL once; don't re-fetch the same URL again just to double-check it answers the same way. If the search or fetch tools are unavailable, or every fetch fails, say so at the top of the answer instead of answering from memory. If the floor still can't be met, say so and report the level the evidence actually supports, not the requested one.
-3. An inline citation (title + URL) on every substantive claim, tagged EXTRACTED or INFERRED. EXTRACTED means a source states this near-verbatim — quote the exact matching sentence or phrase next to the citation, so the tag is mechanically checkable later. Narrow exception: if the source renders a footnote marker (a number, *, or †) directly attached to the quoted text, strip the trailing footnote marker before the character match — this does not relax the match for anything else. INFERRED means you connected or synthesized this from multiple sources with no single source stating it directly — say which sources and how. An EXTRACTED tag with no quoted matching text is invalid: downgrade it to INFERRED or drop it. Drop any claim that is neither, or mark it "not confirmed."
+3. The output contract: paste the `<output-contract>` block below into the prompt unchanged, then add `Answer language: <language of the user's question>` and `Domain: <key from the block's list, or other>`. For `other`, also add `Primary hosts (declared): <hosts of the primary publishers among the source types you chose in step 2>`. For thorough, give the same block to every parallel subagent.
 4. A self-refinement loop with two parts in the critique step: (a) check every claim against the material just retrieved, and (b) check whether everything found so far points the same direction / comes from the same type of source — if so, and the level is standard or thorough, **run at least one additional search aimed at finding disconfirming evidence or the opposing position** (re-reading the same sources you already have isn't critique, it's self-confirmation). On quick, skip (b) and stop after one pass. On standard/thorough, revise and repeat up to 2 times, or until the critique finds nothing left to fix.
-5. Final output format: conclusion → evidence (per source) → what remains uncertain. Say which level ran, so the user can tell a quick answer from a thorough one.
+5. Final output format: the layout in the output contract. Its `Level:` line says which level ran, so the user can tell a quick answer from a thorough one.
 6. Antigravity only: "Do not invoke this skill and do not call `invoke_subagent`; do the lookups yourself." `self` inherits this skill, so without this line it can re-trigger the skill and spawn subagents recursively.
+
+<output-contract>
+Language: write in the language of the user's question (its main clause, if mixed). Keep in English exactly as written: tags, the table header and the line prefixes `Level:`, `Domain:`, `Primary hosts (declared):`, `Disconfirming search:`. Never translate quotes or URLs.
+Layout, in this order, with nothing after the last line:
+<conclusion; for thorough, also how the source types were cross-checked>
+Level: <quick|standard|thorough>
+Domain: <key from the list below, or other>
+| # | Claim | Tag | Quote | Source | URL |
+|---|---|---|---|---|---|
+<one row per claim>
+<what remains uncertain>
+Disconfirming search: <one of the three forms below>
+`Level:` is the level that actually ran. With `Domain: other`, add the line `Primary hosts (declared): <host>, <host>` after it; a listed key takes no such line.
+Rows: a claim with no citation of its own is `not confirmed`. Write `|` inside a cell as `\|`. Source: page title and section. URL: a bare absolute URL of a page you opened with the fetch tool, never a search snippet. `-` marks an empty Quote or URL.
+Tag, exactly one per row:
+- `EXTRACTED`: Quote is one contiguous passage of the page, as short as still supports the claim, copied character for character in the page's own language inside straight double quotes, with no ellipsis or edits. Narrow exception: if the source renders a footnote marker (a number, *, or †) directly attached to the quoted text, strip the trailing footnote marker before the character match — this does not relax the match for anything else. One URL, whose host is primary.
+- `INFERRED (via <host>)`: Quote as for `EXTRACTED`. One URL, whose host is not primary; <host> is that host.
+- `INFERRED`: no one passage states it; the Claim says which pages or passages and how. Quote `-`. One or more URLs, space-separated.
+- `INFERRED (figure N)`: read from figure N (a chart label, screenshot or rendered PDF page); never `EXTRACTED` unless the same value is quoted from text or a table. Quote `-`. One URL.
+- `not confirmed`: no opened page supports it. Quote `-`, URL `-`.
+Source floor: count distinct documents across the whole answer, not per claim. Renderings, mirrors, versions and #fragments of one document count once; `not confirmed` rows add none.
+Last line, exactly one of:
+Disconfirming search: found — <URL>
+Disconfirming search: ran — nothing opposing found
+Disconfirming search: not run (quick)
+Quick uses only the third; standard and thorough only the first two.
+Primary: the URL's host is, or is a subdomain of, a host listed for the `Domain:` key or given on the `Primary hosts (declared):` line; an entry with a path matches that path prefix. A listed `Domain:` accepts no extra hosts. A mirror on another host is not primary.
+<primary-publishers>
+http: rfc-editor.org ietf.org spec.whatwg.org
+law-eu: eur-lex.europa.eu publications.europa.eu/resource/cellar curia.europa.eu edpb.europa.eu
+ml-paper: arxiv.org openreview.net
+javascript: tc39.es ecma-international.org
+python: docs.python.org peps.python.org github.com/python/cpython
+</primary-publishers>
+</output-contract>
 
 ### 4. Hand off the result
 
-Pass the subagent's answer to the user verbatim, including the EXTRACTED/INFERRED tag on every citation. Don't paraphrase or summarize away the citations or their tags — rewriting "EXTRACTED: ..." into plain prose defeats the point of using this skill, since the tag is what makes a claim checkable later.
+Pass the subagent's answer to the user verbatim, including every claim-table row and the final `Disconfirming search:` line, with nothing added after that line. Don't paraphrase or summarize away the table — rewriting a row's `EXTRACTED` tag and quote into plain prose defeats the point of using this skill, since the tag and the quote are what make a claim checkable later. When thorough ran several subagents, the one answer you hand off keeps the contract's layout, with every claim row copied unchanged from the subagent that wrote it.
 
 That applies to an answer the subagent actually returned. Describe work as the subagent's only when its returned answer shows it, and check what came back before handing off:
 
-- **Nothing came back** (the subagent call failed or returned empty): say so. If you answer anyway, hold your own answer to items 2–4 of the subagent prompt (source floor, quoted and tagged citations, disconfirming search on standard/thorough), tag a claim EXTRACTED only for a source you opened yourself after the subagent call failed, and report the level your evidence actually supports. Label the answer `direct answer — no independent subagent`. If you could not open any source, say so at the top as item 2 requires, add `not externally verified` to the label, and report no level; don't present anything from memory as sourced.
+- **Nothing came back** (the subagent call failed or returned empty): say so. If you answer anyway, hold your own answer to items 2–5 of the subagent prompt (source floor, the output contract, disconfirming search on standard/thorough), tag a claim EXTRACTED only for a source you opened yourself after the subagent call failed, and report the level your evidence actually supports. Label the answer `direct answer — no independent subagent`. If you could not open any source, say so at the top as item 2 requires, add `not externally verified` to the label, and report no level; don't present anything from memory as sourced.
 - **The subagent reports no search/fetch tools, or no source opened**: pass its answer on verbatim with the label `not externally verified`, not as a grounded answer.
 - **thorough, and some parallel subagents failed**: label the answer `partial cross-check — <completed> of <started> source types` and name the source types that completed; don't report it as a full thorough run.
+
+Put a label on its own first line of the answer, above the conclusion, and change nothing else in the answer; several labels go on one line, separated by `; `. With `partial cross-check`, the `Level:` line is not `thorough`. With `not externally verified`, the answer needs no `Level:` line, source floor or final line, and every row (if any) is `not confirmed`.
 
 ## Scaling up
 
@@ -90,5 +127,5 @@ That applies to an answer the subagent actually returned. Describe work as the s
 
 - A subagent can fabricate a URL. Don't trust a source unless the host's URL-fetch tool actually opened it and the claim is really in there.
 - If a primary source is paywalled/inaccessible, fall back to the next-best open source and say so explicitly.
-- Even with grounding, if every source found points to the same conclusion, that's a self-confirmation collapse risk (a closed loop confirming itself with self-selected evidence). The final output must state "disconfirming search attempted / found nothing" or "couldn't find an opposing position." If that's missing, treat the diversity check as skipped.
+- Even with grounding, if every source found points to the same conclusion, that's a self-confirmation collapse risk (a closed loop confirming itself with self-selected evidence). The answer must end with one of the three `Disconfirming search:` lines in the output contract. A standard or thorough answer that ends with `not run (quick)`, or with none of them, skipped the diversity check: say so when you hand it off.
 - This skill only uses Antigravity's `invoke_subagent` tool plus the host's web search and URL-fetch tools. No separate MCP server or plugin component is needed at this scope.
