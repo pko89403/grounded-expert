@@ -55,8 +55,8 @@ codex plugin marketplace add /absolute/path/to/this-checkout
 codex plugin add grounded-expert@grounded-expert
 ```
 
-`hosts/openai/` を含むチェックアウトを使ってください（マージ前はこの PR の
-ブランチ。既存のリリースタグには含まれません）。OpenAI 版は実験段階で、
+`hosts/openai/` を含む `main` をチェックアウトしてください。`v0.3.0` 以前の
+リリースタグには含まれません。OpenAI 版は実験段階で、
 公開プラグインディレクトリには未提出です。ChatGPT のローカルソースでの
 インストール・実行は未検証です。Codex では `$grounded-expert:grounded-expert`
 を明示してください。自動トリガーの動作範囲は未検証です。

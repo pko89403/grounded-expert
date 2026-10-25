@@ -55,8 +55,8 @@ codex plugin marketplace add /absolute/path/to/this-checkout
 codex plugin add grounded-expert@grounded-expert
 ```
 
-请使用包含 `hosts/openai/` 的检出版本（合并前使用本 PR 分支；现有发布标签
-不包含该目录）。OpenAI 包仍处于实验阶段，未提交到公开插件目录。
+请检出包含 `hosts/openai/` 的 `main`。`v0.3.0` 及更早的发布标签
+不包含该目录。OpenAI 包仍处于实验阶段，未提交到公开插件目录。
 ChatGPT 本地来源的安装与执行尚未验证。Codex 请明确调用
 `$grounded-expert:grounded-expert`；自动触发范围尚未验证。仅在工具支持时请求不继承
 对话的子会话，否则披露独立性限制。不能委派时应说明是直接研究；不能获取

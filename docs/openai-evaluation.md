@@ -4,70 +4,19 @@ Status: **experimental; behavioral release gate not passed**. A correct factual
 answer, successful installation, or schema validation does not prove independent
 research. This document separates those claims.
 
-## 2026-10-25 v0.2.0 main synchronization
+## Current contract
 
-Rebased on main's v0.2.0 output-contract and quote-checker changes. The canonical
-`plugin/`, Antigravity host, `tools/` and generated CHANGELOG remain unchanged.
-The OpenAI copy preserves the complete `<output-contract>` block byte for byte:
-claim-table layout, primary-publisher list, `INFERRED (via <host>)` and
-`INFERRED (figure N)` variants, language rules and exact final-line forms.
-Parent findings and evidence receipts must stay outside the final answer, in a
-separate progress/evidence channel before handoff. Failure labels retain the
-canonical first-line placement and the no-level/no-source exceptions.
+The OpenAI skill preserves the canonical `<output-contract>` block byte for byte,
+including claim-table layout, primary publishers, source-copy tags, the
+`(no primary source)` marker and disconfirming-search URL syntax. Parent findings
+and evidence receipts stay in a separate progress/evidence channel before final
+handoff. Failure labels keep the canonical first-line placement and exceptions.
+The child prompt also states the host's quotation budget explicitly.
 
-The adaptation still deletes **8 canonical lines**. Six new host-contract tests
-exercise exact block preservation and the upstream checker, bringing the local
-deterministic suite to **24 passing tests**. The upstream quote-checker self-test
-also passes; OpenAI CI now runs it and watches `tools/` changes. These are
-deterministic checks, not new installed-host trigger, delegation or ChatGPT
-runtime results. The behavioral release gate remains unpassed.
-
-## Earlier 2026-10-25 review response (before v0.2.0)
-
-This historical revision predates the output contract above. Rebased on the
-then-current main, preserving Antigravity support and release-please's
-generated CHANGELOG unchanged. The canonical Claude package is unchanged from
-that base. The OpenAI copy now preserves canonical step 3/4's source floors,
-EXTRACTED matching-quote validity, multiple-source-only INFERRED meaning, verbatim
-child handoff and three fixed failure labels. Single-source paraphrases without
-matching quotes are not INFERRED: they are omitted or `not confirmed`. Parent
-validation notes remain separate; a noncompliant child response requires a child
-revision or withholding, never silent parent repair. The canonical fetch-once
-instruction is retained; the previous extra-fetch permission was removed.
-
-Description metadata restores the Korean verification/quick trigger examples
-and makes delegation conditional. These are source corrections, **not** new
-passing trigger/runtime scores. Repeated trigger and updated workflow execution
-remain part of the behavioral release gate below.
-
-The regenerated adaptation now retains context and deletes **8 canonical lines,
-down from 14** in the reviewed revision. None of the tag-definition, invalid-tag,
-verbatim-handoff or failure-branch lines is deleted by the patch. CONTRIBUTING
-requires review of the patch diff itself, and CI reports deletion-count changes;
-those counts cannot certify semantic equivalence. Local deterministic coverage
-is now **18 passing tests**: 11 drift/tool/cleanup cases and 7 package resource
-cases. Both strict Claude manifest/marketplace validators also passed.
-
-The new offline package checker validates JSON structure and referenced resources,
-not the entire portable JSON Schema. CI watches manifest/marketplace/license
-changes too, uses a distinct `openai-drift` job id and runs ShellCheck. ShellCheck
-was absent from the local PATH during the earlier 2026-10-22 checks; that was a
-historical local-environment limitation, not a claim that the script had no
-ShellCheck findings or that a reviewer could not run it.
-
-The public catalog does not contain this package. Use a checkout containing the
-OpenAI host and register that **local** marketplace; do not install an older main
-or release tag expecting these files. OpenAI privacy documentation is now
-host-specific. Its manifest version is maintained separately; release-please
-does not update the OpenAI package automatically.
-
-Discovery/install smoke on 2026-10-25, Codex CLI 0.162.1: with both
-`.claude-plugin/marketplace.json` and `.agents/plugins/marketplace.json` present,
-the registered local marketplace selected `./hosts/openai`, not `./plugin`.
-Installing that entry yielded the OpenAI manifest/privacy URL and a skill copy
-byte-identical to this checkout. This verifies that one CLI/local-checkout path,
-not precedence in every host or desktop runtime behavior. The temporary install
-and marketplace were removed after the check.
+These are instructions, not enforced runtime guarantees. The package remains
+experimental until the behavioral release gate below is met. Use a checkout of
+`main` containing `hosts/openai/`; release tags through `v0.3.0` do not contain it.
+The package has not been submitted to the public Plugins Directory.
 
 ## Scope and environment
 
@@ -79,11 +28,18 @@ No paid API service, external account, or production system was added or changed
 The temporary package was refreshed after skill edits. Canonical `plugin/` and
 its eval cases were not changed.
 
+Discovery/install smoke on 2026-10-25, Codex CLI 0.162.1: with both catalogs
+present, the registered local marketplace selected `./hosts/openai`, not
+`./plugin`. The installed manifest/privacy URL and skill matched the checkout
+used in that run. This verifies one CLI/local-checkout path, not every host or
+the current revision's runtime behavior. The temporary install and marketplace
+were removed afterward.
+
 ## Observed installed-package behavior
 
 These are individual smoke runs, not repeated full-suite scores. Intermediate
 revisions are included to show what failed; they do not validate the final file.
-The eight historical runs below predate the review corrections above. Their
+The eight historical runs below predate the current output contract. Their
 sanitized event excerpts, thread IDs, final mode-claim lines and original trace
 SHA-256 anchors are in [the evidence snapshot](evidence/openai-smoke-2026-10-22.json).
 The hashes identify retained private local traces; they are not a public copy of
@@ -119,40 +75,20 @@ in this configured environment. The agent then read the entire installed
 but do not certify clean automatic prompt injection. Plugin packaging validation
 does not resolve this host-context limitation.
 
-## Initial hardening (superseded where noted above)
-
-- Use actual exposed delegation schemas, not one assumed namespace or parameter.
-  Require a successful spawn/child identity before waiting or reporting delegation;
-  handle ID-less mailbox waiting without inventing an ID.
-- Declare direct research when delegation fails and external non-verification
-  when retrieval is unavailable. Never change host models/permissions to force it.
-- Request child evidence receipts and disclose missing child tool records.
-- Check actual opened URLs, exact excerpts and aggregate quote budgets before
-  handoff. The final instruction makes a 25-word/source default explicit; that
-  instruction is not an enforced runtime guarantee.
-- Distinguish independent provenance from mirrors/repeated authorities. Report
-  source shortfalls; the initial INFERRED paraphrase broadening was rejected in
-  review and reverted to canonical semantics.
-- Bound thorough fan-out to the host limit; prohibit recursive research children.
-
 ## Deterministic checks
 
-The drift guard previously discarded the whole description and normalized a
-small list of replacements. It could miss changes to trigger metadata. It now
-applies `scripts/openai-skill.patch` to a temporary canonical copy, with no fuzzy
-matching, then compares the complete expected host file. The patch is an explicit
-reviewed adaptation, not an automatic approval of behavior changes.
+Run `python3 -m unittest discover -s scripts/tests -v` for the drift, package and
+host-contract suites, and `python3 -I tools/check_quotes.py --self-test` for the
+upstream checker. The suites cover temporary-copy drift/tool/cleanup failures,
+JSON/resource validation, exact contract preservation, Korean answers, secondary
+source and copy tags, source floors, no-web labels and the final-line grammar.
 
-Seven stdlib regression tests exercise the guard with real temporary copies:
-valid adaptation without source mutation, host description change, canonical
-description change, host procedure change, source-only procedure change, shared
-change outside adaptation, and missing patch. All seven passed locally.
-
-Also passed: skill `quick_validate.py`, the drift guard, `bash -n`,
-`git diff --check`, and byte comparison of canonical `plugin/` against the base.
-The GitHub workflow runs the guard and regression tests on Ubuntu; local results
-alone are not a claim that remote CI passed. ShellCheck was unavailable locally
-on that original evaluation date; current CI runs it separately.
+`scripts/check-openai-drift.sh` applies the reviewed contextual adaptation to a
+temporary canonical copy without fuzzy matching, then compares the whole host
+file, including its description. Review the patch itself when regenerating it;
+deleted-line counts cannot establish semantic equivalence. The package checker
+validates offline JSON/resources, not the entire portable schema. CI runs these
+checks and ShellCheck; passing them does not establish installed-host behavior.
 
 ## Reproduce safely
 

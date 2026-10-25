@@ -71,8 +71,8 @@ codex plugin marketplace add /absolute/path/to/this-checkout
 codex plugin add grounded-expert@grounded-expert
 ```
 
-Use a checkout containing `hosts/openai/` (this PR's branch until merged; older
-release tags do not contain it). This package has **not** been submitted to the
+Use a checkout of `main` containing `hosts/openai/`; release tags through
+`v0.3.0` do not contain it. This package has **not** been submitted to the
 public Plugins Directory. ChatGPT local-source installation and execution have
 not been verified end to end here. In Codex, explicitly request
 `$grounded-expert:grounded-expert`; automatic trigger coverage is not certified.

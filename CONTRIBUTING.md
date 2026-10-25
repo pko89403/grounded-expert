@@ -44,15 +44,15 @@ manifest and the docs.
 ## OpenAI host changes
 
 Keep `plugin/` and its Claude eval gate unchanged for an OpenAI-only change.
-Run the host skill validator and the checks above, then follow
+Run `python3 scripts/validate_openai_package.py` and the checks above, then follow
 [OpenAI evaluation](docs/openai-evaluation.md). An OpenAI description change
 requires repeated explicit/implicit trigger and non-trigger cases; a body
 change requires the affected behavior cases. Do not infer OpenAI behavior from
 Claude scores, metadata validation, or one correct factual answer. Check the
 tool trace for successful child creation, opened URLs, disconfirming searches,
 and honest capability fallbacks. Record failures and missing host coverage.
-Run `python3 scripts/validate_openai_package.py` for offline JSON/resource checks
-(not a replacement for the full portable schema). The OpenAI CI path filter
+The package checker validates offline JSON/resources, not the full portable
+schema. The OpenAI CI path filter
 covers its manifest, marketplace, license and privacy resources too.
 
 Keep the canonical `<output-contract>` block byte-identical in the OpenAI copy.
@@ -65,7 +65,7 @@ to `tools/` also trigger the OpenAI checks, including the upstream self-test.
 OpenAI's package version is independent of `plugin/` and remains experimental.
 The current release-please configuration does not bump it. Maintainers must
 review/update that version explicitly before publishing a changed OpenAI package;
-do not edit generated CHANGELOG sections in this PR. Reference notes share the
+let release-please manage generated CHANGELOG sections. Reference notes share the
 Antigravity `.agents/grounded-expert/reference/` path; existing Claude notes are
 not migrated or merged automatically.
 

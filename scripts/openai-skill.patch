@@ -46,12 +46,12 @@
  4. A self-refinement loop with two parts in the critique step: (a) check every claim against the material just retrieved, and (b) check whether everything found so far points the same direction / comes from the same type of source — if so, and the level is standard or thorough, **run at least one additional search aimed at finding disconfirming evidence or the opposing position** (re-reading the same sources you already have isn't critique, it's self-confirmation). On quick, skip (b) and stop after one pass. On standard/thorough, revise and repeat up to 2 times, or until the critique finds nothing left to fix.
  5. Final output format: the layout in the output contract. Its `Level:` line says which level ran, so the user can tell a quick answer from a thorough one.
  
-+6. OpenAI only: "Do not invoke this skill again or create further agents; perform your assigned lookups yourself. Keep the final answer exactly in the output-contract layout. If the host supports a separate evidence channel, provide the opened URLs, section locations and disconfirming query there; otherwise rely on the tool record, never append a receipt after the contract's final line."
++6. OpenAI only: "Do not invoke this skill again or create further agents; perform your assigned lookups yourself. Keep all direct quotations across the answer at or below 25 words per source, or a stricter host limit; choose short matching passages rather than changing tags to evade the limit. Keep the final answer exactly in the output-contract layout. If the host supports a separate evidence channel, provide the opened URLs, section locations and disconfirming query there; otherwise rely on the tool record, never append a receipt after the contract's final line."
 +
  <output-contract>
- Language: write in the language of the user's question (its main clause, if mixed). Keep in English exactly as written: tags, the table header and the line prefixes `Level:`, `Domain:`, `Primary hosts (declared):`, `Disconfirming search:`. Never translate quotes or URLs.
+ Language: write in the language of the user's question (its main clause, if mixed). Keep in English exactly as written: tags, the table header, the `(no primary source)` suffix and the line prefixes `Level:`, `Domain:`, `Primary hosts (declared):`, `Disconfirming search:`. Never translate quotes or URLs.
  Layout, in this order, with nothing after the last line:
-@@ -103,10 +116,12 @@
+@@ -104,10 +117,12 @@
  
  Put a label on its own first line of the answer, above the conclusion, and change nothing else in the answer; several labels go on one line, separated by `; `. With `partial cross-check`, the `Level:` line is not `thorough`. With `not externally verified`, the answer needs no `Level:` line, source floor or final line, and every row (if any) is `not confirmed`.
  
@@ -65,7 +65,7 @@
  
    When you do create one, give it YAML frontmatter plus a short body, so the metadata is skimmable without reading the whole file:
  
-@@ -122,7 +137,7 @@
+@@ -123,7 +138,7 @@
  
  ## Gotchas
  

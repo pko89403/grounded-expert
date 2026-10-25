@@ -55,8 +55,8 @@ codex plugin marketplace add /absolute/path/to/this-checkout
 codex plugin add grounded-expert@grounded-expert
 ```
 
-`hosts/openai/`가 포함된 체크아웃을 사용하세요(병합 전에는 이 PR 브랜치;
-기존 릴리스 태그에는 없습니다). OpenAI 패키지는 실험 단계이며 공개 플러그인
+`hosts/openai/`가 포함된 `main`을 체크아웃하세요. `v0.3.0` 이하 릴리스
+태그에는 없습니다. OpenAI 패키지는 실험 단계이며 공개 플러그인
 디렉터리에 제출하지 않았습니다. ChatGPT 로컬 소스 설치·실행은 미검증입니다.
 Codex에서는 `$grounded-expert:grounded-expert`를 명시해 사용하세요.
 자동 트리거의 동작 범위는 아직 검증되지 않았습니다. 도구가 지원할 때만 대화를 상속하지 않는

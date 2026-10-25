@@ -67,10 +67,10 @@ Use the available delegation tool's actual schema and the runtime checks above t
 4. A self-refinement loop with two parts in the critique step: (a) check every claim against the material just retrieved, and (b) check whether everything found so far points the same direction / comes from the same type of source — if so, and the level is standard or thorough, **run at least one additional search aimed at finding disconfirming evidence or the opposing position** (re-reading the same sources you already have isn't critique, it's self-confirmation). On quick, skip (b) and stop after one pass. On standard/thorough, revise and repeat up to 2 times, or until the critique finds nothing left to fix.
 5. Final output format: the layout in the output contract. Its `Level:` line says which level ran, so the user can tell a quick answer from a thorough one.
 
-6. OpenAI only: "Do not invoke this skill again or create further agents; perform your assigned lookups yourself. Keep the final answer exactly in the output-contract layout. If the host supports a separate evidence channel, provide the opened URLs, section locations and disconfirming query there; otherwise rely on the tool record, never append a receipt after the contract's final line."
+6. OpenAI only: "Do not invoke this skill again or create further agents; perform your assigned lookups yourself. Keep all direct quotations across the answer at or below 25 words per source, or a stricter host limit; choose short matching passages rather than changing tags to evade the limit. Keep the final answer exactly in the output-contract layout. If the host supports a separate evidence channel, provide the opened URLs, section locations and disconfirming query there; otherwise rely on the tool record, never append a receipt after the contract's final line."
 
 <output-contract>
-Language: write in the language of the user's question (its main clause, if mixed). Keep in English exactly as written: tags, the table header and the line prefixes `Level:`, `Domain:`, `Primary hosts (declared):`, `Disconfirming search:`. Never translate quotes or URLs.
+Language: write in the language of the user's question (its main clause, if mixed). Keep in English exactly as written: tags, the table header, the `(no primary source)` suffix and the line prefixes `Level:`, `Domain:`, `Primary hosts (declared):`, `Disconfirming search:`. Never translate quotes or URLs.
 Layout, in this order, with nothing after the last line:
 <conclusion; for thorough, also how the source types were cross-checked>
 Level: <quick|standard|thorough>
@@ -80,11 +80,12 @@ Domain: <key from the list below, or other>
 <one row per claim>
 <what remains uncertain>
 Disconfirming search: <one of the three forms below>
-`Level:` is the level that actually ran. With `Domain: other`, add the line `Primary hosts (declared): <host>, <host>` after it; a listed key takes no such line.
+`Level:` is the level that actually ran. If no row's URL has a primary host, add ` (no primary source)` right after the level; otherwise add nothing. With `Domain: other`, add the line `Primary hosts (declared): <host>, <host>` after it; a listed key takes no such line.
 Rows: a claim with no citation of its own is `not confirmed`. Write `|` inside a cell as `\|`. Source: page title and section. URL: a bare absolute URL of a page you opened with the fetch tool, never a search snippet. `-` marks an empty Quote or URL.
 Tag, exactly one per row:
 - `EXTRACTED`: Quote is one contiguous passage of the page, as short as still supports the claim, copied character for character in the page's own language inside straight double quotes, with no ellipsis or edits. Narrow exception: if the source renders a footnote marker (a number, *, or †) directly attached to the quoted text, strip the trailing footnote marker before the character match — this does not relax the match for anything else. One URL, whose host is primary.
-- `INFERRED (via <host>)`: Quote as for `EXTRACTED`. One URL, whose host is not primary; <host> is that host.
+- `INFERRED (via <host>)`: Quote as for `EXTRACTED`. One URL, whose host is not primary; <host> is that host. The page summarizes or comments on the source.
+- `INFERRED (copy via <host>)`: as `INFERRED (via <host>)`, but the page is a verbatim copy of the cited source itself (for example its PDF), not a summary.
 - `INFERRED`: no one passage states it; the Claim says which pages or passages and how. Quote `-`. One or more URLs, space-separated.
 - `INFERRED (figure N)`: read from figure N (a chart label, screenshot or rendered PDF page); never `EXTRACTED` unless the same value is quoted from text or a table. Quote `-`. One URL.
 - `not confirmed`: no opened page supports it. Quote `-`, URL `-`.
@@ -93,7 +94,7 @@ Last line, exactly one of:
 Disconfirming search: found — <URL>
 Disconfirming search: ran — nothing opposing found
 Disconfirming search: not run (quick)
-Quick uses only the third; standard and thorough only the first two.
+Quick uses only the third; standard and thorough only the first two. For several opposing pages, `found` takes all their URLs joined by commas, with no space.
 Primary: the URL's host is, or is a subdomain of, a host listed for the `Domain:` key or given on the `Primary hosts (declared):` line; an entry with a path matches that path prefix. A listed `Domain:` accepts no extra hosts. A mirror on another host is not primary.
 <primary-publishers>
 http: rfc-editor.org ietf.org spec.whatwg.org

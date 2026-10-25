@@ -1,4 +1,4 @@
-"""Check the OpenAI handoff against the canonical v0.2 output contract."""
+"""Check the OpenAI handoff against the canonical output contract."""
 import importlib.util
 import sys
 import unittest
@@ -21,11 +21,12 @@ class OutputContractTest(unittest.TestCase):
         cls.primary = CHECKER.load_primary(HOST)
         cls.fixtures = CHECKER.load_fixtures(REPO / "tools/fixtures")
 
-    def answer(self, rows, level="quick", domain="python"):
+    def answer(self, rows, level="quick", domain="python", no_primary=False):
         last = ("not run (quick)" if level == "quick" else "ran — nothing opposing found")
+        suffix = " (no primary source)" if no_primary else ""
         return "\n".join([
             "Python 3.7부터 언어 사양으로 보장됩니다.",
-            f"Level: {level}", f"Domain: {domain}", CHECKER.HEADER,
+            f"Level: {level}{suffix}", f"Domain: {domain}", CHECKER.HEADER,
             "|---|---|---|---|---|---|", *rows,
             "추가로 확인하지 못한 사항은 없습니다.", f"Disconfirming search: {last}",
         ])
@@ -57,9 +58,40 @@ class OutputContractTest(unittest.TestCase):
         bad = self.check(self.answer([self.row(url=url, quote=passage)]), fixtures)
         good = self.check(self.answer([
             self.row(tag="INFERRED (via secondary.example)", url=url, quote=passage)
-        ]), fixtures)
+        ], no_primary=True), fixtures)
         self.assertGreater(bad.invalid, 0, bad.lines)
         self.assertEqual((good.invalid, good.unverified, good.ok), (0, 0, 1), good.lines)
+
+    def test_source_copy_has_its_own_secondary_tag(self):
+        url, passage = "https://secondary.example/copy", "A short test passage."
+        fixtures = [CHECKER.Fixture("synthetic-copy", [url], "full", passage)]
+        result = self.check(self.answer([
+            self.row(tag="INFERRED (copy via secondary.example)", url=url, quote=passage)
+        ], no_primary=True), fixtures)
+        self.assertEqual((result.invalid, result.unverified, result.ok), (0, 0, 1), result.lines)
+
+    def test_secondary_only_answer_requires_no_primary_suffix(self):
+        url, passage = "https://secondary.example/python", "A short test passage."
+        fixtures = [CHECKER.Fixture("synthetic", [url], "full", passage)]
+        result = self.check(self.answer([
+            self.row(tag="INFERRED (via secondary.example)", url=url, quote=passage)
+        ]), fixtures)
+        self.assertEqual(result.invalid, 1, result.lines)
+        self.assertTrue(any("no primary source" in line for line in result.lines), result.lines)
+
+    def test_multiple_opposing_urls_use_commas_without_spaces(self):
+        url, passage = "https://secondary.example/python", "A short test passage."
+        fixtures = self.fixtures + [CHECKER.Fixture("synthetic", [url], "full", passage)]
+        answer = self.answer([
+            self.row(),
+            self.row(tag="INFERRED (via secondary.example)", url=url, quote=passage, number=2),
+        ], level="standard")
+        last = "Disconfirming search: ran — nothing opposing found"
+        valid = answer.replace(last, "Disconfirming search: found — https://opposing.example/a,https://opposing.example/b")
+        invalid = valid.replace("/a,https", "/a https")
+        self.assertEqual(self.check(valid, fixtures).invalid, 0)
+        self.assertTrue(any("INVALID" in line and "last line" in line
+                            for line in self.check(invalid, fixtures).lines))
 
     def test_parent_receipt_cannot_follow_final_line(self):
         result = self.check(self.answer([self.row()]) + "\n부모 에이전트의 검증 메모")
