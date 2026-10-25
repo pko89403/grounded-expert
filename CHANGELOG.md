@@ -9,6 +9,13 @@ The project stays in `0.x` (see README Versioning): a breaking change
 (`feat!:` or a `BREAKING CHANGE:` footer) bumps the minor version, not the
 major one.
 
+## [0.4.0](https://github.com/pko89403/grounded-expert/compare/v0.3.1...v0.4.0) (2026-10-25)
+
+
+### Features
+
+* limit the step 3 subagent to WebSearch/WebFetch with a plugin agent ([#27](https://github.com/pko89403/grounded-expert/issues/27)) ([9fabcb8](https://github.com/pko89403/grounded-expert/commit/9fabcb8d1ca490314f348a5b57d584260be07321))
+
 ## [0.3.1](https://github.com/pko89403/grounded-expert/compare/v0.3.0...v0.3.1) (2026-10-25)
 
 
