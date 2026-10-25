@@ -87,7 +87,8 @@ class DriftGuardTest(unittest.TestCase):
         self.edit("plugin/SKILL.md", "up to 2 times", "up to 9 times")
         result = self.run_guard(TMPDIR=str(self.root))
         self.assert_drift(result)
-        self.assertIn("up to 2 times", result.stderr)
+        # patch.log never prints hunk bodies, so this line proves the .rej file was printed.
+        self.assertIn("+6. OpenAI only:", result.stderr)
 
     def test_missing_adaptation_fails(self):
         (self.root / "scripts/openai-skill.patch").unlink()
