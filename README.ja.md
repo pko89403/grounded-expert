@@ -16,8 +16,8 @@
 ## 例
 
 ```
-/grounded-expert HTTP 301 でリダイレクトされたとき、POST を GET に変えてよいか
-RFC に基づいて確認して。
+/grounded-expert HTTP 301로 리다이렉트되면 POST를 GET으로 바꿔도 되는지
+RFC 기준으로 확인해줘.
 ```
 
 **결론:** 현행 RFC 9110에서는 POST 요청이 301 또는 302를 받으면 사용자 에이전트가 리다이렉트된 요청을 GET으로 바꿔도 됩니다(MAY, "역사적인 이유로"라고 명시). 의무는 아니고 허용입니다.
@@ -33,7 +33,7 @@ Domain: http
 
 Disconfirming search: found — https://www.rfc-editor.org/rfc/rfc2616.html
 
-以下は grounded-expert v0.5.0 の実際の出力です（eval 実行、ケースごとに 1 回）。抜粋には結論、主張 3 行、反証検索のみを残し、回答全文は下に折りたたんであります。
+以下は grounded-expert v0.5.0 の実際の出力です（eval 実行、ケースごとに 1 回）。抜粋には結論、主張 3 行、反証検索のみを残し、回答全文は下に折りたたんでいます。 この例は上の韓国語の質問で実行しました。skill は質問と同じ言語で回答します。
 
 <details>
 <summary>回答全文を見る</summary>

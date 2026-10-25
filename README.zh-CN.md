@@ -16,8 +16,8 @@
 ## 示例
 
 ```
-/grounded-expert HTTP 301 重定向时，客户端能否把 POST 改成 GET？
-请依据 RFC 核实。
+/grounded-expert HTTP 301로 리다이렉트되면 POST를 GET으로 바꿔도 되는지
+RFC 기준으로 확인해줘.
 ```
 
 **결론:** 현행 RFC 9110에서는 POST 요청이 301 또는 302를 받으면 사용자 에이전트가 리다이렉트된 요청을 GET으로 바꿔도 됩니다(MAY, "역사적인 이유로"라고 명시). 의무는 아니고 허용입니다.
@@ -33,7 +33,7 @@ Domain: http
 
 Disconfirming search: found — https://www.rfc-editor.org/rfc/rfc2616.html
 
-以下是 grounded-expert v0.5.0 的真实输出（eval 运行，每个用例运行一次）。节选只保留结论、3 行说法和反证搜索，完整回答折叠在下方。
+以下是 grounded-expert v0.5.0 的真实输出（eval 运行，每个用例运行一次）。节选只保留结论、3 条主张和反证搜索，完整回答折叠在下方。 此示例使用上面的韩语问题运行；skill 会用提问的语言作答。
 
 <details>
 <summary>查看完整回答</summary>

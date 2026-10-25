@@ -33,7 +33,7 @@ Domain: http
 
 Disconfirming search: found — https://www.rfc-editor.org/rfc/rfc2616.html
 
-아래는 grounded-expert v0.5.0의 실제 출력입니다(eval 실행, 케이스당 1회). 발췌에는 결론, 주장 3행, 반증 검색만 남겼고 전체 답변은 아래에 접어 두었습니다.
+아래는 grounded-expert v0.5.0의 실제 출력입니다(eval 실행, 케이스당 1회). 발췌에는 결론, 주장 3행, 반증 검색만 남겼고 전체 답변은 아래에 접어 두었습니다. 이 예시는 위 한국어 질문으로 실행했고, skill은 질문한 언어로 답합니다.
 
 <details>
 <summary>전체 답변 보기</summary>

@@ -34,7 +34,7 @@ Domain: http
 
 Disconfirming search: found — https://www.rfc-editor.org/rfc/rfc2616.html
 
-This is a real output from grounded-expert v0.5.0 (an eval run, one run per case). The excerpt keeps the conclusion, three of the claim rows and the disconfirming search; the full answer is below.
+This is a real output from grounded-expert v0.5.0 (an eval run, one run per case). The excerpt keeps the conclusion, three of the claim rows and the disconfirming search; the full answer is below. The run used this Korean prompt; the skill answers in the language of the question.
 
 <details>
 <summary>Full answer</summary>
