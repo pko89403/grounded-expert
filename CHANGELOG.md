@@ -9,6 +9,13 @@ The project stays in `0.x` (see README Versioning): a breaking change
 (`feat!:` or a `BREAKING CHANGE:` footer) bumps the minor version, not the
 major one.
 
+## [0.5.0](https://github.com/pko89403/grounded-expert/compare/v0.4.0...v0.5.0) (2026-10-25)
+
+
+### Features
+
+* handle named-person persona requests and add reference-file fields ([#29](https://github.com/pko89403/grounded-expert/issues/29)) ([03eb6ba](https://github.com/pko89403/grounded-expert/commit/03eb6ba759852371a97987301e32c4d34340c0ab))
+
 ## [0.4.0](https://github.com/pko89403/grounded-expert/compare/v0.3.1...v0.4.0) (2026-10-25)
 
 
