@@ -21,8 +21,53 @@ manifest and the docs.
 3. Compare with/without scores per case against the last known-good run. A
    case regressing blocks the PR even if `validate` succeeded — a clean
    `validate` and correct behavior are not the same claim.
-4. If you changed `tools/` or the `<output-contract>` block in
+4. If `plugin/SKILL.md` or the OpenAI host copy changes, run
+   `scripts/check-openai-drift.sh` and
+   `python3 -m unittest discover -s scripts/tests -v`. The guard applies the
+   explicitly reviewed `scripts/openai-skill.patch` to a temporary source copy
+   and compares the entire result, including trigger descriptions. It never
+   edits `plugin/`. If a source or host adaptation changes, review and regenerate
+   the patch with `diff -u --label plugin/SKILL.md --label
+   hosts/openai/skills/grounded-expert/SKILL.md plugin/SKILL.md
+   hosts/openai/skills/grounded-expert/SKILL.md > scripts/openai-skill.patch`
+   (diff exit 1 means differences, not a generation failure). Updating this
+   allowlist is not evidence that a behavior change is safe.
+   **The patch diff itself must be reviewed** whenever it is regenerated. A
+   missing shared procedure can otherwise be absorbed as an allowed deletion.
+   Inspect every deleted canonical line and retained context; do not use `-U0`.
+   CI prints deleted-line counts and their change against the PR base. A lower
+   count is not proof of semantic equivalence either. `.gitattributes` exempts
+   this patch's required blank context markers from trailing-space checking only.
+5. If you changed `tools/` or the `<output-contract>` block in
    `plugin/SKILL.md`: `python3 tools/check_quotes.py --self-test`. CI runs it too.
+
+## OpenAI host changes
+
+Keep `plugin/` and its Claude eval gate unchanged for an OpenAI-only change.
+Run `python3 scripts/validate_openai_package.py` and the checks above, then follow
+[OpenAI evaluation](docs/openai-evaluation.md). An OpenAI description change
+requires repeated explicit/implicit trigger and non-trigger cases; a body
+change requires the affected behavior cases. Do not infer OpenAI behavior from
+Claude scores, metadata validation, or one correct factual answer. Check the
+tool trace for successful child creation, opened URLs, disconfirming searches,
+and honest capability fallbacks. Record failures and missing host coverage.
+The package checker validates offline JSON/resources, not the full portable
+schema. The OpenAI CI path filter
+covers its manifest, marketplace, license and privacy resources too.
+
+Keep the canonical `<output-contract>` block byte-identical in the OpenAI copy.
+The host tests compare it and exercise the upstream quote checker with Korean
+answers, secondary-source tags, document aliases and failure labels. Parent
+validation notes belong in a separate progress message before handoff; appending
+an evidence receipt after `Disconfirming search:` breaks the contract. Changes
+to `tools/` also trigger the OpenAI checks, including the upstream self-test.
+
+OpenAI's package version is independent of `plugin/` and remains experimental.
+The current release-please configuration does not bump it. Maintainers must
+review/update that version explicitly before publishing a changed OpenAI package;
+let release-please manage generated CHANGELOG sections. Reference notes share the
+Antigravity `.agents/grounded-expert/reference/` path; existing Claude notes are
+not migrated or merged automatically.
 
 ## Branching and releases
 

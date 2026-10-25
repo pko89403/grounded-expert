@@ -1,0 +1,52 @@
+name: openai-skill-drift
+
+on:
+  pull_request:
+    paths:
+      - plugin/SKILL.md
+      - hosts/openai/**
+      - tools/**
+      - .agents/plugins/marketplace.json
+      - LICENSE
+      - .gitattributes
+      - scripts/validate_openai_package.py
+      - scripts/check-openai-drift.sh
+      - scripts/openai-skill.patch
+      - scripts/tests/test_openai_*.py
+      - .github/workflows/openai-drift.yml
+  push:
+    branches: [main]
+    paths:
+      - plugin/SKILL.md
+      - hosts/openai/**
+      - tools/**
+      - .agents/plugins/marketplace.json
+      - LICENSE
+      - .gitattributes
+      - scripts/validate_openai_package.py
+      - scripts/check-openai-drift.sh
+      - scripts/openai-skill.patch
+      - scripts/tests/test_openai_*.py
+      - .github/workflows/openai-drift.yml
+
+permissions:
+  contents: read
+
+jobs:
+  openai-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - run: scripts/check-openai-drift.sh
+        env:
+          OPENAI_PATCH_BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before }}
+      - run: python3 scripts/validate_openai_package.py
+      - run: python3 -m unittest discover -s scripts/tests -v
+      - run: python3 -I tools/check_quotes.py --self-test
+      - name: ShellCheck
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --no-install-recommends -y shellcheck
+          shellcheck scripts/check-openai-drift.sh

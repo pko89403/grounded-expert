@@ -1,0 +1,420 @@
+{
+  "format": "sanitized-codex-jsonl-excerpts-v1",
+  "recorded_date": "2026-10-22",
+  "reviewed_revision": "3251332b7ee1e5561ca2085d1d789bcab17c12ff",
+  "scope": "Historical baseline/intermediate/final smoke revisions. No claim of validating the 2026-10-25 review changes. Commands, private paths, configuration and full answers omitted. Events preserve selected recorded fields; raw trace hashes identify retained local originals.",
+  "runs": [
+    {
+      "run": "baseline-quick",
+      "thread_id": "01a16213-e872-7b70-8fce-fe8eaf866883",
+      "completed": true,
+      "events": [
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://docs.python.org/3/library/stdtypes.html#mapping-types-dict"
+          },
+          "opened_urls": [
+            "https://docs.python.org/3/library/stdtypes.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "find_in_page",
+            "pattern": "Changed in version 3.7: Dictionary order"
+          },
+          "opened_urls": [
+            "https://docs.python.org/3/library/stdtypes.html"
+          ]
+        },
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        },
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        }
+      ],
+      "final_mode_lines": [],
+      "raw_trace_sha256": "906b395e83969b7e1b659d697f95e5a05068530a244a248281a16d6efea254ac"
+    },
+    {
+      "run": "fixed-quick",
+      "thread_id": "01a16219-39c1-7823-9994-03c8c978f73d",
+      "completed": true,
+      "events": [
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        },
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        }
+      ],
+      "final_mode_lines": [
+        "quick 검증: 하위 에이전트가 공식 문서 1개를 독립 조회하고 1회 검토했습니다. 반증 검색은 생략했으며, 이 구분에 남은 불확실성은 없습니다. 파일 변경 없음."
+      ],
+      "raw_trace_sha256": "68e52677c9ef3732a2b607d23e144f2a38755502d9099577ea4770ae69364355"
+    },
+    {
+      "run": "trivial",
+      "thread_id": "01a16219-39cb-7060-825d-5cae1a9bacec",
+      "completed": true,
+      "events": [],
+      "final_mode_lines": [],
+      "raw_trace_sha256": "4185a9ff7720da6311a559b132e1e4814f97f8f14b5a218c6a7bd3f91152d249"
+    },
+    {
+      "run": "direct-standard",
+      "thread_id": "01a1621b-35fd-7463-ac90-46f840069cad",
+      "completed": true,
+      "events": [
+        {
+          "type": "web_search",
+          "action": {
+            "type": "search",
+            "queries": [
+              "site.rfc-editor.org/rfc/rfc9110 \"301\" \"MAY change\"",
+              "site.curl.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html 301 302 307 308 POST"
+            ]
+          },
+          "opened_urls": []
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.4.2"
+          },
+          "opened_urls": [
+            "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "https://curl.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "search",
+            "queries": [
+              "HTTP 307 308 redirect changes POST to GET exception curl",
+              "site.curl.se POSTREDIR 301 302 preserve POST not convert"
+            ]
+          },
+          "opened_urls": [
+            "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "https://www.rfc-editor.org/rfc/rfc9110.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "other"
+          },
+          "opened_urls": [
+            "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "https://curl.se/libcurl/c/CURLOPT_POSTREDIR.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "find_in_page",
+            "pattern": "method-preserving"
+          },
+          "opened_urls": [
+            "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "https://www.rfc-editor.org/rfc/rfc9110.html"
+          ]
+        },
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://bugs.webkit.org/show_bug.cgi?id=27791"
+          },
+          "opened_urls": [
+            "https://bugs.webkit.org/show_bug.cgi?id=27791",
+            "https://www.rfc-editor.org/rfc/rfc9110.html"
+          ]
+        }
+      ],
+      "final_mode_lines": [
+        "**Verified at standard level**, using direct research, a fresh-context subagent, and a disconfirming search."
+      ],
+      "raw_trace_sha256": "5edc9cdaa6bc413be33a08b61b34170252f3b7543f8cf31aae0b93780a355bce"
+    },
+    {
+      "run": "no-web",
+      "thread_id": "01a1621b-35fd-7fd3-81dc-4f98f426b741",
+      "completed": true,
+      "events": [
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        }
+      ],
+      "final_mode_lines": [
+        "The installed skill’s standard verification could not be completed: no permitted native web tools are available. No official sources were opened, and no disconfirming search ran. The independent subagent checked tool availability only. Prior local notes do not establish today’s requirement."
+      ],
+      "raw_trace_sha256": "f0befd790a094070f48cbaaab7704197d6d775fca991c1dd87f390178eef0168"
+    },
+    {
+      "run": "final-quick",
+      "thread_id": "01a1621e-4b2c-7e20-82c9-053c161d7e67",
+      "completed": true,
+      "events": [
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        },
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        },
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        },
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://docs.python.org/3/builtins/stdtypes.html#dict"
+          },
+          "opened_urls": [
+            "https://docs.python.org/3/builtins/stdtypes.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "other"
+          },
+          "opened_urls": [
+            "https://docs.python.org/3/builtins/stdtypes.html"
+          ]
+        }
+      ],
+      "final_mode_lines": [
+        "Quick level: one official source, independent subagent, one critique pass. Disconfirming search not run: quick mode."
+      ],
+      "raw_trace_sha256": "0017fa42e399f575a88ed839470bc47b4d965098b2122583ee8fa17cfc24f0bc"
+    },
+    {
+      "run": "final-standard-163",
+      "thread_id": "01a1621e-5029-7671-9dbf-1e9ba752a662",
+      "completed": true,
+      "events": [
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.4.2"
+          },
+          "opened_urls": [
+            "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "https://curl.se/libcurl/c/CURLOPT_POSTREDIR.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "search",
+            "queries": [
+              "site.rfc-editor.org rfc9110 301 302 POST GET 307 308",
+              "site.curl.se CURLOPT_POSTREDIR 301 302 POST GET"
+            ]
+          },
+          "opened_urls": []
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "search",
+            "queries": [
+              "HTTP 301 302 must preserve POST method RFC curl POSTREDIR non-RFC behavior",
+              "site.curl.se CURLOPT_FOLLOWLOCATION 307 308 method body"
+            ]
+          },
+          "opened_urls": []
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "find_in_page",
+            "url": "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "pattern": "For historical reasons, a user agent MAY change"
+          },
+          "opened_urls": [
+            "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "https://www.rfc-editor.org/rfc/rfc9110.html",
+            "https://www.rfc-editor.org/rfc/rfc9110.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://curl.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html"
+          },
+          "opened_urls": [
+            "https://curl.se/libcurl/c/CURLOPT_FOLLOWLOCATION.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://www.rfc-editor.org/rfc/rfc9110.html"
+          },
+          "opened_urls": [
+            "https://www.rfc-editor.org/rfc/rfc9110.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://www.rfc-editor.org/rfc/rfc9110.html"
+          },
+          "opened_urls": [
+            "https://www.rfc-editor.org/rfc/rfc9110.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://www.rfc-editor.org/errata/eid7109"
+          },
+          "opened_urls": []
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://errata.rfc-editor.org/eid7109"
+          },
+          "opened_urls": []
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://go.dev/src/net/http/client.go"
+          },
+          "opened_urls": [
+            "https://go.dev/src/net/http/client.go",
+            "https://www.rfc-editor.org/rfc/inline-errata/rfc9110.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "find_in_page",
+            "url": "https://go.dev/src/net/http/client.go",
+            "pattern": "GetBody == nil"
+          },
+          "opened_urls": [
+            "https://go.dev/src/net/http/client.go",
+            "https://go.dev/src/net/http/client.go"
+          ]
+        }
+      ],
+      "final_mode_lines": [
+        "Standard level completed with a fresh-context subagent and parent source checks. No clients were executed or files edited."
+      ],
+      "raw_trace_sha256": "2c406cd74863c286517eb1e763fdb9df0dd4ba9a7aa8096f6d10ef255f732cb8"
+    },
+    {
+      "run": "quote-quick-163",
+      "thread_id": "01a16220-66fc-7fb0-9e18-1c8c17e79588",
+      "completed": true,
+      "events": [
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "open_page",
+            "url": "https://docs.python.org/3/library/stdtypes.html#dict"
+          },
+          "opened_urls": [
+            "https://docs.python.org/3/library/stdtypes.html"
+          ]
+        },
+        {
+          "type": "web_search",
+          "action": {
+            "type": "find_in_page",
+            "pattern": "implementation detail of CPython"
+          },
+          "opened_urls": [
+            "https://docs.python.org/3/library/stdtypes.html"
+          ]
+        },
+        {
+          "type": "collab_tool_call",
+          "tool": "wait",
+          "receiver_thread_ids": [],
+          "agents_states": {},
+          "status": "completed"
+        }
+      ],
+      "final_mode_lines": [
+        "Quick level: independent lookup, one critique pass; no disconfirming search. I rechecked the source because child tool records weren’t visible."
+      ],
+      "raw_trace_sha256": "b01d38cb6c3a9332ba99cdc9fbd7d29f6670e0ba76196b28ad39e42dba02757d"
+    }
+  ]
+}
