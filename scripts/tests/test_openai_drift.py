@@ -71,6 +71,24 @@ class DriftGuardTest(unittest.TestCase):
         result = self.run_guard()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+    def test_claude_only_name_copied_to_both_files_fails(self):
+        for relative in ("plugin/SKILL.md", HOST):
+            self.edit(relative, "## Why this exists", "## Why this exists\n\nUse WebFetch to read pages.")
+        result = self.run_guard()
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("CLAUDE TOKEN", result.stderr)
+
+    def test_unavailable_baseline_warns_without_failing(self):
+        result = self.run_guard(OPENAI_PATCH_BASE_REF="0123456789abcdef0123456789abcdef01234567")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("warning: patch baseline unavailable", result.stderr)
+
+    def test_rejected_hunk_is_printed(self):
+        self.edit("plugin/SKILL.md", "up to 2 times", "up to 9 times")
+        result = self.run_guard(TMPDIR=str(self.root))
+        self.assert_drift(result)
+        self.assertIn("up to 2 times", result.stderr)
+
     def test_missing_adaptation_fails(self):
         (self.root / "scripts/openai-skill.patch").unlink()
         result = self.run_guard()
