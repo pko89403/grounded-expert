@@ -15,7 +15,7 @@ done
 # Each host's tokens map to the same placeholder. Keep the two lists in step:
 # the Nth rule of one list pairs with the Nth rule of the other. The final
 # delete rules drop Antigravity-only lines (the "Antigravity note:" paragraph
-# plus its trailing blank line, and list item 6); on the Claude side they match
+# plus its trailing blank line, and list item 7); on the Claude side they match
 # nothing and only keep the lists paired.
 # read -d '' (not $(cat <<EOF)): bash 3.2 on macOS mis-parses ' inside $( ).
 read -r -d '' CLAUDE_RULES <<'EOF' || true
@@ -27,7 +27,7 @@ s|via WebSearch/WebFetch|via @WEB_TOOLS@|
 s|`\${CLAUDE_PROJECT_DIR}/\.claude/grounded-expert/reference/<domain>\.md`|@REF_PATH@|
 s|unless WebFetch actually|unless @FETCH_TOOL@ actually|
 /^Antigravity note: /{N;d;}
-/^6\. Antigravity only: /d
+/^7\. Antigravity only: /d
 EOF
 
 read -r -d '' AG_RULES <<'EOF' || true
@@ -39,7 +39,7 @@ s|via the host's web search and URL-fetch tools|via @WEB_TOOLS@|
 s|`\.agents/grounded-expert/reference/<domain>\.md` in the workspace root (this skill's own convention, not an Antigravity-defined location)|@REF_PATH@|
 s|unless the host's URL-fetch tool actually|unless @FETCH_TOOL@ actually|
 /^Antigravity note: /{N;d;}
-/^6\. Antigravity only: /d
+/^7\. Antigravity only: /d
 EOF
 
 # The diff below passes when a new sentence naming a Claude-only tool is copied
