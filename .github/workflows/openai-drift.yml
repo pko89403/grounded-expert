@@ -5,6 +5,7 @@ on:
     paths:
       - plugin/SKILL.md
       - hosts/openai/**
+      - tools/**
       - .agents/plugins/marketplace.json
       - LICENSE
       - .gitattributes
@@ -18,6 +19,7 @@ on:
     paths:
       - plugin/SKILL.md
       - hosts/openai/**
+      - tools/**
       - .agents/plugins/marketplace.json
       - LICENSE
       - .gitattributes
@@ -42,6 +44,7 @@ jobs:
           OPENAI_PATCH_BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before }}
       - run: python3 scripts/validate_openai_package.py
       - run: python3 -m unittest discover -s scripts/tests -v
+      - run: python3 -I tools/check_quotes.py --self-test
       - name: ShellCheck
         run: |
           sudo apt-get update -qq

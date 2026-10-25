@@ -55,6 +55,13 @@ Run `python3 scripts/validate_openai_package.py` for offline JSON/resource check
 (not a replacement for the full portable schema). The OpenAI CI path filter
 covers its manifest, marketplace, license and privacy resources too.
 
+Keep the canonical `<output-contract>` block byte-identical in the OpenAI copy.
+The host tests compare it and exercise the upstream quote checker with Korean
+answers, secondary-source tags, document aliases and failure labels. Parent
+validation notes belong in a separate progress message before handoff; appending
+an evidence receipt after `Disconfirming search:` breaks the contract. Changes
+to `tools/` also trigger the OpenAI checks, including the upstream self-test.
+
 OpenAI's package version is independent of `plugin/` and remains experimental.
 The current release-please configuration does not bump it. Maintainers must
 review/update that version explicitly before publishing a changed OpenAI package;

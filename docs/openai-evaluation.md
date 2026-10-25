@@ -4,9 +4,28 @@ Status: **experimental; behavioral release gate not passed**. A correct factual
 answer, successful installation, or schema validation does not prove independent
 research. This document separates those claims.
 
-## 2026-10-25 review response
+## 2026-10-25 v0.2.0 main synchronization
 
-Rebased on current main, preserving Antigravity support and release-please's
+Rebased on main's v0.2.0 output-contract and quote-checker changes. The canonical
+`plugin/`, Antigravity host, `tools/` and generated CHANGELOG remain unchanged.
+The OpenAI copy preserves the complete `<output-contract>` block byte for byte:
+claim-table layout, primary-publisher list, `INFERRED (via <host>)` and
+`INFERRED (figure N)` variants, language rules and exact final-line forms.
+Parent findings and evidence receipts must stay outside the final answer, in a
+separate progress/evidence channel before handoff. Failure labels retain the
+canonical first-line placement and the no-level/no-source exceptions.
+
+The adaptation still deletes **8 canonical lines**. Six new host-contract tests
+exercise exact block preservation and the upstream checker, bringing the local
+deterministic suite to **24 passing tests**. The upstream quote-checker self-test
+also passes; OpenAI CI now runs it and watches `tools/` changes. These are
+deterministic checks, not new installed-host trigger, delegation or ChatGPT
+runtime results. The behavioral release gate remains unpassed.
+
+## Earlier 2026-10-25 review response (before v0.2.0)
+
+This historical revision predates the output contract above. Rebased on the
+then-current main, preserving Antigravity support and release-please's
 generated CHANGELOG unchanged. The canonical Claude package is unchanged from
 that base. The OpenAI copy now preserves canonical step 3/4's source floors,
 EXTRACTED matching-quote validity, multiple-source-only INFERRED meaning, verbatim
