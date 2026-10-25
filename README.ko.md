@@ -44,6 +44,24 @@ cd <your-project> && <clone>/scripts/install-antigravity.sh --workspace   # <pro
 
 스크립트는 `plugin/`이 아니라 `hosts/antigravity/`를 심볼릭 링크로 연결합니다. 같은 모드에 `--uninstall`을 붙이면 그 링크만 제거합니다. 실제 디렉터리나 다른 곳을 가리키는 링크는 건드리지 않습니다. 스킬 경로는 [Antigravity skills 문서](https://antigravity.google/docs/skills)를 따릅니다.
 
+## ChatGPT와 Codex에서 사용하기
+
+이 저장소는 ChatGPT와 Codex용 포터블 Agent Plugins 패키지도 제공합니다.
+OpenAI용 패키지는 `plugin/` 밖에 있으므로 기존 Claude Code 패키지와 eval
+대상은 바뀌지 않습니다.
+
+```bash
+codex plugin marketplace add pko89403/grounded-expert
+codex plugin add grounded-expert@grounded-expert
+```
+
+같은 마켓플레이스가 ChatGPT 데스크톱 앱의 플러그인 디렉터리에도 표시되며,
+여기서 **Grounded Expert**를 설치하고 활성화할 수 있습니다. OpenAI 버전은
+독립 서브에이전트 위임과 웹 검색·페이지 열기 도구를 제공하는 호스트가
+필요합니다. 현재 대화를 상속하지 않는 독립 세션을 사용합니다. 명시적으로
+`grounded-expert` 스킬을 사용해 달라고 요청하거나 자동 트리거를 사용할 수
+있습니다.
+
 ## 사용법
 
 도메인 지식의 사실 정확성이 중요한 질문이거나, 전문가 의견·리뷰를 명시적으로 요청하면 스킬이 자동으로 실행됩니다. 직접 호출할 수도 있습니다.
@@ -79,11 +97,13 @@ RFC 기준으로 확인해줘.
 
 ```
 .claude-plugin/marketplace.json  마켓플레이스 매니페스트 (플러그인을 ./plugin으로 등록)
+.agents/plugins/marketplace.json ChatGPT/Codex 마켓플레이스 매니페스트
 plugin/                          플러그인 본체 (사용자가 설치하는 부분)
   .claude-plugin/plugin.json     플러그인 매니페스트 (name, version, description, author, homepage, repository)
   SKILL.md                       grounded-expert 스킬 정의 (절차, 레벨, 주의사항)
   evals/                         `claude plugin eval`용 eval case (case마다 prompt.md + graders/*.md)
   README.md, LICENSE             플러그인용 짧은 README와 라이선스
+hosts/openai/                    포터블 ChatGPT/Codex 플러그인과 스킬 사본
 README.md                        영어 README
 CONTRIBUTING.md                  PR용 eval 게이트 절차
 CHANGELOG.md                     릴리스 이력
