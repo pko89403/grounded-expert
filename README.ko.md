@@ -33,7 +33,7 @@ Domain: http
 
 Disconfirming search: found — https://www.rfc-editor.org/rfc/rfc2616.html
 
-아래는 grounded-expert v0.5.0의 실제 출력입니다(eval 실행, 케이스당 1회). 발췌에는 결론, 주장 3행, 반증 검색만 남겼고 전체 답변은 아래에 접어 두었습니다. 이 예시는 위 한국어 질문으로 실행했고, skill은 질문한 언어로 답합니다.
+아래는 grounded-expert v0.5.0의 실제 출력입니다(eval 실행 1회). 발췌에는 결론, claim 3개, 반대 근거 검색 줄만 남겼고, 전체 답변은 아래에 접어 두었습니다. skill은 질문한 언어로 답합니다.
 
 <details>
 <summary>전체 답변 보기</summary>
@@ -77,7 +77,7 @@ Disconfirming search: found — https://www.rfc-editor.org/rfc/rfc2616.html
 
 </details>
 
-Claude Code 플러그인입니다. Google Antigravity와 ChatGPT/Codex 지원은 실험적입니다. 확인하지 못한 주장은 `not confirmed`로 표시합니다.
+상태: Claude Code 플러그인입니다. Google Antigravity와 ChatGPT/Codex 지원은 실험 단계입니다. 확인하지 못한 주장은 `not confirmed`로 표시합니다.
 
 ## 왜 필요한가
 
