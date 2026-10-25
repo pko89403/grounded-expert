@@ -22,7 +22,8 @@ HEADER = "| # | Claim | Tag | Quote | Source | URL |"
 FLOOR = {"quick": 1, "standard": 2, "thorough": 2}  # keep in step with step 3 item 2 of SKILL.md
 LABELS = ("direct answer — no independent subagent", "not externally verified", "partial cross-check")
 LAST = re.compile(r"Disconfirming search: (found — https?://\S+|ran — nothing opposing found|not run \(quick\))")
-TAG_VIA = re.compile(r"INFERRED \(via ([^()\s]+)\)")
+TAG_VIA = re.compile(r"INFERRED \((?:copy )?via ([^()\s]+)\)")  # a copy is checked like via
+NO_PRIMARY = " (no primary source)"
 TAG_FIG = re.compile(r"INFERRED \(figure ([^()\s]+)\)")
 URL_RE = re.compile(r"https?://[^\s\\]+")  # no backslash: WHATWG parsers end the host there, urlsplit does not
 DELIM = re.compile(r"\|(\s*:?-+:?\s*\|)+")
@@ -188,6 +189,9 @@ def check(answer: str, primary: dict[str, list[str]], fixtures: list[Fixture]) -
     nev = "not externally verified" in labels
     get = lambda p: next((ln[len(p):].strip() for ln in lines if ln.startswith(p)), None)  # noqa: E731
     level, domain, hosts = get("Level: "), get("Domain: "), get("Primary hosts (declared): ")
+    marked = bool(level) and level.endswith(NO_PRIMARY)
+    if marked:
+        level = level.removesuffix(NO_PRIMARY)
     entries: list[str] = []
     if not nev:
         if level not in FLOOR:
@@ -204,6 +208,7 @@ def check(answer: str, primary: dict[str, list[str]], fixtures: list[Fixture]) -
             r.add("INVALID", "Domain", f"missing, unknown or 'other' without Primary hosts: {domain!r}")
     heads = [i for i, ln in enumerate(lines) if re.sub(r"\s+", " ", ln.strip()) == HEADER]
     docs: set[str] = set()
+    has_primary = False
     if len(heads) > 1 or (not heads and not nev):
         r.add("INVALID", "table", "need exactly one claim table with the exact header")
     elif heads:
@@ -221,9 +226,12 @@ def check(answer: str, primary: dict[str, list[str]], fixtures: list[Fixture]) -
             if nev and cells[2] != "not confirmed":
                 verdict, msg = "INVALID", "not externally verified allows only not confirmed rows"
             r.add(verdict, f"row {cells[0] or n} [{cells[2]}]", msg)
+            has_primary = has_primary or any(is_primary(u, entries) for u in urls)  # counts even if the row is invalid
             for u in urls if verdict != "INVALID" else []:
                 docs.add(next((f.urls[0] for f in fixtures if norm_url(u) in f.urls), norm_url(u)))
     if not nev:
+        if entries and marked == has_primary:
+            r.add("INVALID", "Level", f"{NO_PRIMARY.strip()} must be present exactly when no row cites a primary host")
         if level in FLOOR and len(docs) < FLOOR[level]:
             r.add("INVALID", "floor", f"{len(docs)} distinct documents, {level} needs {FLOOR[level]}")
         m = LAST.fullmatch(lines[-1].strip())
@@ -243,7 +251,7 @@ def self_test() -> int:
     text = skill.read_text(encoding="utf-8")  # the checker constants must still appear in the contract
     block = text.partition("<output-contract>")[2].partition("</output-contract>")[0]
     for s in (HEADER, "Level: <quick|standard|thorough>", "Domain: <key", "Primary hosts (declared): <host>", "Disconfirming search: found — <URL>",
-              "Disconfirming search: ran — nothing opposing found", "Disconfirming search: not run (quick)", "INFERRED (via <host>)", "INFERRED (figure N)"):
+              "Disconfirming search: ran — nothing opposing found", "Disconfirming search: not run (quick)", "INFERRED (via <host>)", "INFERRED (copy via <host>)", "(no primary source)", "INFERRED (figure N)"):
         assert s in block, f"{s!r} missing from the <output-contract> block"
     for s in (*LABELS, "quick = 1 source", "at least 2 independent sources"):
         assert s in text, f"{s!r} missing from {skill.name}"
@@ -304,6 +312,19 @@ def self_test() -> int:
     assert r.invalid == 1 and "is primary" in "\n".join(r.lines), r.lines
     r = run(ans([row("INFERRED (via a.example)", '"x"', "https://b.example/p"), row("EXTRACTED", '"a ... b"', rfc, 2)]))
     assert r.invalid >= 2 and "ellipsis" in "\n".join(r.lines), r.lines  # via host mismatch, ellipsis
+    cp = row("INFERRED (copy via www.gdpr-info.eu)", f'"{gq}"', "https://www.gdpr-info.eu/art-4-gdpr/", 2)
+    assert run(ans([good[0], cp])).invalid == 0  # a copy is checked like via
+    r = run(ans([good[0], row("INFERRED (copy via spec.whatwg.org)", f'"{q301}"', "https://fetch.spec.whatwg.org/", 2)]))
+    assert r.invalid >= 1 and "is primary" in "\n".join(r.lines), r.lines
+    zero = [row("INFERRED (copy via a.example)", '"x"', "https://a.example/p"), row("INFERRED (via b.example)", '"y"', "https://b.example/q", 2)]
+    assert run(ans(zero, level="standard (no primary source)")).invalid == 0  # zero-primary marker present
+    r = run(ans(zero))
+    assert r.invalid == 1 and "no primary source" in "\n".join(r.lines), r.lines  # marker missing
+    r = run(ans([good[0], cp], level="standard (no primary source)"))
+    assert r.invalid == 1 and "no primary source" in "\n".join(r.lines), r.lines  # marker with a primary row
+    assert run(ans([good[0], cp], last="Disconfirming search: found — https://a.example/x,https://b.example/y")).invalid == 0
+    r = run(ans([good[0], cp], last="Disconfirming search: found — https://a.example/x https://b.example/y"))
+    assert r.invalid == 1 and "last line" in "\n".join(r.lines), r.lines  # space-separated URLs stay invalid
     r = run(ans([row("EXTRACTED", f'"{q301}"', rfc), row("not confirmed", "-", "-", 2), row("INFERRED (figure 1)", "-", "https://arxiv.org/abs/2505.22954", 3)]))
     assert r.invalid == 0 and "documents=2" in r.lines[-1], r.lines
     r = run(ans(good[:1], level="quick", last="Disconfirming search: ran — nothing opposing found"))
