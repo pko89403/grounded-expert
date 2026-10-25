@@ -26,7 +26,7 @@
  ## Procedure
  
  ### 1. Pin down the domain, the exact question, and the level
-@@ -44,19 +55,21 @@
+@@ -46,19 +57,21 @@
  
  The core of this skill is deciding "what's actually on this domain's expert's desk" before searching — not writing a persona.
  
@@ -53,7 +53,7 @@
  <output-contract>
  Language: write in the language of the user's question (its main clause, if mixed). Keep in English exactly as written: tags, the table header, the `(no primary source)` suffix and the line prefixes `Level:`, `Domain:`, `Primary hosts (declared):`, `Disconfirming search:`. Never translate quotes or URLs.
  Layout, in this order, with nothing after the last line:
-@@ -105,10 +118,12 @@
+@@ -107,10 +120,12 @@
  
  Put a label on its own first line of the answer, above the conclusion, and change nothing else in the answer; several labels go on one line, separated by `; `. With `partial cross-check`, the `Level:` line is not `thorough`. With `not externally verified`, the answer needs no `Level:` line, source floor or final line, and every row (if any) is `not confirmed`.
  
@@ -62,12 +62,12 @@
  ## Scaling up
  
  - The thorough level (see Levels table) covers high-stakes/high-cost questions — don't also hand-roll a parallel cross-check outside it.
--- If the same domain comes up repeatedly, save the "source types that turned out reliable" from step 2 to `${CLAUDE_PROJECT_DIR}/.claude/grounded-expert/reference/<domain>.md`, not inside this plugin's own directory. Which experts a project needs is project-specific — a Text-to-SQL research repo and a frontend repo don't share a registry, and a project-local file can be committed so teammates reuse it too. Don't create this preemptively — only once it's actually needed.
-+- If the same domain comes up repeatedly, save the "source types that turned out reliable" from step 2 to `.agents/grounded-expert/reference/<domain>.md` in the workspace root (shared with the Antigravity host; this does not migrate Claude's existing notes), not inside this plugin's own directory. Which experts a project needs is project-specific — a Text-to-SQL research repo and a frontend repo don't share a registry, and a project-local file can be committed so teammates reuse it too. Don't create this preemptively — only once it's actually needed.
+-- If the same domain comes up repeatedly, save the "source types that turned out reliable" from step 2 to `${CLAUDE_PROJECT_DIR}/.claude/grounded-expert/reference/<domain>.md`, not inside this plugin's own directory. Which experts a project needs is project-specific — a Text-to-SQL research repo and a frontend repo don't share a registry, and a project-local file can be committed so teammates reuse it too. Don't create this preemptively — only once it's actually needed or the user explicitly asks for one.
++- If the same domain comes up repeatedly, save the "source types that turned out reliable" from step 2 to `.agents/grounded-expert/reference/<domain>.md` in the workspace root (shared with the Antigravity host; this does not migrate Claude's existing notes), not inside this plugin's own directory. Which experts a project needs is project-specific — a Text-to-SQL research repo and a frontend repo don't share a registry, and a project-local file can be committed so teammates reuse it too. Don't create this preemptively — only once it's actually needed or the user explicitly asks for one.
  
    When you do create one, give it YAML frontmatter plus a short body, so the metadata is skimmable without reading the whole file:
  
-@@ -124,7 +139,7 @@
+@@ -128,7 +143,7 @@
  
  ## Gotchas
  
