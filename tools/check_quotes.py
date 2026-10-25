@@ -15,7 +15,7 @@ import tempfile
 import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parent.parent
 HEADER = "| # | Claim | Tag | Quote | Source | URL |"
@@ -55,7 +55,9 @@ def is_primary(url: str, entries: list[str]) -> bool:
     host = (p.hostname or "").lower()
     for entry in entries:
         h, _, prefix = entry.lower().partition("/")
-        if (host == h or host.endswith("." + h)) and (not prefix or p.path == f"/{prefix}" or p.path.startswith(f"/{prefix}/")):
+        # a ".." segment (also %2e%2e) resolves above the prefix in WHATWG parsers, so it never matches a path entry
+        in_prefix = ".." not in unquote(p.path).split("/") and (p.path == f"/{prefix}" or p.path.startswith(f"/{prefix}/"))
+        if (host == h or host.endswith("." + h)) and (not prefix or in_prefix):
             return True
     return False
 
@@ -324,6 +326,9 @@ def self_test() -> int:
     assert r.invalid >= 1 and "not a primary host" in "\n".join(r.lines)  # path prefix matches whole segments only
     r = run(ans([row("EXTRACTED", '"x"', "https://github.com/python/cpython/blob/main/x")], level="quick", domain="python", last="Disconfirming search: not run (quick)"))
     assert r.invalid == 0
+    for u in ("https://github.com/python/cpython/../../evil/repo/blob/main/x", "https://github.com/python/cpython/%2e%2e/%2E%2E/evil/x"):
+        r = run(ans([row("EXTRACTED", '"x"', u)], level="quick", domain="python", last="Disconfirming search: not run (quick)"))
+        assert r.invalid >= 1 and "not a primary host" in "\n".join(r.lines), r.lines  # dot segments escape the path prefix
     for u in ("https://evil.example\\@docs.python.org/3/x", "https://evil.example\\.docs.python.org/3/x"):
         r = run(ans([row("EXTRACTED", '"x"', u)], level="quick", domain="python", last="Disconfirming search: not run (quick)"))
         assert "bare absolute" in "\n".join(r.lines), r.lines  # WHATWG parsers read the host as evil.example, urlsplit as docs.python.org
