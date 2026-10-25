@@ -62,7 +62,7 @@ that points elsewhere. Skill locations follow
 
 ## Use with ChatGPT and Codex
 
-The repository also ships a portable Agent Plugins package for ChatGPT and
+The repository also ships an experimental portable Agent Plugins package for ChatGPT and
 Codex. It stays outside `plugin/`, so the existing Claude Code package and eval
 surface are unchanged.
 
@@ -71,14 +71,17 @@ codex plugin marketplace add pko89403/grounded-expert
 codex plugin add grounded-expert@grounded-expert
 ```
 
-The same marketplace appears in the ChatGPT desktop app's Plugins Directory,
-where you can install and enable **Grounded Expert**. The OpenAI variant requires
-the host to expose independent subagent delegation plus web search and page
-opening. It uses an independent/no-history child session rather than inheriting
-the current conversation. Invoke it explicitly by asking to use the
-`grounded-expert` skill, or let its description trigger automatically.
+Use the host's Plugins Directory for ChatGPT installation; availability depends
+on the host/account and has not been verified end to end here. In Codex, request
+`$grounded-expert:grounded-expert` explicitly, or let the description trigger it.
+The skill requests a fresh/no-history child only when the exposed tool supports
+it, and discloses weaker isolation otherwise. Without delegation it must report
+direct research; without source-retrieval tools it must report that external
+verification was not possible. These are instructions, not enforced runtime
+guarantees. See [OpenAI evaluation](docs/openai-evaluation.md) for observed failures,
+reproduction steps, and the remaining release gate.
 
-## Usage
+## Usage (Claude Code)
 
 The skill fires automatically when a question needs domain-specific factual
 accuracy, or when explicitly asked for an expert opinion/review. You can also
