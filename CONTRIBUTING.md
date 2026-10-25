@@ -21,6 +21,8 @@ manifest and the docs.
 3. Compare with/without scores per case against the last known-good run. A
    case regressing blocks the PR even if `validate` succeeded — a clean
    `validate` and correct behavior are not the same claim.
+4. If you changed `tools/` or the `<output-contract>` block in
+   `plugin/SKILL.md`: `python3 tools/check_quotes.py --self-test`. CI runs it too.
 
 ## Branching and releases
 
@@ -58,6 +60,19 @@ manifest and the docs.
 Follow the existing schema: `plugin/evals/<case>/prompt.md` (frontmatter:
 `max_turns`, `timeout_seconds`, `allowed_tools`, `runs`) plus
 `plugin/evals/<case>/graders/*.md`.
+
+## Checking quotes
+
+`tools/check_quotes.py ANSWER` checks one final answer against the output
+contract in `plugin/SKILL.md`: table layout, tags, primary hosts, source floor,
+the last line, and every quote against the page text in `tools/fixtures/`. It
+is a report for reviewers and is not part of the eval score. Verdicts per row:
+`OK`, `UNVERIFIED` (no fixture for the URL, or the quote lies outside an
+excerpt) and `INVALID`. A fixture is a `.txt` file with one or more `url:` lines
+(the first is canonical, the others are aliases), `scope: excerpt` or `scope:
+full`, `source:` and `licence:` lines, a `---` line and the page text. Commit
+only small excerpts together with their licence; keep full pages local and pass
+them with `--fixtures DIR`.
 
 ## Why this is strict
 
