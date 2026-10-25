@@ -13,6 +13,71 @@
 
 ドメインの質問に答えるとき、記憶に頼って専門家ペルソナを演じるのではなく、一次情報源（公式仕様、ドキュメント、論文、標準）をリアルタイムで実際に調べ、自分の主張をそれと照合するサブエージェントを起動する Claude Code プラグインです。
 
+## 例
+
+```
+/grounded-expert HTTP 301 でリダイレクトされたとき、POST を GET に変えてよいか
+RFC に基づいて確認して。
+```
+
+**결론:** 현행 RFC 9110에서는 POST 요청이 301 또는 302를 받으면 사용자 에이전트가 리다이렉트된 요청을 GET으로 바꿔도 됩니다(MAY, "역사적인 이유로"라고 명시). 의무는 아니고 허용입니다.
+
+Level: standard
+Domain: http
+
+| # | Claim | Tag | Quote | Source | URL |
+|---|---|---|---|---|---|
+| 1 | RFC 9110은 301 응답 뒤 POST를 GET으로 바꾸는 것을 허용한다(MAY) | EXTRACTED | "For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request." | RFC 9110 §15.4.2 301 Moved Permanently | https://www.rfc-editor.org/rfc/rfc9110.html |
+| 4 | 307에서는 자동 리다이렉트 시 메서드를 바꾸면 안 된다(MUST NOT) | EXTRACTED | "the user agent MUST NOT change the request method if it performs an automatic redirection to that URI." | RFC 9110 §15.4.8 307 Temporary Redirect | https://www.rfc-editor.org/rfc/rfc9110.html |
+| 5 | 308은 301과 비슷하지만 POST에서 GET으로의 변경을 허용하지 않는다 | EXTRACTED | "except that it does not allow changing the request method from POST to GET." | RFC 7538 §3 308 Permanent Redirect (Note) | https://www.rfc-editor.org/rfc/rfc7538.html |
+
+Disconfirming search: found — https://www.rfc-editor.org/rfc/rfc2616.html
+
+以下は grounded-expert v0.5.0 の実際の出力です（eval 実行、ケースごとに 1 回）。抜粋には結論、主張 3 行、反証検索のみを残し、回答全文は下に折りたたんであります。
+
+<details>
+<summary>回答全文を見る</summary>
+
+**결론:** 현행 RFC 9110에서는 POST 요청이 301 또는 302를 받으면 사용자 에이전트가 리다이렉트된 요청을 GET으로 바꿔도 됩니다(MAY, "역사적인 이유로"라고 명시). 의무는 아니고 허용입니다.
+
+- **307:** RFC 9110 §15.4.8이 "MUST NOT change the request method"라고 명시적으로 금지합니다.
+- **308:** 이번에 연 RFC 9110 페이지의 §15.4.9 본문에서는 "MUST NOT" 문장을 확인하지 못했습니다. 대신 RFC 7538(308의 원래 정의)이 "POST에서 GET으로 바꾸는 것을 허용하지 않는다"고 적고 있고, RFC 9110 §15.4.2도 그런 변경을 원하지 않으면 308을 쓰라고 합니다. 그러니 "307/308은 메서드 변경을 금지한다"는 말은 맞습니다. 다만 금지 표현의 강도는 307(MUST NOT)과 308(허용하지 않음)이 다릅니다.
+- **303:** RFC 9110에서 303은 POST 처리 결과를 다른 리소스로 보낼 때 쓰는 코드입니다. 사용자 에이전트는 그 URI로 조회 요청(HTTP라면 GET이나 HEAD)을 보낼 수 있다고 되어 있습니다.
+- **브라우저 동작 명세:** WHATWG Fetch의 HTTP-redirect fetch는 두 경우에 메서드를 GET으로 바꾸고 본문을 null로 만듭니다. (1) 301/302이고 메서드가 POST일 때, (2) 303이고 메서드가 GET/HEAD가 아닐 때입니다.
+- **과거 RFC 2616:** 301/302에서 GET/HEAD가 아닌 요청은 사용자 확인 없이 자동으로 리다이렉트하면 안 된다(MUST NOT)고 했습니다. POST를 GET으로 바꾸는 동작은 "erroneously"(잘못된 것)로 기록했습니다.
+
+Level: standard
+Domain: http
+| # | Claim | Tag | Quote | Source | URL |
+|---|---|---|---|---|---|
+| 1 | RFC 9110은 301 응답 뒤 POST를 GET으로 바꾸는 것을 허용한다(MAY) | EXTRACTED | "For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request." | RFC 9110 §15.4.2 301 Moved Permanently | https://www.rfc-editor.org/rfc/rfc9110.html |
+| 2 | 302에도 같은 허용 문장이 있다 | EXTRACTED | "For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request." | RFC 9110 §15.4.3 302 Found | https://www.rfc-editor.org/rfc/rfc9110.html |
+| 3 | RFC 9110 §15.4.2는 그런 변경을 원하지 않으면 308을 쓰라고 한다 | EXTRACTED | "If this behavior is undesired, the 308 (Permanent Redirect) status code can be used instead." | RFC 9110 §15.4.2 | https://datatracker.ietf.org/doc/html/rfc9110 |
+| 4 | 307에서는 자동 리다이렉트 시 메서드를 바꾸면 안 된다(MUST NOT) | EXTRACTED | "the user agent MUST NOT change the request method if it performs an automatic redirection to that URI." | RFC 9110 §15.4.8 307 Temporary Redirect | https://www.rfc-editor.org/rfc/rfc9110.html |
+| 5 | 308은 301과 비슷하지만 POST에서 GET으로의 변경을 허용하지 않는다 | EXTRACTED | "except that it does not allow changing the request method from POST to GET." | RFC 7538 §3 308 Permanent Redirect (Note) | https://www.rfc-editor.org/rfc/rfc7538.html |
+| 6 | 303은 POST 처리 결과로 사용자 에이전트를 다른 리소스로 보낼 때 주로 쓰인다 | EXTRACTED | "is primarily used to allow the output of a POST action to redirect the user agent to a different resource." | RFC 9110 §15.4.4 303 See Other | https://www.rfc-editor.org/rfc/rfc9110.html |
+| 7 | 303을 받은 사용자 에이전트는 그 URI로 GET 또는 HEAD 조회 요청을 보낼 수 있다 | EXTRACTED | "A user agent can perform a retrieval request targeting that URI (a GET or HEAD request if using HTTP)" | RFC 9110 §15.4.4 303 See Other | https://datatracker.ietf.org/doc/html/rfc9110 |
+| 8 | Fetch 표준은 301/302 + POST일 때 메서드를 GET으로 바꾼다 | EXTRACTED | "internalResponse’s status is 301 or 302 and request’s method is `POST`" | WHATWG Fetch §4.5 HTTP-redirect fetch, step 12 | https://fetch.spec.whatwg.org/ |
+| 9 | Fetch 표준은 303 + GET/HEAD가 아닌 메서드일 때도 GET으로 바꾼다 | EXTRACTED | "internalResponse’s status is 303 and request’s method is not `GET` or `HEAD`" | WHATWG Fetch §4.5 HTTP-redirect fetch, step 12 | https://fetch.spec.whatwg.org/ |
+| 10 | 위 조건에 해당하면 메서드를 GET으로, 본문을 null로 설정한다 | EXTRACTED | "Set request’s method to `GET` and request’s body to null." | WHATWG Fetch §4.5 HTTP-redirect fetch | https://fetch.spec.whatwg.org/ |
+| 11 | RFC 2616은 301/302에서 GET/HEAD가 아닌 요청을 사용자 확인 없이 자동으로 리다이렉트하는 것을 금지했다 | EXTRACTED | "MUST NOT automatically redirect the request unless it can be confirmed by the user" | RFC 2616 §10.3.2 / §10.3.3 | https://www.rfc-editor.org/rfc/rfc2616.html |
+| 12 | RFC 2616은 301에서 POST를 GET으로 바꾸는 HTTP/1.0 클라이언트를 "잘못된" 동작으로 기록했다 | EXTRACTED | "some existing HTTP/1.0 user agents will erroneously change it into a GET request." | RFC 2616 §10.3.2 Note | https://www.rfc-editor.org/rfc/rfc2616.html |
+| 13 | RFC 2616은 대부분의 구현이 302를 303처럼 처리한다고 기록했다 | EXTRACTED | "most existing user agent implementations treat 302 as if it were a 303 response" | RFC 2616 §10.3.3 Note | https://www.rfc-editor.org/rfc/rfc2616.html |
+| 14 | RFC 2616의 303은 새 URI에서 GET으로 조회해야 한다(SHOULD)고 했다 | EXTRACTED | "SHOULD be retrieved using a GET method on that resource." | RFC 2616 §10.3.4 303 See Other | https://www.rfc-editor.org/rfc/rfc2616.html |
+| 15 | RFC 7231(2014)이 301/302의 POST에서 GET으로의 재작성을 처음으로 규격 준수 동작으로 만들었다 | not confirmed | - | RFC 7231 §6.4 (검색 스니펫에서만 봄, 페이지는 열지 않음) | - |
+
+**남은 불확실성**
+- 이번에 받은 RFC 9110 §15.4.9 본문에서는 "does not allow changing the request method from POST to GET" 같은 문장을 직접 확인하지 못했습니다. 그래서 308이 메서드를 보존한다는 근거로 RFC 7538과 RFC 9110 §15.4.2를 인용했습니다.
+- RFC 7231 §6.4는 직접 열지 않았습니다.
+- RFC 2616 인용문은 fetch 도구가 돌려준 발췌입니다. 원문 전체 문장의 앞뒤 맥락(예: "If the 301 status code is received in response to a request other than GET or HEAD")은 직접 확인하지 못했습니다.
+- RFC 2616은 이미 폐기된 문서입니다. 현행 규범은 RFC 9110입니다.
+
+Disconfirming search: found — https://www.rfc-editor.org/rfc/rfc2616.html
+
+</details>
+
+Claude Code プラグインです。Google Antigravity と ChatGPT/Codex への対応は実験的です。すべての主張は、サブエージェントが実際に開いたページを引用します。
+
 ## なぜ必要か
 
 サブエージェントにペルソナ（「あなたは X の専門家です」）を与えると、サブエージェントはその役を演じながら、学習済みの知識（パラメトリック知識）から答えます。そのため、誤った事実も正しい事実と同じくらい自信を持って述べてしまいます。このプラグインは、調べる、見つけたものを引用する、間違っていたら自分で訂正する、という本物の専門家が従う手順を強制します。
@@ -87,15 +152,6 @@ OpenAI 用の [プライバシー説明](hosts/openai/PRIVACY.md) は Claude 用
 | **thorough** | standard に加え、候補となる情報源の種類ごとにサブエージェントを 1 つずつ並列で追加し、相互検証。安全・法律・金銭が関わる質問向け。 |
 
 トリガー表現：「대충/빨리」（「ざっくり／急いで」の意）→ quick、「꼼꼼히/전부 확인해서」（「念入りに／全部確認して」の意）や法律・安全に関わる質問 → thorough、指定なし → standard。
-
-### 例
-
-```
-/grounded-expert HTTP 301 でリダイレクトされたとき、POST を GET に変えてよいか
-RFC に基づいて確認して。
-```
-
-サブエージェントが RFC 9110/7231 を調べて該当箇所を引用し、主張ごとに EXTRACTED または INFERRED のタグを付け、まだ不確かな点を報告します。
 
 ## プラグイン構成
 
