@@ -32,12 +32,12 @@ body:
     id: budget-agents
     attributes:
       label: 예산 — agent 수 상한
-      placeholder: "7"
+      placeholder: "11"
   - type: input
     id: budget-tokens
     attributes:
       label: 예산 — 토큰 상한
-      placeholder: "1.2M"
+      placeholder: "1.6M"
   - type: input
     id: budget-usd
     attributes:
