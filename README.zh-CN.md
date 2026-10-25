@@ -46,8 +46,9 @@ Disconfirming search: found — https://www.rfc-editor.org/rfc/rfc2616.html
 - **브라우저 동작 명세:** WHATWG Fetch의 HTTP-redirect fetch는 두 경우에 메서드를 GET으로 바꾸고 본문을 null로 만듭니다. (1) 301/302이고 메서드가 POST일 때, (2) 303이고 메서드가 GET/HEAD가 아닐 때입니다.
 - **과거 RFC 2616:** 301/302에서 GET/HEAD가 아닌 요청은 사용자 확인 없이 자동으로 리다이렉트하면 안 된다(MUST NOT)고 했습니다. POST를 GET으로 바꾸는 동작은 "erroneously"(잘못된 것)로 기록했습니다.
 
-Level: standard
+Level: standard  
 Domain: http
+
 | # | Claim | Tag | Quote | Source | URL |
 |---|---|---|---|---|---|
 | 1 | RFC 9110은 301 응답 뒤 POST를 GET으로 바꾸는 것을 허용한다(MAY) | EXTRACTED | "For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request." | RFC 9110 §15.4.2 301 Moved Permanently | https://www.rfc-editor.org/rfc/rfc9110.html |
@@ -76,7 +77,7 @@ Disconfirming search: found — https://www.rfc-editor.org/rfc/rfc2616.html
 
 </details>
 
-这是一个 Claude Code 插件。对 Google Antigravity 和 ChatGPT/Codex 的支持是实验性的。每条说法都引用 subagent 实际打开过的页面。
+这是一个 Claude Code 插件。对 Google Antigravity 和 ChatGPT/Codex 的支持是实验性的。无法核实的说法会标记为 `not confirmed`。
 
 ## 为什么需要
 
