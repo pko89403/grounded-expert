@@ -51,18 +51,20 @@ OpenAI용 패키지는 `plugin/` 밖에 있으므로 기존 Claude Code 패키�
 대상은 바뀌지 않습니다.
 
 ```bash
-codex plugin marketplace add pko89403/grounded-expert
+codex plugin marketplace add /absolute/path/to/this-checkout
 codex plugin add grounded-expert@grounded-expert
 ```
 
-OpenAI 패키지는 실험 단계입니다. ChatGPT에서는 호스트의 플러그인 디렉터리를
-이용하며, 제공 여부는 호스트·계정에 따라 달라집니다. ChatGPT 실동작은 아직
-검증하지 못했습니다. Codex에서는 `$grounded-expert:grounded-expert`를 명시하거나
-자동 트리거를 사용할 수 있습니다. 도구가 지원할 때만 대화를 상속하지 않는
+`hosts/openai/`가 포함된 체크아웃을 사용하세요(병합 전에는 이 PR 브랜치;
+기존 릴리스 태그에는 없습니다). OpenAI 패키지는 실험 단계이며 공개 플러그인
+디렉터리에 제출하지 않았습니다. ChatGPT 로컬 소스 설치·실행은 미검증입니다.
+Codex에서는 `$grounded-expert:grounded-expert`를 명시해 사용하세요.
+자동 트리거의 동작 범위는 아직 검증되지 않았습니다. 도구가 지원할 때만 대화를 상속하지 않는
 하위 세션을 요청하며, 지원하지 않으면 독립성의 한계를 알립니다. 위임이 없으면
 직접 조사, 출처 조회가 불가능하면 외부 검증 불가라고 밝혀야 합니다.
 이는 지침이며 실행 환경이 강제하는 보장은 아닙니다. 관찰된 실패와 재현 방법,
 남은 출시 조건은 [OpenAI 검증 기록](docs/openai-evaluation.md)을 참고하세요.
+OpenAI용 [개인정보 안내](hosts/openai/PRIVACY.md)는 Claude용과 별도입니다.
 
 ## 사용법 (Claude Code)
 

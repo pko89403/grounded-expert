@@ -22,7 +22,7 @@
         "category": "Productivity",
         "capabilities": ["Read"],
         "websiteURL": "https://github.com/pko89403/grounded-expert",
-        "privacyPolicyURL": "https://github.com/pko89403/grounded-expert/blob/main/plugin/PRIVACY.md",
+        "privacyPolicyURL": "https://github.com/pko89403/grounded-expert/blob/main/hosts/openai/PRIVACY.md",
         "defaultPrompt": [
           "Use Grounded Expert to verify this question against primary sources."
         ]

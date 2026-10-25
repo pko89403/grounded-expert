@@ -51,16 +51,18 @@ OpenAI 软件包位于 `plugin/` 之外，因此不会改变现有 Claude Code �
 eval 范围。
 
 ```bash
-codex plugin marketplace add pko89403/grounded-expert
+codex plugin marketplace add /absolute/path/to/this-checkout
 codex plugin add grounded-expert@grounded-expert
 ```
 
-OpenAI 包仍处于实验阶段。ChatGPT 安装使用宿主的插件目录，但可用性取决于
-宿主与账号，尚未完成端到端验证。在 Codex 中可明确调用
-`$grounded-expert:grounded-expert`，也可自动触发。仅在工具支持时请求不继承
+请使用包含 `hosts/openai/` 的检出版本（合并前使用本 PR 分支；现有发布标签
+不包含该目录）。OpenAI 包仍处于实验阶段，未提交到公开插件目录。
+ChatGPT 本地来源的安装与执行尚未验证。Codex 请明确调用
+`$grounded-expert:grounded-expert`；自动触发范围尚未验证。仅在工具支持时请求不继承
 对话的子会话，否则披露独立性限制。不能委派时应说明是直接研究；不能获取
 来源时应说明未经外部验证。这些是指令，并非运行环境强制保证。
 已观察到的失败、复现步骤及剩余发布条件见 [OpenAI 验证记录](docs/openai-evaluation.md)。
+OpenAI 的 [隐私说明](hosts/openai/PRIVACY.md) 与 Claude 版本分开。
 
 ## 用法 (Claude Code)
 

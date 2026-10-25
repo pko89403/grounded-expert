@@ -51,17 +51,20 @@ cd <your-project> && <clone>/scripts/install-antigravity.sh --workspace   # <pro
 既存の Claude Code パッケージと eval の対象は変更されません。
 
 ```bash
-codex plugin marketplace add pko89403/grounded-expert
+codex plugin marketplace add /absolute/path/to/this-checkout
 codex plugin add grounded-expert@grounded-expert
 ```
 
-OpenAI パッケージは実験段階です。ChatGPT ではホストのプラグインディレクトリを
-使いますが、利用可否はホスト・アカウントに依存し、実動作は未検証です。
-Codex では `$grounded-expert:grounded-expert` を明示するか、自動トリガーを利用します。
+`hosts/openai/` を含むチェックアウトを使ってください（マージ前はこの PR の
+ブランチ。既存のリリースタグには含まれません）。OpenAI 版は実験段階で、
+公開プラグインディレクトリには未提出です。ChatGPT のローカルソースでの
+インストール・実行は未検証です。Codex では `$grounded-expert:grounded-expert`
+を明示してください。自動トリガーの動作範囲は未検証です。
 会話を継承しない子セッションはツールが対応する場合だけ要求し、それ以外は
 独立性の制限を開示します。委譲不可なら直接調査、情報源の取得不可なら外部検証
 できなかったと報告する指示です。実行環境による強制保証ではありません。
 失敗例と再現手順、残る公開条件は [OpenAI 検証記録](docs/openai-evaluation.md) を参照してください。
+OpenAI 用の [プライバシー説明](hosts/openai/PRIVACY.md) は Claude 用とは別です。
 
 ## 使い方 (Claude Code)
 
