@@ -13,6 +13,58 @@
 
 ドメインの質問に答えるとき、記憶に頼って専門家ペルソナを演じるのではなく、一次情報源（公式仕様、ドキュメント、論文、標準）をリアルタイムで実際に調べ、自分の主張をそれと照合するサブエージェントを起動する Claude Code プラグインです。
 
+## 例
+
+```
+/grounded-expert When a POST request gets an HTTP 301 redirect, may the client switch it to GET? Check against the RFCs.
+```
+
+Yes. RFC 9110 and RFC 7231 both say a client may change a POST to GET after a 301. The 301 text of both RFCs came through a summarizing fetch tool, so the quotes below are the tool's reproduction of each passage. I did not read the raw RFC text.
+
+Level: standard  
+Domain: http
+
+| # | Claim | Tag | Quote | Source | URL |
+|---|---|---|---|---|---|
+| 1 | RFC 9110 lets a user agent change POST to GET after a 301. | EXTRACTED | "For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request." | RFC 9110, section 15.4.2 (301 Moved Permanently) | https://www.rfc-editor.org/rfc/rfc9110.html |
+| 2 | The same permission was in RFC 7231 (since obsoleted by RFC 9110). | EXTRACTED | "For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request." | RFC 7231, section 6.4.2 (301 Moved Permanently) | https://www.rfc-editor.org/rfc/rfc7231.html |
+| 3 | 308 is the permanent redirect that forbids the method change, for clients that need the method kept. | EXTRACTED | "except that it does not allow changing the request method from POST to GET." | RFC 7538, section 3 | https://www.rfc-editor.org/rfc/rfc7538.html |
+
+Disconfirming search: ran — nothing opposing found
+
+以下は grounded-expert v0.5.0 の実際の出力です（2026-10-25 に 1 回実行）。抜粋には結論、主張 3 件、反証検索の行だけを残し、回答全文は下に折りたたんでいます。この例は英語の質問で実行しました。skill は質問と同じ言語で回答します。
+
+<details>
+<summary>回答全文を見る</summary>
+
+Yes. RFC 9110 and RFC 7231 both say a client may change a POST to GET after a 301. The 301 text of both RFCs came through a summarizing fetch tool, so the quotes below are the tool's reproduction of each passage. I did not read the raw RFC text.
+
+- **Current rule:** RFC 9110 section 15.4.2 says "For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request." It is a MAY, so the client is allowed to switch but not required to.
+- **Predecessor:** RFC 7231 section 6.4.2 has the same permission.
+- **Strict alternative:** RFC 7538 defines 308 (Permanent Redirect) for clients that must keep the method, because 308 does not allow the POST-to-GET change.
+
+Level: standard
+Domain: http
+| # | Claim | Tag | Quote | Source | URL |
+|---|---|---|---|---|---|
+| 1 | RFC 9110 lets a user agent change POST to GET after a 301. | EXTRACTED | "For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request." | RFC 9110, section 15.4.2 (301 Moved Permanently) | https://www.rfc-editor.org/rfc/rfc9110.html |
+| 2 | The same permission was in RFC 7231 (since obsoleted by RFC 9110). | EXTRACTED | "For historical reasons, a user agent MAY change the request method from POST to GET for the subsequent request." | RFC 7231, section 6.4.2 (301 Moved Permanently) | https://www.rfc-editor.org/rfc/rfc7231.html |
+| 3 | 308 is the permanent redirect that forbids the method change, for clients that need the method kept. | EXTRACTED | "except that it does not allow changing the request method from POST to GET." | RFC 7538, section 3 | https://www.rfc-editor.org/rfc/rfc7538.html |
+| 4 | RFC 7538 classes 301 as a permanent redirect that allows the POST-to-GET change. | EXTRACTED | "Allows changing the request method from POST to GET" | RFC 7538, Introduction (redirect classification table) | https://www.rfc-editor.org/rfc/rfc7538.html |
+| 5 | RFC 2616 and RFC 1945 wording, which the task suggested for history, was not retrieved. | not confirmed | - | - |
+| 6 | The WHATWG Fetch spec sets the method to GET for a POST after 301 or 302. I saw this only in search-result summaries of mailing-list threads, not on the spec page. | not confirmed | - | - |
+
+Still uncertain:
+- RFC 2616 and RFC 1945 were not retrieved, so the history of the rule is unverified.
+- The WHATWG Fetch spec page was truncated before the HTTP-redirect fetch section, so browser behavior is not confirmed from a primary source.
+- The RFC 9110 and RFC 7231 passages are the summarizing tool's rendering. An exact character match against the raw RFC text is not guaranteed.
+
+Disconfirming search: ran — nothing opposing found
+
+</details>
+
+ステータス：Claude Code プラグインです。Google Antigravity と ChatGPT/Codex への対応は実験的です。確認できなかった主張には `not confirmed` と表示します。
+
 ## なぜ必要か
 
 サブエージェントにペルソナ（「あなたは X の専門家です」）を与えると、サブエージェントはその役を演じながら、学習済みの知識（パラメトリック知識）から答えます。そのため、誤った事実も正しい事実と同じくらい自信を持って述べてしまいます。このプラグインは、調べる、見つけたものを引用する、間違っていたら自分で訂正する、という本物の専門家が従う手順を強制します。
@@ -87,15 +139,6 @@ OpenAI 用の [プライバシー説明](hosts/openai/PRIVACY.md) は Claude 用
 | **thorough** | standard に加え、候補となる情報源の種類ごとにサブエージェントを 1 つずつ並列で追加し、相互検証。安全・法律・金銭が関わる質問向け。 |
 
 トリガー表現：「대충/빨리」（「ざっくり／急いで」の意）→ quick、「꼼꼼히/전부 확인해서」（「念入りに／全部確認して」の意）や法律・安全に関わる質問 → thorough、指定なし → standard。
-
-### 例
-
-```
-/grounded-expert HTTP 301 でリダイレクトされたとき、POST を GET に変えてよいか
-RFC に基づいて確認して。
-```
-
-サブエージェントが RFC 9110/7231 を調べて該当箇所を引用し、主張ごとに EXTRACTED または INFERRED のタグを付け、まだ不確かな点を報告します。
 
 ## プラグイン構成
 
