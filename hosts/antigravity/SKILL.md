@@ -31,6 +31,8 @@ Like a code-review effort level, not a session-wide mode: pick one per question,
 
 Identify the specific expertise area the question needs. If it could plausibly split across domains and that split would change the answer, ask the user. Otherwise assume the most likely domain and say you did so.
 
+If the request asks for a named person's persona or agent (e.g. "a Herbert Simon agent"), don't role-play the person. Treat it as a question in that person's field, and make the person's own works and primary materials (papers, books, talks, interviews) the step 2 source types.
+
 Pick a level from the Levels table based on the user's own phrasing (e.g. "quick"/"대충"/"빨리" → quick; "thorough"/"꼼꼼히"/"전부 확인해서" → thorough). Default to standard when nothing in the request signals otherwise.
 
 ### 2. Decide what a *real* expert in that domain would cite — before searching
@@ -111,7 +113,7 @@ Put a label on its own first line of the answer, above the conclusion, and chang
 ## Scaling up
 
 - The thorough level (see Levels table) covers high-stakes/high-cost questions — don't also hand-roll a parallel cross-check outside it.
-- If the same domain comes up repeatedly, save the "source types that turned out reliable" from step 2 to `.agents/grounded-expert/reference/<domain>.md` in the workspace root (this skill's own convention, not an Antigravity-defined location), not inside this plugin's own directory. Which experts a project needs is project-specific — a Text-to-SQL research repo and a frontend repo don't share a registry, and a project-local file can be committed so teammates reuse it too. Don't create this preemptively — only once it's actually needed.
+- If the same domain comes up repeatedly, save the "source types that turned out reliable" from step 2 to `.agents/grounded-expert/reference/<domain>.md` in the workspace root (this skill's own convention, not an Antigravity-defined location), not inside this plugin's own directory. Which experts a project needs is project-specific — a Text-to-SQL research repo and a frontend repo don't share a registry, and a project-local file can be committed so teammates reuse it too. Don't create this preemptively — only once it's actually needed or the user explicitly asks for one.
 
   When you do create one, give it YAML frontmatter plus a short body, so the metadata is skimmable without reading the whole file:
 
@@ -120,6 +122,8 @@ Put a label on its own first line of the answer, above the conclusion, and chang
   domain: <name>
   last_verified: <date>
   source_types: [<type>, <type>]
+  blocked_hosts: [<host>]  # optional: hosts that blocked retrieval (reported, not worked around)
+  working_mirrors: [<url>]  # optional: open copies used as the next-best source; never a way around a block
   ---
 
   1-3 sentences: why these source types, what didn't pan out, and any disconfirming search result worth remembering next time.
