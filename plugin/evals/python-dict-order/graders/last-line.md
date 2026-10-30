@@ -4,4 +4,4 @@ target: last_message
 match: contains
 weight: 0.5
 ---
-Disconfirming search: not run \(quick\)\s*$
+Disconfirming search: not run \(quick\)\n+Next step: [^\n]+\s*$

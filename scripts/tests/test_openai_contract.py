@@ -29,6 +29,7 @@ class OutputContractTest(unittest.TestCase):
             f"Level: {level}{suffix}", f"Domain: {domain}", CHECKER.HEADER,
             "|---|---|---|---|---|---|", *rows,
             "추가로 확인하지 못한 사항은 없습니다.", f"Disconfirming search: {last}",
+            "Next step: 문장을 그대로 두세요.",
         ])
 
     def row(self, tag="EXTRACTED", url=PYTHON_URL, quote=PYTHON_QUOTE, number=1):
@@ -87,7 +88,7 @@ class OutputContractTest(unittest.TestCase):
             self.row(tag="INFERRED (via secondary.example)", url=url, quote=passage, number=2),
         ], level="standard")
         last = "Disconfirming search: ran — nothing opposing found"
-        valid = answer.replace(last, "Disconfirming search: found — https://opposing.example/a,https://opposing.example/b")
+        valid = answer.replace(last, "Disconfirming search: found — https://opposing.example/a,https://opposing.example/b — keeps the conclusion: 결론이 같습니다.")
         invalid = valid.replace("/a,https", "/a https")
         self.assertEqual(self.check(valid, fixtures).invalid, 0)
         self.assertTrue(any("INVALID" in line and "last line" in line

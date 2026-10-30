@@ -59,7 +59,7 @@ Keep the canonical `<output-contract>` block byte-identical in the OpenAI copy.
 The host tests compare it and exercise the upstream quote checker with Korean
 answers, secondary-source tags, document aliases and failure labels. Parent
 validation notes belong in a separate progress message before handoff; appending
-an evidence receipt after `Disconfirming search:` breaks the contract. Changes
+an evidence receipt after the `Next step:` line breaks the contract. Changes
 to `tools/` also trigger the OpenAI checks, including the upstream self-test.
 
 OpenAI's package version is independent of `plugin/` and remains experimental.
@@ -109,6 +109,8 @@ Follow the existing schema: `plugin/evals/<case>/prompt.md` (frontmatter:
 Every case that should run the subagent ends its prompt with the line `Pre-approved: run the subagent now; do not ask for confirmation.`. A case without that line stops at the plan card (see `plan-card-stop`).
 
 `http-method-retry-rows` checks claim-row discipline. Its row ceiling (8) came from a v0.6.1 baseline of 10 rows; change it only with a new baseline.
+
+`answer-next-step` reproduces a real run that ended on a URL. It checks that the answer ends with a `Next step:` line, answers the user's question first, says whether a found page changes the conclusion, and tags raw GitHub file rows `EXTRACTED`.
 
 ## Checking quotes
 

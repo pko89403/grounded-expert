@@ -21,7 +21,8 @@ ROOT = Path(__file__).resolve().parent.parent
 HEADER = "| # | Claim | Tag | Quote | Source | URL |"
 FLOOR = {"quick": 1, "standard": 2, "thorough": 2}  # keep in step with step 3 item 2 of SKILL.md
 LABELS = ("direct answer — no independent subagent", "not externally verified", "partial cross-check")
-LAST = re.compile(r"Disconfirming search: (found — https?://\S+|ran — nothing opposing found|not run \(quick\))")
+LAST = re.compile(r"Disconfirming search: (found — https?://\S+ — (?:changes|keeps) the conclusion: \S.*|ran — nothing opposing found|not run \(quick\))")
+NEXT = re.compile(r"Next step: \S.*")
 TAG_VIA = re.compile(r"INFERRED \((?:copy )?via ([^()\s]+)\)")  # a copy is checked like via
 NO_PRIMARY = " (no primary source)"
 TAG_FIG = re.compile(r"INFERRED \(figure ([^()\s]+)\)")
@@ -54,6 +55,8 @@ def bare_url(u: str) -> bool:
 def is_primary(url: str, entries: list[str]) -> bool:
     p = urlsplit(url)
     host = (p.hostname or "").lower()
+    if host == "raw.githubusercontent.com":  # the same repository file as the github.com blob page, not a mirror
+        host = "github.com"
     for entry in entries:
         h, _, prefix = entry.lower().partition("/")
         # a ".." segment (also %2e%2e) resolves above the prefix in WHATWG parsers, so it never matches a path entry
@@ -234,10 +237,12 @@ def check(answer: str, primary: dict[str, list[str]], fixtures: list[Fixture]) -
             r.add("INVALID", "Level", f"{NO_PRIMARY.strip()} must be present exactly when no row cites a primary host")
         if level in FLOOR and len(docs) < FLOOR[level]:
             r.add("INVALID", "floor", f"{len(docs)} distinct documents, {level} needs {FLOOR[level]}")
-        m = LAST.fullmatch(lines[-1].strip())
+        m = LAST.fullmatch(lines[-2].strip()) if len(lines) > 1 else None
         form = m.group(1).split()[0] if m else None
-        if form is None:
-            r.add("INVALID", "last line", "not one of the three Disconfirming search forms")
+        if not NEXT.fullmatch(lines[-1].strip()):
+            r.add("INVALID", "last line", "not a Next step line")
+        elif form is None:
+            r.add("INVALID", "last line", "the line before Next step is not one of the three Disconfirming search forms")
         elif level in FLOOR and (form == "not") != (level == "quick"):
             r.add("INVALID", "last line", f"{form} does not fit Level: {level}")
     r.lines.append(f"SUMMARY ok={r.ok} unverified={r.unverified} invalid={r.invalid} documents={len(docs)} labels={labels or '-'}")
@@ -250,7 +255,7 @@ def self_test() -> int:
     assert set(primary) >= {"http", "law-eu", "ml-paper", "javascript", "python"}, primary
     text = skill.read_text(encoding="utf-8")  # the checker constants must still appear in the contract
     block = text.partition("<output-contract>")[2].partition("</output-contract>")[0]
-    for s in (HEADER, "Level: <quick|standard|thorough>", "Domain: <key", "Primary hosts (declared): <host>", "Disconfirming search: found — <URL>",
+    for s in (HEADER, "Level: <quick|standard|thorough>", "Domain: <key", "Primary hosts (declared): <host>", "Disconfirming search: found — <URL> — <changes|keeps> the conclusion: <short reason>", "Next step: <what the user should do now",
               "Disconfirming search: ran — nothing opposing found", "Disconfirming search: not run (quick)", "INFERRED (via <host>)", "INFERRED (copy via <host>)", "(no primary source)", "INFERRED (figure N)"):
         assert s in block, f"{s!r} missing from the <output-contract> block"
     for s in (*LABELS, "quick = 1 source", "at least 2 independent sources"):
@@ -260,10 +265,10 @@ def self_test() -> int:
     gdpr = "https://publications.europa.eu/resource/cellar/3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0006.03/DOC_1"
     gq = "'pseudonymisation' means the processing of personal data in such a manner that the personal data can no longer be attributed to a specific data subject"
 
-    def ans(rows: list[str], level: str = "standard", domain: str = "http", last: str | None = "Disconfirming search: ran — nothing opposing found", label: str = "", extra: str = "") -> str:
+    def ans(rows: list[str], level: str = "standard", domain: str = "http", last: str | None = "Disconfirming search: ran — nothing opposing found", label: str = "", extra: str = "", nxt: str | None = "Next step: Keep the sentence as it is.") -> str:
         body = [label] if label else []
         body += ["Conclusion.", f"Level: {level}", f"Domain: {domain}", extra, HEADER, "|---|---|---|---|---|---|", *rows, "Uncertain: none."]
-        return "\n".join(x for x in body + ([last] if last else []) if x != "")
+        return "\n".join(x for x in body + ([last] if last else []) + ([nxt] if nxt else []) if x != "")
 
     def row(tag: str, quote: str, url: str, n: int = 1) -> str:
         return f"| {n} | claim | {tag} | {quote} | Title, section | {url} |"
@@ -322,9 +327,15 @@ def self_test() -> int:
     assert r.invalid == 1 and "no primary source" in "\n".join(r.lines), r.lines  # marker missing
     r = run(ans([good[0], cp], level="standard (no primary source)"))
     assert r.invalid == 1 and "no primary source" in "\n".join(r.lines), r.lines  # marker with a primary row
-    assert run(ans([good[0], cp], last="Disconfirming search: found — https://a.example/x,https://b.example/y")).invalid == 0
-    r = run(ans([good[0], cp], last="Disconfirming search: found — https://a.example/x https://b.example/y"))
+    assert run(ans([good[0], cp], last="Disconfirming search: found — https://a.example/x,https://b.example/y — keeps the conclusion: same rule")).invalid == 0
+    r = run(ans([good[0], cp], last="Disconfirming search: found — https://a.example/x https://b.example/y — keeps the conclusion: same rule"))
     assert r.invalid == 1 and "last line" in "\n".join(r.lines), r.lines  # space-separated URLs stay invalid
+    r = run(ans([good[0], cp], last="Disconfirming search: found — https://a.example/x"))
+    assert r.invalid == 1 and "last line" in "\n".join(r.lines), r.lines  # found must say whether the conclusion changes
+    r = run(ans([good[0], cp], nxt=None))
+    assert r.invalid == 1 and "Next step" in "\n".join(r.lines), r.lines  # the Next step line is the last line
+    assert is_primary("https://raw.githubusercontent.com/python/cpython/main/Lib/x.py", ["github.com/python/cpython"])
+    assert not is_primary("https://raw.githubusercontent.com/python/cpython-fork/main/x.py", ["github.com/python/cpython"])
     r = run(ans([row("EXTRACTED", f'"{q301}"', rfc), row("not confirmed", "-", "-", 2), row("INFERRED (figure 1)", "-", "https://arxiv.org/abs/2505.22954", 3)]))
     assert r.invalid == 0 and "documents=2" in r.lines[-1], r.lines
     r = run(ans(good[:1], level="quick", last="Disconfirming search: ran — nothing opposing found"))
