@@ -145,7 +145,7 @@ invoke it directly:
 /grounded-expert <question>
 ```
 
-**Before it runs:** the skill first shows a plan card: your question, the domain it assumed, the source types, the hosts that count as primary, and the level with a rough relative cost. Then it asks one question. Reply `go` to start, or change a line of the card and reply. Reply `go and don't ask again` to skip this question for the rest of the conversation. In headless or CI runs, put `Pre-approved: run the subagent now; do not ask for confirmation.` in the prompt. Without it, the run stops at the card.
+**Before it runs:** the skill first shows a plan card: your question, the domain it assumed, the source types, the hosts that count as primary, the level with a rough relative cost, an estimate of tokens and time (measured for standard only; the other levels say `not measured yet`), and the answer language. Then it asks one question. Reply `go` to start, or change a line of the card and reply. Reply `go and don't ask again` to skip this question for the rest of the conversation. In headless or CI runs, put `Pre-approved: run the subagent now; do not ask for confirmation.` in the prompt. Without it, the run stops at the card.
 
 **Cost note:** each approved invocation spawns a real subagent that does live
 WebSearch/WebFetch calls and (on `standard`/`thorough`) a disconfirming-search
