@@ -108,6 +108,8 @@ Follow the existing schema: `plugin/evals/<case>/prompt.md` (frontmatter:
 
 Every case that should run the subagent ends its prompt with the line `Pre-approved: run the subagent now; do not ask for confirmation.`. A case without that line stops at the plan card (see `plan-card-stop`).
 
+`http-method-retry-rows` checks claim-row discipline. Its row ceiling (8) came from a v0.6.1 baseline of 10 rows; change it only with a new baseline.
+
 ## Checking quotes
 
 `tools/check_quotes.py ANSWER` checks one final answer against the output
