@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "grounded-expert",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Spawns a subagent that answers domain questions by actually retrieving primary sources (official docs, specs, papers) and self-checking claims against them, instead of role-playing an expert persona.",
   "author": {
     "name": "skiiwoo",

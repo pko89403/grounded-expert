@@ -9,6 +9,13 @@ The project stays in `0.x` (see README Versioning): a breaking change
 (`feat!:` or a `BREAKING CHANGE:` footer) bumps the minor version, not the
 major one.
 
+## [0.6.0](https://github.com/pko89403/grounded-expert/compare/v0.5.0...v0.6.0) (2026-10-30)
+
+
+### Features
+
+* show a plan card and ask before starting the subagent ([#32](https://github.com/pko89403/grounded-expert/issues/32)) ([312db15](https://github.com/pko89403/grounded-expert/commit/312db15e3e8a535b4efaa0eea1d3a736818baae3))
+
 ## [0.5.0](https://github.com/pko89403/grounded-expert/compare/v0.4.0...v0.5.0) (2026-10-25)
 
 
