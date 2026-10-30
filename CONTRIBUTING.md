@@ -106,6 +106,8 @@ Follow the existing schema: `plugin/evals/<case>/prompt.md` (frontmatter:
 `max_turns`, `timeout_seconds`, `allowed_tools`, `runs`) plus
 `plugin/evals/<case>/graders/*.md`.
 
+Every case that should run the subagent ends its prompt with the line `Pre-approved: run the subagent now; do not ask for confirmation.`. A case without that line stops at the plan card (see `plan-card-stop`).
+
 ## Checking quotes
 
 `tools/check_quotes.py ANSWER` checks one final answer against the output
