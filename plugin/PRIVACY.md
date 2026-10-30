@@ -32,7 +32,8 @@ WebSearch and WebFetch tools:
 - **Search queries** derived from your question are sent to the web search
   provider used by WebSearch.
 - **Requests to source pages** (official docs, specs, papers, standards) are
-  made by WebFetch to the sites it cites.
+  made by WebFetch to the pages it opens. These include the sources it cites
+  and pages it checks but does not cite.
 
 These requests go through Claude's own tools under your Claude account and are
 governed by Anthropic's terms and privacy policy, and by the policies of the
