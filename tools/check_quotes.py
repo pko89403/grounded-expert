@@ -22,7 +22,7 @@ HEADER = "| # | Claim | Tag | Quote | Source | URL |"
 FLOOR = {"quick": 1, "standard": 2, "thorough": 2}  # keep in step with step 3 item 2 of SKILL.md
 LABELS = ("direct answer — no independent subagent", "not externally verified", "partial cross-check")
 LAST = re.compile(r"Disconfirming search: (found — https?://\S+ — (?:changes|keeps) the conclusion: \S.*|ran — nothing opposing found|not run \(quick\))")
-NEXT = re.compile(r"Next step: \S.*")
+NEXT = re.compile(r"Next step: (?!.*https?://)\S.*(?<![?？])")
 TAG_VIA = re.compile(r"INFERRED \((?:copy )?via ([^()\s]+)\)")  # a copy is checked like via
 NO_PRIMARY = " (no primary source)"
 TAG_FIG = re.compile(r"INFERRED \(figure ([^()\s]+)\)")
@@ -334,6 +334,9 @@ def self_test() -> int:
     assert r.invalid == 1 and "last line" in "\n".join(r.lines), r.lines  # found must say whether the conclusion changes
     r = run(ans([good[0], cp], nxt=None))
     assert r.invalid == 1 and "Next step" in "\n".join(r.lines), r.lines  # the Next step line is the last line
+    for bad in ("Next step: https://example.com/x", "Next step: 바꿀까요?"):
+        r = run(ans([good[0], cp], nxt=bad))
+        assert r.invalid == 1 and "last line" in "\n".join(r.lines), r.lines  # no URL, no question
     assert is_primary("https://raw.githubusercontent.com/python/cpython/main/Lib/x.py", ["github.com/python/cpython"])
     assert not is_primary("https://raw.githubusercontent.com/python/cpython-fork/main/x.py", ["github.com/python/cpython"])
     r = run(ans([row("EXTRACTED", f'"{q301}"', rfc), row("not confirmed", "-", "-", 2), row("INFERRED (figure 1)", "-", "https://arxiv.org/abs/2505.22954", 3)]))
