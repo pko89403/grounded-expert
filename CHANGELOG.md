@@ -9,6 +9,13 @@ The project stays in `0.x` (see README Versioning): a breaking change
 (`feat!:` or a `BREAKING CHANGE:` footer) bumps the minor version, not the
 major one.
 
+## [0.6.1](https://github.com/pko89403/grounded-expert/compare/v0.6.0...v0.6.1) (2026-10-30)
+
+
+### Bug Fixes
+
+* use measured estimate ranges on the plan card ([#35](https://github.com/pko89403/grounded-expert/issues/35)) ([dcf7df3](https://github.com/pko89403/grounded-expert/commit/dcf7df3ce96b9d02707743df08c3bdb678770393))
+
 ## [0.6.0](https://github.com/pko89403/grounded-expert/compare/v0.5.0...v0.6.0) (2026-10-30)
 
 
