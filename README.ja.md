@@ -126,7 +126,7 @@ OpenAI 用の [プライバシー説明](hosts/openai/PRIVACY.md) は Claude 用
 /grounded-expert <質問>
 ```
 
-**実行前の確認：** サブエージェントを起動する前に、スキルがプランカード（plan card）を表示します。カードには、質問、想定したドメイン、出典の種類、primary として扱うホスト、レベルとおおよその相対コスト、トークン数と時間の目安（実測値があるのは standard のみで、他は `not measured yet`）、回答言語が載ります。続けて質問を 1 つします。`go` と答えると開始します。カードの 1 行を直して答えることもできます。`go and don't ask again` と答えると、この会話では再度確認しません。headless や CI では、プロンプトに `Pre-approved: run the subagent now; do not ask for confirmation.` の文を入れてください。この文がないと、実行はカードで止まります。
+**実行前の確認：** サブエージェントを起動する前に、スキルがプランカード（plan card）を表示します。カードには、質問、想定したドメイン、出典の種類、primary として扱うホスト、レベルとおおよその相対コスト、トークン数と時間の目安（実測値があるのは quick と standard で、thorough は `not measured yet`）、回答言語が載ります。続けて質問を 1 つします。`go` と答えると開始します。カードの 1 行を直して答えることもできます。`go and don't ask again` と答えると、この会話では再度確認しません。headless や CI では、プロンプトに `Pre-approved: run the subagent now; do not ask for confirmation.` の文を入れてください。この文がないと、実行はカードで止まります。
 
 **コストについて：** 承認した呼び出しごとに実際のサブエージェントが起動し、WebSearch/WebFetch をリアルタイムで呼び出します。`standard`/`thorough` では反証検索も追加で行います。キャッシュやローカル検索ではなく、実際の API 使用です。`thorough` はさらに並列サブエージェントを起動します。eval suite（`claude plugin eval`）の実行も毎回実費がかかります（judge モデルと agent モデルの両方に課金）。
 
