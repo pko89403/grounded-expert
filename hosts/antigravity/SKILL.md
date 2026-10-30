@@ -81,7 +81,7 @@ Antigravity note: per Antigravity's docs, `self` shares this agent's system inst
 
 Call a new agent with `invoke_subagent` and the built-in subagent type `self` (not a fork — the point is independent verification uncontaminated by prior conversation context). The prompt must include:
 
-1. No persona framing. Don't write "you are an expert in X." Instead: "Actually look up the following sources, and answer based only on what you find."
+1. The user's question verbatim, plus the exact text of any user artifact it is about (for example the sentence the user wants to change); never restate it as a more general question. No persona framing. Don't write "you are an expert in X." Instead: "Actually look up the following sources, and answer based only on what you find."
 2. State the level (quick/standard/thorough) and its source-count floor: quick = 1 source, standard/thorough = at least 2 independent sources, of the types decided in step 2, via the host's web search and URL-fetch tools. No conclusions before that floor is met. For a long source (a paper, a spec): search within it for the terms/sections the question actually needs, don't read it start-to-finish — that's what burns tokens, not the source count. Fetch a given URL once; don't re-fetch the same URL again just to double-check it answers the same way. If the search or fetch tools are unavailable, or every fetch fails, say so at the top of the answer instead of answering from memory. If the floor still can't be met, say so and report the level the evidence actually supports, not the requested one.
 3. The output contract: paste the `<output-contract>` block below into the prompt unchanged, then add `Answer language: <language of the user's question, or the language the user set on the card's Answer language line>` and `Domain: <key from the block's list, or other>`. For `other`, also add `Primary hosts (declared): <hosts of the primary publishers among the source types you chose in step 2>`. For thorough, give the same block to every parallel subagent. If the user added a host to a listed domain, use `Domain: other` and declare all hosts on the `Primary hosts (declared):` line: the listed domain's hosts plus the added ones. When the user added hosts on the card, tell the subagent to search and open those hosts first.
 4. A self-refinement loop with two parts in the critique step: (a) check every claim against the material just retrieved, and (b) check whether everything found so far points the same direction / comes from the same type of source — if so, and the level is standard or thorough, **run at least one additional search aimed at finding disconfirming evidence or the opposing position** (re-reading the same sources you already have isn't critique, it's self-confirmation). On quick, skip (b) and stop after one pass. On standard/thorough, revise and repeat up to 2 times, or until the critique finds nothing left to fix.
@@ -90,9 +90,9 @@ Call a new agent with `invoke_subagent` and the built-in subagent type `self` (n
 7. Antigravity only: "Do not invoke this skill and do not call `invoke_subagent`; do the lookups yourself." `self` inherits this skill, so without this line it can re-trigger the skill and spawn subagents recursively.
 
 <output-contract>
-Language: write in the language of the user's question (its main clause, if mixed). Keep in English exactly as written: tags, the table header, the `(no primary source)` suffix and the line prefixes `Level:`, `Domain:`, `Primary hosts (declared):`, `Disconfirming search:`. Never translate quotes or URLs.
+Language: write in the language of the user's question (its main clause, if mixed). Keep in English exactly as written: tags, the table header, the `(no primary source)` suffix and the line prefixes `Level:`, `Domain:`, `Primary hosts (declared):`, `Disconfirming search:`, `Next step:`, and the phrases `changes the conclusion`, `keeps the conclusion` and `none —`. Never translate quotes or URLs.
 Layout, in this order, with nothing after the last line:
-<conclusion; for thorough, also how the source types were cross-checked>
+<conclusion; its first sentence answers the user's question; for thorough, also how the source types were cross-checked>
 Level: <quick|standard|thorough>
 Domain: <key from the list below, or other>
 | # | Claim | Tag | Quote | Source | URL |
@@ -100,6 +100,7 @@ Domain: <key from the list below, or other>
 <one row per claim>
 <what remains uncertain>
 Disconfirming search: <one of the three forms below>
+Next step: <what the user should do now, applied to the user's own text or task, or "none — <reason>">
 `Level:` is the level that actually ran. If no row's URL has a primary host, add ` (no primary source)` right after the level; otherwise add nothing. With `Domain: other`, add the line `Primary hosts (declared): <host>, <host>` after it; a listed key takes no such line.
 Rows: a claim with no citation of its own is `not confirmed`. Write `|` inside a cell as `\|`. Source: page title and section. URL: a bare absolute URL of a page you opened with the fetch tool, never a search snippet. `-` marks an empty Quote or URL.
 Tag, exactly one per row:
@@ -110,12 +111,13 @@ Tag, exactly one per row:
 - `INFERRED (figure N)`: read from figure N (a chart label, screenshot or rendered PDF page); never `EXTRACTED` unless the same value is quoted from text or a table. Quote `-`. One URL.
 - `not confirmed`: no opened page supports it. Quote `-`, URL `-`.
 Source floor: count distinct documents across the whole answer, not per claim. Renderings, mirrors, versions and #fragments of one document count once; `not confirmed` rows add none.
-Last line, exactly one of:
-Disconfirming search: found — <URL>
+The `Disconfirming search:` line, exactly one of:
+Disconfirming search: found — <URL> — <changes|keeps> the conclusion: <short reason>
 Disconfirming search: ran — nothing opposing found
 Disconfirming search: not run (quick)
-Quick uses only the third; standard and thorough only the first two. For several opposing pages, `found` takes all their URLs joined by commas, with no space.
-Primary: the URL's host is, or is a subdomain of, a host listed for the `Domain:` key or given on the `Primary hosts (declared):` line; an entry with a path matches that path prefix. A listed `Domain:` accepts no extra hosts. A mirror on another host is not primary.
+Quick uses only the third; standard and thorough only the first two. For several opposing pages, `found` takes all their URLs joined by commas, with no space. In `found`, write `changes the conclusion` if the opposing page contradicts or qualifies the conclusion and `keeps the conclusion` if it does not; the reason is one short clause.
+The last line is the `Next step:` line, directly after the `Disconfirming search:` line. It applies the conclusion to the user's own text or task: one concrete action, or `none — <reason>` when nothing needs doing. It adds no new fact, is not a question and is not a URL.
+Primary: the URL's host is, or is a subdomain of, a host listed for the `Domain:` key or given on the `Primary hosts (declared):` line; an entry with a path matches that path prefix. A listed `Domain:` accepts no extra hosts. `raw.githubusercontent.com/<owner>/<repo>/...` matches an entry `github.com/<owner>/<repo>`: it is the same repository file, not a mirror. A mirror on another host is not primary.
 <primary-publishers>
 http: rfc-editor.org ietf.org spec.whatwg.org
 law-eu: eur-lex.europa.eu publications.europa.eu/resource/cellar curia.europa.eu edpb.europa.eu
@@ -127,7 +129,7 @@ python: docs.python.org peps.python.org github.com/python/cpython
 
 ### 4. Hand off the result
 
-Pass the subagent's answer to the user verbatim, including every claim-table row and the final `Disconfirming search:` line, with nothing added after that line. Don't paraphrase or summarize away the table — rewriting a row's `EXTRACTED` tag and quote into plain prose defeats the point of using this skill, since the tag and the quote are what make a claim checkable later. When thorough ran several subagents, the one answer you hand off keeps the contract's layout, with every claim row copied unchanged from the subagent that wrote it. If your session needs a closing line of its own, for example a session-mode footer, put it before the handed-off answer, never after its last line.
+Pass the subagent's answer to the user verbatim, including every claim-table row, the `Disconfirming search:` line and the final `Next step:` line, with nothing added after the `Next step:` line. Don't paraphrase or summarize away the table — rewriting a row's `EXTRACTED` tag and quote into plain prose defeats the point of using this skill, since the tag and the quote are what make a claim checkable later. When thorough ran several subagents, the one answer you hand off keeps the contract's layout, with every claim row copied unchanged from the subagent that wrote it. If your session needs a closing line of its own, for example a session-mode footer, put it before the handed-off answer, never after its last line. Put no question to the user before the answer either: its `Next step:` line says what the user does now.
 
 That applies to an answer the subagent actually returned. Describe work as the subagent's only when its returned answer shows it, and check what came back before handing off:
 
@@ -135,7 +137,7 @@ That applies to an answer the subagent actually returned. Describe work as the s
 - **The subagent reports no search/fetch tools, or no source opened**: pass its answer on verbatim with the label `not externally verified`, not as a grounded answer.
 - **thorough, and some parallel subagents failed**: label the answer `partial cross-check — <completed> of <started> source types` and name the source types that completed; don't report it as a full thorough run.
 
-Put a label on its own first line of the answer, above the conclusion, and change nothing else in the answer; several labels go on one line, separated by `; `. With `partial cross-check`, the `Level:` line is not `thorough`. With `not externally verified`, the answer needs no `Level:` line, source floor or final line, and every row (if any) is `not confirmed`.
+Put a label on its own first line of the answer, above the conclusion, and change nothing else in the answer; several labels go on one line, separated by `; `. With `partial cross-check`, the `Level:` line is not `thorough`. With `not externally verified`, the answer needs no `Level:` line, source floor, `Disconfirming search:` line or `Next step:` line, and every row (if any) is `not confirmed`.
 
 ## Scaling up
 
@@ -160,5 +162,5 @@ Put a label on its own first line of the answer, above the conclusion, and chang
 
 - A subagent can fabricate a URL. Don't trust a source unless the host's URL-fetch tool actually opened it and the claim is really in there.
 - If a primary source is paywalled, inaccessible or blocks automated access, don't work around the block: tell the user, then fall back to the next-best open source.
-- Even with grounding, if every source found points to the same conclusion, that's a self-confirmation collapse risk (a closed loop confirming itself with self-selected evidence). The answer must end with one of the three `Disconfirming search:` lines in the output contract. A standard or thorough answer that ends with `not run (quick)`, or with none of them, skipped the diversity check: say so when you hand it off.
+- Even with grounding, if every source found points to the same conclusion, that's a self-confirmation collapse risk (a closed loop confirming itself with self-selected evidence). The answer must end with one of the three `Disconfirming search:` lines in the output contract, then the `Next step:` line. A standard or thorough answer whose `Disconfirming search:` line is `not run (quick)`, or that has none of them, skipped the diversity check: say so when you hand it off.
 - This skill uses Antigravity's `invoke_subagent` tool plus the host's web search and URL-fetch tools, but nothing limits the subagent to them, so the step 3 tool rule is a prompt rule, not enforcement. No separate MCP server or plugin component is needed at this scope.
