@@ -140,7 +140,7 @@ OpenAI용 [개인정보 안내](hosts/openai/PRIVACY.md)는 Claude용과 별도�
 /grounded-expert <질문>
 ```
 
-**실행 전 확인:** 서브에이전트를 시작하기 전에 스킬이 계획 카드(plan card)를 보여 줍니다. 카드에는 질문, 가정한 도메인, 출처 유형, primary로 인정할 호스트, 레벨과 대략적인 상대 비용, 예상 토큰·시간(standard만 실측값이 있고 나머지는 `not measured yet`), 답변 언어가 들어 있습니다. 이어서 질문을 하나 합니다. `go`라고 답하면 시작합니다. 카드의 한 줄을 고쳐서 답할 수도 있습니다. `go and don't ask again`이라고 답하면 이 대화에서는 다시 묻지 않습니다. headless나 CI에서는 프롬프트에 `Pre-approved: run the subagent now; do not ask for confirmation.` 문장을 넣으세요. 이 문장이 없으면 실행이 카드에서 멈춥니다.
+**실행 전 확인:** 서브에이전트를 시작하기 전에 스킬이 계획 카드(plan card)를 보여 줍니다. 카드에는 질문, 가정한 도메인, 출처 유형, primary로 인정할 호스트, 레벨과 대략적인 상대 비용, 예상 토큰·시간(quick과 standard는 실측값이 있고 thorough는 `not measured yet`), 답변 언어가 들어 있습니다. 이어서 질문을 하나 합니다. `go`라고 답하면 시작합니다. 카드의 한 줄을 고쳐서 답할 수도 있습니다. `go and don't ask again`이라고 답하면 이 대화에서는 다시 묻지 않습니다. headless나 CI에서는 프롬프트에 `Pre-approved: run the subagent now; do not ask for confirmation.` 문장을 넣으세요. 이 문장이 없으면 실행이 카드에서 멈춥니다.
 
 **비용 참고:** 승인한 호출마다 실제 서브에이전트가 생성되어 WebSearch/WebFetch를 실시간으로 호출하고, `standard`/`thorough`에서는 반증 검색 단계도 거칩니다. 캐시나 로컬 조회가 아니라 실제 API 사용입니다. `thorough`는 여기에 병렬 서브에이전트를 추가로 생성합니다. eval suite(`claude plugin eval`) 실행도 매번 실제 비용이 듭니다(judge 모델과 agent 모델 모두 과금).
 

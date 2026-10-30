@@ -62,7 +62,7 @@ Answer language: <language of the answer>
 <one reply line: go / go and don't ask again / or give the lines to change>
 ```
 
-Fill `Est.:` with this fixed text for the chosen level: quick `not measured yet`; standard `about 110k subagent tokens, 5-10 min (rough, measured)`; thorough `not measured yet`. Use the user's language for the words and keep the numbers.
+Fill `Est.:` with this fixed text for the chosen level: quick `about 10k subagent tokens, under 1 min (rough, measured)`; standard `about 10k-110k subagent tokens, 1-10 min, longer for multi-part questions (rough, measured)`; thorough `not measured yet`. Use the user's language for the words and keep the numbers.
 
 Show cost only in relative words with "rough" (for example "quick: one lookup, lowest cost"). Never show currency amounts.
 

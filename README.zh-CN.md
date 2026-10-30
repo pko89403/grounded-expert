@@ -124,7 +124,7 @@ OpenAI 的 [隐私说明](hosts/openai/PRIVACY.md) 与 Claude 版本分开。
 /grounded-expert <问题>
 ```
 
-**运行前确认**：启动 subagent 之前，skill 会先显示计划卡（plan card）。卡片列出问题、假定的领域、来源类型、视为 primary 的主机、级别和大致的相对费用、token 数与耗时的估计（只有 standard 有实测值，其余显示 `not measured yet`），以及回答语言。随后只问一个问题。回复 `go` 即开始；也可以修改卡片中的某一行后再回复。回复 `go and don't ask again` 则本次对话不再询问。在 headless 或 CI 运行中，请在提示词里加入 `Pre-approved: run the subagent now; do not ask for confirmation.` 这句话。没有这句话，运行会停在卡片处。
+**运行前确认**：启动 subagent 之前，skill 会先显示计划卡（plan card）。卡片列出问题、假定的领域、来源类型、视为 primary 的主机、级别和大致的相对费用、token 数与耗时的估计（quick 和 standard 有实测值，thorough 显示 `not measured yet`），以及回答语言。随后只问一个问题。回复 `go` 即开始；也可以修改卡片中的某一行后再回复。回复 `go and don't ask again` 则本次对话不再询问。在 headless 或 CI 运行中，请在提示词里加入 `Pre-approved: run the subagent now; do not ask for confirmation.` 这句话。没有这句话，运行会停在卡片处。
 
 **费用说明**：每次获批的调用都会启动真实的 subagent，实时调用 WebSearch/WebFetch；在 `standard`/`thorough` 级别还会额外做一次反证检索。这是真实的 API 用量，不是缓存或本地查询。`thorough` 还会额外并行启动多个 subagent。运行 eval suite（`claude plugin eval`）每次也会产生实际费用（judge 模型和 agent 模型都计费）。
 
