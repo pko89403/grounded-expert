@@ -14,7 +14,7 @@ import sys
 import tempfile
 import unicodedata
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
@@ -151,9 +151,11 @@ def check_row(cells: list[str], entries: list[str], fixtures: list[Fixture]) -> 
         return "INVALID", f"unknown tag {tag!r}", []
     if reused:
         try:
-            date.fromisoformat(reused[1])
+            age = (date.today() - date.fromisoformat(reused[1])).days
         except ValueError:
             return "INVALID", f"bad date in {tag!r}", []
+        if not 0 <= age <= 7:
+            return "INVALID", f"REUSED date not within 7 days of today: {tag!r}", []
     if urls != ["-"] and not all(bare_url(u) for u in urls):
         return "INVALID", "URL cell must hold bare absolute URLs", []
     if tag == "not confirmed":
@@ -328,11 +330,14 @@ def self_test() -> int:
     cp = row("INFERRED (copy via www.gdpr-info.eu)", f'"{gq}"', "https://www.gdpr-info.eu/art-4-gdpr/", 2)
     assert run(ans([good[0], cp])).invalid == 0  # a copy is checked like via
     rq = dict(level="quick", last="Disconfirming search: not run (quick)")
-    r = run(ans([row("REUSED (fetched 2026-10-30)", f'"{q301}"', rfc)], **rq))
+    r = run(ans([row(f"REUSED (fetched {date.today()})", f'"{q301}"', rfc)], **rq))
     assert (r.invalid, r.ok) == (0, 1), r.lines  # REUSED is checked like EXTRACTED
+    for d in (date.today() - timedelta(days=8), date.today() + timedelta(days=1)):
+        r = run(ans([row(f"REUSED (fetched {d})", f'"{q301}"', rfc)], **rq))
+        assert r.invalid >= 1 and "within 7 days" in "\n".join(r.lines), r.lines  # stale or future
     r = run(ans([row("REUSED (fetched 2026-13-45)", f'"{q301}"', rfc)], **rq))
     assert r.invalid >= 1 and "bad date" in "\n".join(r.lines), r.lines
-    r = run(ans([row("REUSED (fetched 2026-10-30)", f'"{gq}"', "https://www.gdpr-info.eu/art-4-gdpr/")], **rq))
+    r = run(ans([row(f"REUSED (fetched {date.today()})", f'"{gq}"', "https://www.gdpr-info.eu/art-4-gdpr/")], **rq))
     assert r.invalid >= 1 and "not a primary host" in "\n".join(r.lines), r.lines  # needs a primary host like EXTRACTED
     r = run(ans([good[0], row("INFERRED (copy via spec.whatwg.org)", f'"{q301}"', "https://fetch.spec.whatwg.org/", 2)]))
     assert r.invalid >= 1 and "is primary" in "\n".join(r.lines), r.lines
