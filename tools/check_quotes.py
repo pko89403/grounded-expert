@@ -14,6 +14,7 @@ import sys
 import tempfile
 import unicodedata
 from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
@@ -26,6 +27,7 @@ NEXT = re.compile(r"Next step: (?!.*https?://)\S.*(?<![?？])")
 TAG_VIA = re.compile(r"INFERRED \((?:copy )?via ([^()\s]+)\)")  # a copy is checked like via
 NO_PRIMARY = " (no primary source)"
 TAG_FIG = re.compile(r"INFERRED \(figure ([^()\s]+)\)")
+TAG_REUSED = re.compile(r"REUSED \(fetched (\d{4}-\d{2}-\d{2})\)")  # checked like EXTRACTED, plus a real calendar date
 URL_RE = re.compile(r"https?://[^\s\\]+")  # no backslash: WHATWG parsers end the host there, urlsplit does not
 DELIM = re.compile(r"\|(\s*:?-+:?\s*\|)+")
 GLYPHS = str.maketrans({"‘": "'", "’": "'", "‚": "'", "‛": "'", "“": '"', "”": '"', "„": '"'})
@@ -144,15 +146,21 @@ def check_row(cells: list[str], entries: list[str], fixtures: list[Fixture]) -> 
     _, _, tag, quote, _, url_cell = cells
     urls = url_cell.split()
     via, fig = TAG_VIA.fullmatch(tag), TAG_FIG.fullmatch(tag)
-    if tag not in ("EXTRACTED", "INFERRED", "not confirmed") and not via and not fig:
+    reused = TAG_REUSED.fullmatch(tag)
+    if tag not in ("EXTRACTED", "INFERRED", "not confirmed") and not via and not fig and not reused:
         return "INVALID", f"unknown tag {tag!r}", []
+    if reused:
+        try:
+            date.fromisoformat(reused[1])
+        except ValueError:
+            return "INVALID", f"bad date in {tag!r}", []
     if urls != ["-"] and not all(bare_url(u) for u in urls):
         return "INVALID", "URL cell must hold bare absolute URLs", []
     if tag == "not confirmed":
         return ("OK", "not confirmed", []) if (quote, urls) == ("-", ["-"]) else ("INVALID", "not confirmed needs Quote - and URL -", [])
     if urls == ["-"] or not urls:
         return "INVALID", "URL missing", []
-    if tag == "EXTRACTED" or via:
+    if tag == "EXTRACTED" or via or reused:
         if len(urls) != 1:
             return "INVALID", "exactly one URL", urls
         if not (len(quote) > 2 and quote[0] == quote[-1] == '"'):
@@ -161,7 +169,7 @@ def check_row(cells: list[str], entries: list[str], fixtures: list[Fixture]) -> 
             return "INVALID", "ellipsis in Quote", urls
         primary = is_primary(urls[0], entries)
         host = (urlsplit(urls[0]).hostname or "").lower()
-        if tag == "EXTRACTED" and not primary:
+        if (tag == "EXTRACTED" or reused) and not primary:
             return "INVALID", f"{host} is not a primary host", urls
         if via and primary:
             return "INVALID", f"{host} is primary, use EXTRACTED", urls
@@ -256,7 +264,7 @@ def self_test() -> int:
     text = skill.read_text(encoding="utf-8")  # the checker constants must still appear in the contract
     block = text.partition("<output-contract>")[2].partition("</output-contract>")[0]
     for s in (HEADER, "Level: <quick|standard|thorough>", "Domain: <key", "Primary hosts (declared): <host>", "Disconfirming search: found — <URL> — <changes|keeps> the conclusion: <short reason>", "Next step: <what the user should do now",
-              "Disconfirming search: ran — nothing opposing found", "Disconfirming search: not run (quick)", "INFERRED (via <host>)", "INFERRED (copy via <host>)", "(no primary source)", "INFERRED (figure N)"):
+              "Disconfirming search: ran — nothing opposing found", "Disconfirming search: not run (quick)", "INFERRED (via <host>)", "INFERRED (copy via <host>)", "(no primary source)", "INFERRED (figure N)", "REUSED (fetched <YYYY-MM-DD>)"):
         assert s in block, f"{s!r} missing from the <output-contract> block"
     for s in (*LABELS, "quick = 1 source", "at least 2 independent sources"):
         assert s in text, f"{s!r} missing from {skill.name}"
@@ -319,6 +327,13 @@ def self_test() -> int:
     assert r.invalid >= 2 and "ellipsis" in "\n".join(r.lines), r.lines  # via host mismatch, ellipsis
     cp = row("INFERRED (copy via www.gdpr-info.eu)", f'"{gq}"', "https://www.gdpr-info.eu/art-4-gdpr/", 2)
     assert run(ans([good[0], cp])).invalid == 0  # a copy is checked like via
+    rq = dict(level="quick", last="Disconfirming search: not run (quick)")
+    r = run(ans([row("REUSED (fetched 2026-10-30)", f'"{q301}"', rfc)], **rq))
+    assert (r.invalid, r.ok) == (0, 1), r.lines  # REUSED is checked like EXTRACTED
+    r = run(ans([row("REUSED (fetched 2026-13-45)", f'"{q301}"', rfc)], **rq))
+    assert r.invalid >= 1 and "bad date" in "\n".join(r.lines), r.lines
+    r = run(ans([row("REUSED (fetched 2026-10-30)", f'"{gq}"', "https://www.gdpr-info.eu/art-4-gdpr/")], **rq))
+    assert r.invalid >= 1 and "not a primary host" in "\n".join(r.lines), r.lines  # needs a primary host like EXTRACTED
     r = run(ans([good[0], row("INFERRED (copy via spec.whatwg.org)", f'"{q301}"', "https://fetch.spec.whatwg.org/", 2)]))
     assert r.invalid >= 1 and "is primary" in "\n".join(r.lines), r.lines
     zero = [row("INFERRED (copy via a.example)", '"x"', "https://a.example/p"), row("INFERRED (via b.example)", '"y"', "https://b.example/q", 2)]
