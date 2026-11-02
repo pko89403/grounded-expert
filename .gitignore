@@ -3,5 +3,5 @@ plugin/evals/results/
 __pycache__/
 # Project-local reference notes if the skill is used inside this repo
 .agents/grounded-expert/reference/
-.agents/grounded-expert/claims/
-.claude/grounded-expert/claims/
+.agents/grounded-expert/claims.md
+.claude/grounded-expert/claims.md

@@ -24,7 +24,7 @@ s|with the Agent tool$|with @SPAWN_TOOL@|
 s|`subagent_type: "grounded-expert:grounded-researcher"`, or `subagent_type: "general-purpose"` if that type is not found|@NEW_SUBAGENT@|
 s|via WebSearch/WebFetch|via @WEB_TOOLS@|
 s|`\${CLAUDE_PROJECT_DIR}/\.claude/grounded-expert/reference/<domain>\.md`|@REF_PATH@|
-s|`\${CLAUDE_PROJECT_DIR}/\.claude/grounded-expert/claims/<domain>\.md`|@CLAIMS_PATH@|
+s|`\${CLAUDE_PROJECT_DIR}/\.claude/grounded-expert/claims\.md`|@CLAIMS_PATH@|
 s|unless WebFetch actually|unless @FETCH_TOOL@ actually|
 s|\. As a Claude Code plugin it calls .* not enforcement\.|@GOTCHA_TAIL@|
 /^Antigravity note: /{N;d;}
@@ -37,7 +37,7 @@ s|with `invoke_subagent`$|with @SPAWN_TOOL@|
 s|`invoke_subagent` and the built-in subagent type `self`|@NEW_SUBAGENT@|
 s|via the host's web search and URL-fetch tools|via @WEB_TOOLS@|
 s|`\.agents/grounded-expert/reference/<domain>\.md` in the workspace root (this skill's own convention, not an Antigravity-defined location)|@REF_PATH@|
-s|`\.agents/grounded-expert/claims/<domain>\.md` in the workspace root|@CLAIMS_PATH@|
+s|`\.agents/grounded-expert/claims\.md` in the workspace root|@CLAIMS_PATH@|
 s|unless the host's URL-fetch tool actually|unless @FETCH_TOOL@ actually|
 s|, but nothing limits the subagent to them, so the step 3 tool rule is a prompt rule, not enforcement\. No separate MCP server or plugin component is needed at this scope\.|@GOTCHA_TAIL@|
 /^Antigravity note: /{N;d;}
