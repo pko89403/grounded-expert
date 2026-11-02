@@ -21,7 +21,7 @@ questions. The project controls whether notes are versioned or ignored; deleting
 a note does not delete host conversation logs. This repo ignores that notes path,
 not the OpenAI marketplace metadata.
 
-The skill may also save verified claims (claim text, a short quote, its URL and the fetch date) to `.agents/grounded-expert/claims/` in the current project, and it deletes entries older than 7 days. Nothing is sent elsewhere. The project controls whether that path is versioned or ignored.
+The skill may also save verified claims (claim text, a short quote, its URL and the fetch date) to `.agents/grounded-expert/claims.md` in the current project, and it deletes entries older than 7 days. Nothing is sent elsewhere. The project controls whether that path is versioned or ignored.
 
 If you choose to report a problem on GitHub, only include information you intend
 to share publicly. The package does not submit those reports automatically.
