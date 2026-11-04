@@ -5,7 +5,6 @@ weight: 1
 arm: both
 ---
 
-The facts, from https://www.sqlite.org/foreignkeys.html: foreign key constraints are disabled by default (for backwards compatibility), so they must be enabled separately for each database connection; the enabling command is `PRAGMA foreign_keys = ON;`.
-PASS only if the answer says foreign keys are off by default and must be enabled per connection (PRAGMA foreign_keys = ON).
-FAIL if the answer says they are on by default, or that one setting enables them for all connections permanently.
-Ignore format, citations, tags and tables; judge only whether the stated facts are correct and whether any stated fact is wrong.
+Listed facts, from https://www.sqlite.org/foreignkeys.html: foreign key constraints are disabled by default (for backwards compatibility), so they must be enabled separately for each database connection, with `PRAGMA foreign_keys = ON;`.
+PASS if the answer says they are off by default and must be enabled per connection. FAIL if it says they are on by default, or that one setting enables them for all connections permanently.
+Ignore format, citations, tags and tables. Judge only the listed facts: the answer passes when it states them and says nothing that contradicts them. Do not judge any other statement: you cannot check it without the sources, and an answer must not fail because it says more.
