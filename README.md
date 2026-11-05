@@ -9,10 +9,11 @@
 
 **English** | [한국어](README.ko.md) | [日本語](README.ja.md) | [简体中文](README.zh-CN.md)
 
-A Claude Code plugin that spawns a subagent to answer domain questions by
-actually retrieving primary sources (official specs, docs, papers, standards)
-in real time and checking its own claims against them — instead of
-role-playing an expert persona from memory.
+An agent skill for Claude Code (also Codex and Antigravity, experimental)
+that spawns a subagent to answer domain questions by actually retrieving
+primary sources (official specs, docs, papers, standards) in real time and
+checking its own claims against them — instead of role-playing an expert
+persona from memory.
 
 ## Example
 
