@@ -9,6 +9,13 @@ The project stays in `0.x` (see README Versioning): a breaking change
 (`feat!:` or a `BREAKING CHANGE:` footer) bumps the minor version, not the
 major one.
 
+## [0.9.2](https://github.com/pko89403/grounded-expert/compare/v0.9.1...v0.9.2) (2026-11-06)
+
+
+### Bug Fixes
+
+* keep private content out of subagent search queries ([#50](https://github.com/pko89403/grounded-expert/issues/50)) ([eb7c630](https://github.com/pko89403/grounded-expert/commit/eb7c630e5b39834231a44f93a10d657cbf0586aa))
+
 ## [0.9.1](https://github.com/pko89403/grounded-expert/compare/v0.9.0...v0.9.1) (2026-11-02)
 
 
