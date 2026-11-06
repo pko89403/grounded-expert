@@ -48,7 +48,7 @@ save a short note listing which source types were reliable to
 The note contains source types and a short rationale, not your questions or
 personal data. You can delete it at any time.
 
-After an answer, the skill may also save the verified claims (claim text, a short quote from the source page, its URL and the fetch date) to `.claude/grounded-expert/claims.md` inside your current project, and it deletes entries older than 7 days. Nothing is sent elsewhere. Add that path to your ignore file if you do not want it versioned.
+After an answer, the skill may also save the verified claims (claim text, a short quote from the source page, its URL and the fetch date) to `.claude/grounded-expert/claims.md` inside your current project, and it deletes entries older than 7 days. Nothing is sent elsewhere. Add that path to your ignore file if you do not want it versioned. When you ask for a short answer, the skill may also write the full answer to `.claude/grounded-expert/answers/` inside your current project, and nothing is sent elsewhere.
 
 ## Retention
 

@@ -152,6 +152,21 @@ That applies to an answer the subagent actually returned. Describe work as the s
 
 Put a label on its own first line of the answer, above the conclusion, and change nothing else in the answer; several labels go on one line, separated by `; `. With `partial cross-check`, the `Level:` line is not `thorough`. With `not externally verified`, the answer needs no `Level:` line, source floor, `Disconfirming search:` line or `Next step:` line, and every row (if any) is `not confirmed`.
 
+Compact mode: use it only when the user asks for a short answer or for no table, for example "brief", "short", "no table", "간단히" or "표 빼고", or the same meaning in another language. Without such a request, hand off the full answer as above. In compact mode, do these steps:
+
+1. Write the full handed-off answer, byte for byte as the hand-off above would show it, to `answers/<YYYY-MM-DD>-<slug>.md` in the folder that holds the claims file from step 3. Use today's date. The slug is short kebab-case ASCII text from the question. Create the folder if it does not exist.
+2. Show only these parts of the answer, in this order, each copied unchanged unless the part says otherwise. Skip a part that the answer does not have.
+   - The label line, if any, and the conclusion paragraph.
+   - The `Level:`, `Domain:` and `Primary hosts (declared):` lines.
+   - One line `Rows: <M> (<n> <tag>, ...)`, with M the number of table rows and one count per tag word, in this order: `EXTRACTED`, `INFERRED`, `REUSED`, `not confirmed`. Ignore any text in parentheses after a tag. Skip a tag with count 0. Example: `Rows: 14 (EXTRACTED 7, INFERRED 6, not confirmed 1)`.
+   - The table header row and delimiter row, then every row tagged `not confirmed` and every row whose URL is named in the `Disconfirming search:` line. If no row qualifies, show no table.
+   - One line `Omitted: <N> of <M> rows. Full answer: <path>`, with N the number of rows not shown and path the file from item 1. Keep `Rows:` and `Omitted:` in English.
+   - The uncertainty text.
+   - The `Disconfirming search:` line and the `Next step:` line, last.
+3. If the write fails, hand off the full answer as above and say nothing about the failure.
+
+The claims cache update below still uses every row of the full answer.
+
 Claims cache update: after the handoff, and only when a subagent wrote the answer and no label is on its first line, update the claims file from step 3. If the file does not exist, create it with the header row `| fetched_at | Claim | Quote | URL |` and the delimiter row `|---|---|---|---|`. For every `EXTRACTED` row of the answer, add a row with today's date (`YYYY-MM-DD`) and the row's Claim, Quote (with its straight double quotes) and URL; write `|` inside a cell as `\|`. If a row with the same URL and Quote exists, replace it. Delete every row whose `fetched_at` is older than 7 days. Do not store `REUSED`, `INFERRED` or `not confirmed` rows. If a write fails, go on: the handed-off answer stays as it is and nothing follows its `Next step:` line. Never create or edit a `.gitignore` for the user.
 
 OpenAI validation: check available child evidence before handoff. Report parent validation findings in a separate progress message before the final handoff, never after its `Next step:` line, and do not silently rewrite child rows, tags or prose. If forwarding the original would violate the host's quotation or other limits, request a compliant child revision and pass that returned revision verbatim, disclosing the failed check separately beforehand. If no compliant revision is available, withhold noncompliant material and report the limitation rather than repairing it yourself. A receipt without a visible retrieval record is not independently verified retrieval. Keep any step-4 labels on the handed-off answer's first line.
