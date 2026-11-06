@@ -144,13 +144,13 @@ Put a label on its own first line of the answer, above the conclusion, and chang
 
 Compact mode: use it only when the user asks for a short answer or for no table, for example "brief", "short", "no table", "간단히" or "표 빼고", or the same meaning in another language. Without such a request, hand off the full answer as above. In compact mode, do these steps:
 
-1. Write the full handed-off answer, byte for byte as the hand-off above would show it, to `answers/<YYYY-MM-DD>-<slug>.md` in the folder that holds the claims file from step 3. Use today's date. The slug is short kebab-case ASCII text from the question. Create the folder if it does not exist.
+1. Write the full handed-off answer, byte for byte as the hand-off above would show it, to `answers/<YYYY-MM-DD>-<slug>.md` in the folder that holds the claims file from step 3. Use today's date. The slug is short kebab-case ASCII text from the question. Create the folder if it does not exist. If the file already exists, add `-2`, `-3` and so on to the slug until the name is free.
 2. Show only these parts of the answer, in this order, each copied unchanged unless the part says otherwise. Skip a part that the answer does not have.
    - The label line, if any, and the conclusion paragraph.
    - The `Level:`, `Domain:` and `Primary hosts (declared):` lines.
-   - One line `Rows: <M> (<n> <tag>, ...)`, with M the number of table rows and one count per tag word, in this order: `EXTRACTED`, `INFERRED`, `REUSED`, `not confirmed`. Ignore any text in parentheses after a tag. Skip a tag with count 0. Example: `Rows: 14 (EXTRACTED 7, INFERRED 6, not confirmed 1)`.
+   - One line `Rows: <M> (<n> <tag>, ...)`, with M the number of table rows and one count per tag word, in this order: `EXTRACTED`, `INFERRED`, `REUSED`, `not confirmed`. Ignore any text in parentheses after a tag. Skip a tag with count 0. Example: `Rows: 14 (EXTRACTED 7, INFERRED 6, not confirmed 1)`. Skip this line if the answer has no table rows.
    - The table header row and delimiter row, then every row tagged `not confirmed` and every row whose URL is named in the `Disconfirming search:` line. If no row qualifies, show no table.
-   - One line `Omitted: <N> of <M> rows. Full answer: <path>`, with N the number of rows not shown and path the file from item 1. Keep `Rows:` and `Omitted:` in English.
+   - One line `Omitted: <N> of <M> rows. Full answer: <path>`, with N the number of rows not shown and path the file from item 1. Keep `Rows:` and `Omitted:` in English. Skip this line if the answer has no table rows.
    - The uncertainty text.
    - The `Disconfirming search:` line and the `Next step:` line, last.
 3. If the write fails, hand off the full answer as above and say nothing about the failure.
