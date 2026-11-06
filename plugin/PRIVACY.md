@@ -1,6 +1,6 @@
 # Privacy policy: grounded-expert
 
-Last updated: 2026-10-30
+Last updated: 2026-11-04
 
 grounded-expert is a Claude Code plugin. Its working parts are two Markdown
 instruction files: one skill (`SKILL.md`) and one subagent definition
@@ -30,7 +30,9 @@ When the skill runs, Claude spawns a subagent that uses Claude's built-in
 WebSearch and WebFetch tools:
 
 - **Search queries** derived from your question are sent to the web search
-  provider used by WebSearch.
+  provider used by WebSearch. The skill tells the subagent to build queries
+  only from public names and general terms. This is a prompt rule, not
+  enforcement.
 - **Requests to source pages** (official docs, specs, papers, standards) are
   made by WebFetch to the pages it opens. These include the sources it cites
   and pages it checks but does not cite.

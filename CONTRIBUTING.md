@@ -40,6 +40,8 @@ manifest and the docs.
    this patch's required blank context markers from trailing-space checking only.
 5. If you changed `tools/` or the `<output-contract>` block in
    `plugin/SKILL.md`: `python3 tools/check_quotes.py --self-test`. CI runs it too.
+6. If you changed the search-query rule in `plugin/SKILL.md`, run
+   `bash scripts/tests/live-search-privacy.sh` (paid, manual, not in CI).
 
 ## OpenAI host changes
 

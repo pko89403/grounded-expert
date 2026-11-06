@@ -1,6 +1,6 @@
 # Privacy: OpenAI host package
 
-Last updated: 2026-10-25
+Last updated: 2026-11-04
 
 This community-maintained package contains skill instructions. It bundles no
 MCP server, hooks, runtime collection script or author-operated backend. It does
@@ -8,7 +8,9 @@ not add an automatic telemetry destination for the maintainer.
 
 The host processes your question and the context supplied to its agents. When
 available and permitted, host web tools send search queries to their search
-provider and request pages from cited sites. Host logs, conversation retention,
+provider and request pages from cited sites. The skill tells the delegated
+agent to build queries only from public names and general terms. This is a
+prompt rule, not enforcement. Host logs, conversation retention,
 account/workspace settings and connected-tool permissions are controlled by the
 host and its providers, not this package. Consult those providers' terms,
 privacy policies and settings; these instructions cannot override them. Avoid
